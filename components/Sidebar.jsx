@@ -108,7 +108,7 @@ export default class Sidebar extends Component {
           <li>– <a href="#Builder-insert">insert</a></li>
           <li>– <a href="#Builder-returning">returning</a></li>
           <li>– <a href="#Builder-update">update</a></li>
-          <li>– <a href="#Builder-del">del / delete</a></li>
+          <li>– <a href="#Builder-del / delete">del / delete</a></li>
           <li>– <a href="#Builder-transacting">transacting</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-forUpdate">forUpdate</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-forShare">forShare</a></li>
@@ -123,6 +123,9 @@ export default class Sidebar extends Component {
           <li>– <a href="#Builder-pluck">pluck</a></li>
           <li>– <a href="#Builder-first">first</a></li>
           <li>– <a href="#Builder-clone">clone</a></li>
+          <li>– <a href="#Builder-denseRank">denseRank</a></li>
+          <li>– <a href="#Builder-rank">rank</a></li>
+          <li>– <a href="#Builder-rowNumber">rowNumber</a></li>
           <li>– <a href="#Builder-modify">modify</a></li>
           <li>– <a href="#Builder-columnInfo">columnInfo</a></li>
           <li>– <a href="#Builder-debug">debug</a></li>
