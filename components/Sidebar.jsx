@@ -141,9 +141,12 @@ export default class Sidebar extends Component {
           <li>– <a href="#Transactions"><b>overview</b></a></li>
         </ul>
 
-        <a className="toc_title" href="#Schema">
-          Schema Builder
-        </a>
+        <span className="toc_title">
+          <a href="#Schema">
+            Schema Builder
+          </a>
+          &nbsp;<sup><a href="https://github.com/knex/documentation/blob/gh-pages/sections/schema.js" title="Edit this section">[E]</a></sup>
+        </span>
         <ul className="toc_section">
           <li>– <a href="#Schema-with">with</a></li>
           <li>– <a href="#Schema-withSchema">withSchema</a></li>

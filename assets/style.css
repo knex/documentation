@@ -26,13 +26,13 @@ div#sidebar {
   border-right: 1px solid #bbb;
   box-shadow: 0 0 20px #ccc; -webkit-box-shadow: 0 0 20px #ccc; -moz-box-shadow: 0 0 20px #ccc;
 }
-a.toc_title, a.toc_title:visited {
+.toc_title, .toc_title:visited {
   display: block;
   color: black;
   font-weight: bold;
   margin-top: 15px;
 }
-a.toc_title:hover {
+.toc_title:hover {
   text-decoration: underline;
 }
 
