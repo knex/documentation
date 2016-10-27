@@ -475,6 +475,23 @@ export default [
   },
   {
     type: "method",
+    method: "alter",
+    example: "column.alter()",
+    description: 'Marks the column as an alter / modify, in stead of the default add. Note: This only works in .alterTable()',
+    children: [    ]
+  },
+  {
+    type: "code",
+    content: `
+      knex.schema.alterTable('user', function(t) {
+        t.increments().primary(); // add
+        t.string('username', 35).notNullable().alter(); // alter
+        t.string('email').unique().comment('This is the email field');
+      });
+    `
+  },
+  {
+    type: "method",
     method: "index",
     example: "column.index([indexName], [indexType])",
     description: "Specifies a field as an index. If an indexName is specified, it is used in place of the standard index naming convention of tableName_columnName. The indexType can be optionally specified for PostgreSQL. No-op if this is chained off of a field that cannot be indexed.",
