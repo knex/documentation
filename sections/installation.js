@@ -187,6 +187,43 @@ export default [
   {
     type: "heading",
     size: "md",
+    content: "afterCreate",
+    href: "Installation-pooling-afterCreate"
+  },
+  {
+    type: "text",
+    content: "`afterCreate` callback (rawDriverConnection, done) is called when pool aquires new connection from server. done(err, connection) callback must be called for knex to be able to decide if connection is ok or if it should be discarded right away from pool."
+  },
+  {
+    type: "code",
+    language: "js",
+    content: `
+      var knex = require('knex')({
+        client: 'pg',
+        connection: {...},
+        pool: {
+          afterCreate: function (conn, done) {
+            // in this example we use pg driver's connection API
+            conn.query('SET timezone="UTC";', function (err) {
+              if (err) {
+                // first query failed, return error and don't try to make next query
+                done(err, conn);
+              } else {
+                // do second query...
+                conn.query('SELECT set_limit(0.01);', function (err) {
+                  // if err is not falsy, connection is discarded from pool and error is passed to query
+                  done(err, conn); 
+                });
+              }
+            });
+          }
+        }
+      });
+    `
+  },
+  {
+    type: "heading",
+    size: "md",
     content: "acquireConnectionTimeout",
     href: "Installation-acquireConnectionTimeout"
   },
