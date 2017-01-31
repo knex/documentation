@@ -192,7 +192,7 @@ export default [
   },
   {
     type: "text",
-    content: "`afterCreate` callback (rawDriverConnection, done) is called when pool aquires new connection from server. done(err, connection) callback must be called for knex to be able to decide if connection is ok or if it should be discarded right away from pool."
+    content: "`afterCreate` callback (rawDriverConnection, done) is called when the pool aquires a new connection from the database server. done(err, connection) callback must be called for `knex` to be able to decide if the connection is ok or if it should be discarded right away from the pool."
   },
   {
     type: "code",
@@ -209,9 +209,10 @@ export default [
                 // first query failed, return error and don't try to make next query
                 done(err, conn);
               } else {
-                // do second query...
+                // do the second query...
                 conn.query('SELECT set_limit(0.01);', function (err) {
-                  // if err is not falsy, connection is discarded from pool and error is passed to query
+                  // if err is not falsy, connection is discarded from pool
+                  // if connection aquire was triggered by a query the error is passed to query promise
                   done(err, conn); 
                 });
               }
