@@ -477,7 +477,7 @@ export default [
     type: "method",
     method: "alter",
     example: "column.alter()",
-    description: 'Marks the column as an alter / modify, in stead of the default add. Note: This only works in .alterTable()',
+    description: 'Marks the column as an alter / modify, instead of the default add. Note: This only works in .alterTable() and is not supported by SQlite. Alter is *not* done incrementally over older column type so if you like to add `notNull` and keep the old default value, the alter statement must contain both `.notNull().defaultTo(1).alter()`. If one just tries to add `.notNull().alter()` the old default value will be dropped.',
     children: [    ]
   },
   {
@@ -485,8 +485,10 @@ export default [
     content: `
       knex.schema.alterTable('user', function(t) {
         t.increments().primary(); // add
-        t.string('username', 35).notNullable().alter(); // alter
-        t.string('email').unique().comment('This is the email field');
+        // drops previous default value from column, change type to string and add not nullable constraint
+        t.string('username', 35).notNullable().alter(); 
+        // drops both not null contraint and the default value
+        t.integer('age').alter(); 
       });
     `
   },
