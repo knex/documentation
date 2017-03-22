@@ -111,7 +111,7 @@ export default [
     content: `
       var knex = require('knex')({
         client: 'pg',
-        version: 'v7.2.1-0',
+        version: '7.2',
         connection: {
           host : '127.0.0.1',
           user : 'your_database_user',
