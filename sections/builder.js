@@ -669,28 +669,6 @@ export default [
   },
   {
     type: "method",
-    method: "outerJoin",
-    example: ".outerJoin(column, ~mixed~)",
-    description: "",
-    children: [
-      {
-        type: "runnable",
-        content: `
-          knex.select('*').from('users').outerJoin('accounts', 'users.id', 'accounts.user_id')
-        `
-      },
-      {
-        type: "runnable",
-        content: `
-          knex.select('*').from('users').outerJoin('accounts', function() {
-            this.on('accounts.id', '=', 'users.account_id').orOn('accounts.owner_id', '=', 'users.id')
-          })
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
     method: "fullOuterJoin",
     example: ".fullOuterJoin(column, ~mixed~)",
     description: "",
