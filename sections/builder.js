@@ -76,7 +76,7 @@ export default [
     type: "method",
     method: "column",
     example: ".column(columns)",
-    description: "Specifically set the columns to be selected on a select query, taking an array or a list of of column names.",
+    description: "Specifically set the columns to be selected on a select query, taking an array, an object or a list of column names. Passing an object will automatically alias the columns with the given keys.",
     children: [
       {
         type: "runnable",
@@ -88,6 +88,12 @@ export default [
         type: "runnable",
         content: `
           knex.column(['title', 'author', 'year']).select().from('books')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex.column('title', {by: 'author'}, 'year').select().from('books')
         `
       }
     ]
