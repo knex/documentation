@@ -110,7 +110,7 @@ export default [
     language: "js",
     content: `
       var knex = require('knex')({
-        client: 'pg',
+        client: 'postgres',
         version: '7.2',
         connection: {
           host : '127.0.0.1',
@@ -152,7 +152,7 @@ export default [
     type: "code",
     language: "js",
     content: `
-      var pg = require('knex')({client: 'pg'});
+      var pg = require('knex')({client: 'postgres'});
       knex('table').insert({a: 'b'}).returning('*').toString();
       // "insert into "table" ("a") values ('b')"
 
@@ -256,7 +256,7 @@ export default [
     language: "js",
     content: `
       var knex = require('knex')({
-        client: 'pg',
+        client: 'postgres',
         connection: {...},
         pool: {...},
         acquireConnectionTimeout: 10000
