@@ -368,9 +368,17 @@ export default [
     description: "Returns an array of query strings filled out with the correct values based on bindings, etc. Useful for debugging.",
     children: [
       {
-        type: "runnable",
+        type: "code",
+        language: "js",
         content: `
-          knex.select('*').from('users').where(knex.raw('id = ?', [1])).toString()
+          var toStringQuery = knex.select('*').from('users').where('id', 1).toString();
+          console.log(toStringQuery.toString());
+          
+          // toString() must be called on the variable object to print out query to console.
+          // Outputs:
+
+          select * from "users" where id = 1
+
         `
       }
     ]
@@ -387,7 +395,7 @@ export default [
         content: `
           knex.select('*').from('users').where(knex.raw('id = ?', [1])).toSQL()
 
-          // Ouputs: { bindings: [1], method: 'select', sql: 'select * from "users" where id = ?', options: undefined, }
+          // Outputs: { bindings: [1], method: 'select', sql: 'select * from "users" where id = ?', options: undefined, }
         `
       }
     ]
