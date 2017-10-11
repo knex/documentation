@@ -372,13 +372,9 @@ export default [
         language: "js",
         content: `
           var toStringQuery = knex.select('*').from('users').where('id', 1).toString();
-          console.log(toStringQuery.toString());
           
-          // toString() must be called on the variable object to print out query to console.
           // Outputs:
-
-          select * from "users" where id = 1
-
+          console.log(toStringQuery);
         `
       }
     ]

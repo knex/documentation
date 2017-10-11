@@ -60,7 +60,7 @@ export default [
     type: "method",
     method: "as",
     example: ".as(name)",
-    description: "Allows for aliasing a subquery, taking the string you wish to name the current query. NOTE: Does not create SQL alias for columns or tables.",
+    description: "Allows for aliasing a subquery, taking the string you wish to name the current query. If the query is not a sub-query, it will be ignored.",
     children: [
       {
         type: "runnable",
