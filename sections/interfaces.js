@@ -373,8 +373,8 @@ export default [
         content: `
           var toStringQuery = knex.select('*').from('users').where('id', 1).toString();
           
-          // Outputs:
-          console.log(toStringQuery);
+          // Outputs: console.log(toStringQuery); 
+          // select * from "users" where "id" = 1
         `
       }
     ]
