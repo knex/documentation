@@ -16,7 +16,7 @@ export default [
     content: [
       "[generic-pool](https://github.com/coopernurse/node-pool) is swapped out for Pool2 for pooling management",
       "Documentation pull requests should be sent to [knex/documentation](https://github.com/knex/documentation)",
-      "PG escaping should now be handled the same as it is by the driver"
+      "PG escaping should now be handled the same as it is by the driver.",
     ]
   }
 ]
