@@ -19,7 +19,7 @@ export default class LanguageSelect extends Component {
         Show example query output as:<br />
         <select value={this.props.language} onChange={this.changeLanguage}>
           <option value="mysql">MySQL / MariaDB</option>
-          <option value="pg">PostgreSQL</option>
+          <option value="pg">PostgreSQL / Amazon Redshift</option>
           <option value="sqlite3">SQLite3</option>
           <option value="oracle">Oracle</option>
           <option value="mssql">MSSQL</option>
