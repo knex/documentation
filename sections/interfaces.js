@@ -372,9 +372,13 @@ export default [
     ].join(' '),
     children: [
       {
-        type: "runnable",
+        type: "code",
+        language: "js",
         content: `
-          knex.select('*').from('users').where(knex.raw('id = ?', [1])).toString()
+          var toStringQuery = knex.select('*').from('users').where('id', 1).toString();
+          
+          // Outputs: console.log(toStringQuery); 
+          // select * from "users" where "id" = 1
         `
       }
     ]
@@ -414,8 +418,7 @@ export default [
           // {
           //   bindings: [1],
           //   sql: 'select * from "users" where id = $1',
-          // }
-        `
+          // }        `
       }
     ]
   }
