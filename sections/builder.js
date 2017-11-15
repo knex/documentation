@@ -10,6 +10,33 @@ export default [
     content: "The heart of the library, the knex query builder is the interface used for building and executing standard SQL queries, such as `select`, `insert`, `update`, `delete`."
   },
   {
+    type: "heading",
+    size: "md",
+    content: "Identifier Syntax",
+    href: "Builder-identifier-syntax"
+  },
+  {
+    type: "text",
+    content: [
+      "In many places in APIs identifiers like table name or column name can be passed to methods.",
+      "Most commonly one needs just plain `tableName.columnName`, `tableName` or `columnName`, but in many cases one also needs to pass an alias how that identifier is referred later on in the query.",
+      "There are two ways to declare an alias for identifier. One can directly give `as aliasName` prefix for the identifier or oen can pass an object `{ aliasName: 'identifierName' }`.",
+      "If in the object has multiple aliases `{ alias1: 'identifier1', alias2: 'identifier2' }`, then all the aliased identifiers are expanded to comma separated list.",
+      "NOTE: identifier syntax has no place for selecting schema, so if you are doing `schemaName.tableName`, query might be rendered wrong. Use `.withSchema('schemaName')` instead."
+    ]
+  },
+  {
+    type: "runnable",
+    content: `
+      knex({ a: 'table', b: 'table' })
+        .select({
+          aTitle: 'a.title',
+          bTitle: 'b.title'
+        })
+        .whereRaw('?? = ??', ['a.column_1', 'b.column_2'])
+    `
+  },
+  {
     type: "method",
     method: "knex",
     example: "knex(tableName, options={only: boolean}) / knex.[methodName]",
@@ -76,7 +103,7 @@ export default [
     type: "method",
     method: "column",
     example: ".column(columns)",
-    description: "Specifically set the columns to be selected on a select query, taking an array or a list of of column names.",
+    description: "Specifically set the columns to be selected on a select query, taking an array, an object or a list of column names. Passing an object will automatically alias the columns with the given keys.",
     children: [
       {
         type: "runnable",
@@ -88,6 +115,12 @@ export default [
         type: "runnable",
         content: `
           knex.column(['title', 'author', 'year']).select().from('books')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex.column('title', {by: 'author'}, 'year').select().from('books')
         `
       }
     ]
@@ -1416,8 +1449,8 @@ export default [
   {
     type: "method",
     method: "count",
-    example: ".count(column)",
-    description: "Performs a count on the specified column. Note that in Postgres, count returns a bigint type which will be a String and not a Number (more info).",
+    example: ".count(column|raw)",
+    description: "Performs a count on the specified column. Also accepts raw expressions. Note that in Postgres, count returns a bigint type which will be a String and not a Number (more info).",
     children: [
       {
         type: "runnable",
@@ -1429,6 +1462,12 @@ export default [
         type: "runnable",
         content: `
           knex('users').count('active as a')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').count(knex.raw('??', ['active']))
         `
       }
     ]
@@ -1446,8 +1485,8 @@ export default [
   {
     type: "method",
     method: "min",
-    example: ".min(column)",
-    description: "Gets the minimum value for the specified column.",
+    example: ".min(column|raw)",
+    description: "Gets the minimum value for the specified column. Also accepts raw expressions.",
     children: [
       {
         type: "runnable",
@@ -1460,14 +1499,20 @@ export default [
         content: `
           knex('users').min('age as a')
         `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').min(knex.raw('??', ['age']))
+        `
       }
     ]
   },
   {
     type: "method",
     method: "max",
-    example: ".max(column)",
-    description: "Gets the maximum value for the specified column.",
+    example: ".max(column|raw)",
+    description: "Gets the maximum value for the specified column. Also accepts raw expressions.",
     children: [
       {
         type: "runnable",
@@ -1480,14 +1525,20 @@ export default [
         content: `
           knex('users').max('age as a')
         `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').max(knex.raw('??', ['age']))
+        `
       }
     ]
   },
   {
     type: "method",
     method: "sum",
-    example: ".sum(column)",
-    description: "Retrieve the sum of the values of a given column.",
+    example: ".sum(column|raw)",
+    description: "Retrieve the sum of the values of a given column. Also accepts raw expressions.",
     children: [
       {
         type: "runnable",
@@ -1499,6 +1550,12 @@ export default [
         type: "runnable",
         content: `
           knex('users').sum('products as p')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').sum(knex.raw('??', ['products']))
         `
       }
     ]
@@ -1516,8 +1573,8 @@ export default [
   {
     type: "method",
     method: "avg",
-    example: ".avg(column)",
-    description: "Retrieve the average of the values of a given column.",
+    example: ".avg(column|raw)",
+    description: "Retrieve the average of the values of a given column. Also accepts raw expressions.",
     children: [
       {
         type: "runnable",
@@ -1529,6 +1586,12 @@ export default [
         type: "runnable",
         content: `
           knex('users').avg('age as a')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').avg(knex.raw('??', ['age']))
         `
       }
     ]

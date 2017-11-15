@@ -16,13 +16,6 @@ export default class Sidebar extends Component {
           <li>&raquo; <a href="#changelog">Change Log</a></li>
         </ul>
 
-        <a className="toc_title" href="#Upgrading">
-          Upgrading
-        </a>
-        <ul className="toc_section">
-          <li>– <a href="#Upgrading-from0.11">0.11.x -> 0.12</a></li>
-        </ul>
-
         <a className="toc_title" href="#Installation">
           Installation
         </a>
@@ -37,12 +30,15 @@ export default class Sidebar extends Component {
           <li>&nbsp;&nbsp;– <a href="#Installation-acquireConnectionTimeout">acquireConnectionTimeout</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-fetchAsString">fetchAsString</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-migrations">migrations</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Installation-post-process-response">postProcessResponse</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Installation-wrap-identifier">wrapIdentifier</a></li>
         </ul>
 
         <a className="toc_title" href="#Builder">
           Query Builder
         </a>
         <ul className="toc_section">
+          <li>– <a href="#Builder-identifier-syntax"><b>Identifier Syntax</b></a></li>
           <li>– <a href="#Builder-knex"><b>constructor</b></a></li>
           <li>– <a href="#Builder-timeout">timeout</a></li>
           <li>– <a href="#Builder-select">select</a></li>
@@ -255,6 +251,7 @@ export default class Sidebar extends Component {
           <li><b><a href="#Interfaces-Other">Other:</a></b></li>
           <li>&nbsp;&nbsp;– <a href="#Interfaces-toString">toString</a></li>
           <li>&nbsp;&nbsp;– <a href="#Interfaces-toSQL">toSQL</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-toSQL">toSQL().toNative()</a></li>
         </ul>
 
         <a className="toc_title" href="#Migrations">

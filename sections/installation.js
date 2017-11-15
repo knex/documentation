@@ -75,6 +75,10 @@ export default [
     content: "The connection options are passed directly to the appropriate database client to create the connection, and may be either an object, or a connection string:"
   },
   {
+    type: "info",
+    content: "Note: Knex's PostgreSQL client allows you to set the initial search path for each connection automatically using an additional option \"searchPath\" as shown below."
+  },
+  {
     type: "code",
     language: "js",
     content: `
@@ -311,5 +315,76 @@ export default [
         }
       });
     `
-  }
+  },
+  {
+    type: "heading",
+    size: "md",
+    content: "postProcessResponse",
+    href: "Installation-post-process-response"
+  },
+  {
+    type: "text",
+    content: [
+      "Hook for modifying returned rows, before passing them forward to user. One can do for example",
+      "snake_case -> camelCase conversion for returned columns with this hook.",
+    ].join(' ')
+  },
+  {
+    type: "code",
+    language: "js",
+    content: `
+      var knex = require('knex')({
+        client: 'mysql',
+        // overly simplified snake_case -> camelCase converter
+        postProcessResponse: (result) => {
+          // TODO: add special case for raw results (depends on dialect)
+          if (Array.isArray(result)) {
+            return result.map(row => convertToCamel(row));
+          } else {
+            return convertToCamel(result);
+          }
+        }
+      });
+    `
+  },
+  {
+    type: "heading",
+    size: "md",
+    content: "wrapIdentifier",
+    href: "Installation-wrap-identifier"
+  },
+  {
+    type: "text",
+    content: [
+      "Knex supports transforming identifier names automatically to quoted versions for each dialect.",
+      "For example `'Table.columnName as foo'` for PostgreSQL is converted to \"Table\".\"columnName\" as \"foo\".",
+    ].join(' ')
+  },
+  {
+    type: "text",
+    content: [
+      "With `wrapIdentifier` one may override the way how identifiers are transformed.",
+      "It can be used to override default functionality and for example to help doing `camelCase` -> `snake_case` conversion.",
+    ].join(' ')
+  },
+  {
+    type: "text",
+    content: [
+      "Conversion function `wrapIdentifier(value, dialectImpl): string` gets each part of the identifier as a single `value`",
+      "and the second parameter is the original conversion function from the dialect implementation.",
+      "For example `knex('table').withSchema('foo').select('table.field as otherName').where('id', 1)` will call",
+      "`wrapIdentifier` converter for following values `'table'`, `'foo'`, `'table'`, `'field'`, `'otherName'` and `'id'`.",
+    ].join(' ')
+  },
+  {
+    type: "code",
+    language: "js",
+    content: `
+      var knex = require('knex')({
+        client: 'mysql',
+        // overly simplified camelCase -> snake_case converter
+        wrapIdentifier: (value, origImpl) => origImpl(convertToSnakeCase(value))
+      });
+    `
+  },
 ]
