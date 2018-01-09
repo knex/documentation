@@ -1754,9 +1754,9 @@ export default [
   },
   {
     type: "method",
-    method: "hookContext",
-    example: ".hookContext(context)",
-    href: "Builder-hookContext",
+    method: "queryContext",
+    example: ".queryContext(context)",
+    href: "Builder-queryContext",
     children: [
       {
         type: 'text',
@@ -1770,7 +1770,7 @@ export default [
         language: "js",
         content: `
           knex('accounts as a1')
-            .hookContext({ foo: 'bar' })
+            .queryContext({ foo: 'bar' })
             .select(['a1.email', 'a2.email']
         `
       },
@@ -1785,7 +1785,7 @@ export default [
       },
       {
         type: "text",
-        content: "Note that calling `hookContext` with no arguments will return any context configured for the query builder instance."
+        content: "Note that calling `queryContext` with no arguments will return any context configured for the query builder instance."
       }
     ]
   }

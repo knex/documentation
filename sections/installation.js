@@ -327,7 +327,7 @@ export default [
     content: [
       "Hook for modifying returned rows, before passing them forward to user. One can do for example",
       "snake_case -> camelCase conversion for returned columns with this hook.",
-      "The `context` is only available passed if configured for a query builder instance via [hookContext](#Builder-hookContext)."
+      "The `queryContext` is only available passed if configured for a query builder instance via [queryContext](#Builder-queryContext)."
     ].join(' ')
   },
   {
@@ -337,7 +337,7 @@ export default [
       var knex = require('knex')({
         client: 'mysql',
         // overly simplified snake_case -> camelCase converter
-        postProcessResponse: (result, context) => {
+        postProcessResponse: (result, queryContext) => {
           // TODO: add special case for raw results (depends on dialect)
           if (Array.isArray(result)) {
             return result.map(row => convertToCamel(row));
@@ -372,8 +372,8 @@ export default [
     type: "text",
     content: [
       "Conversion function `wrapIdentifier(value, dialectImpl, context): string` gets each part of the identifier",
-      "as a single `value`, the original conversion function from the dialect implementation and the `context`,",
-      "which is only available if configured for a query builder instance via [hookContext](#Builder-hookContext).",
+      "as a single `value`, the original conversion function from the dialect implementation and the `queryContext`,",
+      "which is only available if configured for a query builder instance via [queryContext](#Builder-queryContext).",
       "For example `knex('table').withSchema('foo').select('table.field as otherName').where('id', 1)` will call",
       "`wrapIdentifier` converter for following values `'table'`, `'foo'`, `'table'`, `'field'`, `'otherName'` and `'id'`.",
     ].join(' ')
@@ -385,7 +385,7 @@ export default [
       var knex = require('knex')({
         client: 'mysql',
         // overly simplified camelCase -> snake_case converter
-        wrapIdentifier: (value, origImpl, context) => origImpl(convertToSnakeCase(value))
+        wrapIdentifier: (value, origImpl, queryContext) => origImpl(convertToSnakeCase(value))
       });
     `
   },
