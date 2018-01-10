@@ -327,7 +327,7 @@ export default [
     content: [
       "Hook for modifying returned rows, before passing them forward to user. One can do for example",
       "snake_case -> camelCase conversion for returned columns with this hook.",
-      "The `queryContext` is only available passed if configured for a query builder instance via [queryContext](#Builder-queryContext)."
+      "The `queryContext` is only available if configured for a query builder instance via [queryContext](#Builder-queryContext)."
     ].join(' ')
   },
   {
