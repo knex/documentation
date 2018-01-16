@@ -373,8 +373,9 @@ export default [
     content: [
       "Conversion function `wrapIdentifier(value, dialectImpl, context): string` gets each part of the identifier",
       "as a single `value`, the original conversion function from the dialect implementation and the `queryContext`,",
-      "which is only available if configured for a query builder instance via [queryContext](#Builder-queryContext).",
-      "For example `knex('table').withSchema('foo').select('table.field as otherName').where('id', 1)` will call",
+      "which is only available if configured for a query builder instance via [builder.queryContext](#Builder-queryContext),",
+      "and for schema builder instances via [schema.queryContext](#Schema-queryContext) or [table.queryContext](#Schema-table-queryContext).",
+      "For example, with the query builder, `knex('table').withSchema('foo').select('table.field as otherName').where('id', 1)` will call",
       "`wrapIdentifier` converter for following values `'table'`, `'foo'`, `'table'`, `'field'`, `'otherName'` and `'id'`.",
     ].join(' ')
   },

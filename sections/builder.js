@@ -1785,7 +1785,7 @@ export default [
       },
       {
         type: "text",
-        content: "Note that calling `queryContext` with no arguments will return any context configured for the query builder instance."
+        content: "Calling `queryContext` with no arguments will return any context configured for the query builder instance."
       }
     ]
   }

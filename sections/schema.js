@@ -172,6 +172,41 @@ export default [
     ]
   },
   {
+    type: "method",
+    method: "queryContext",
+    example: "knex.schema.queryContext(context)",
+    href: "Schema-queryContext",
+    description: [
+      "Allows configuring a context to be passed to the [wrapIdentifier](#Installation-wrap-identifier) hook.",
+      "The context can be any kind of value and will be passed to `wrapIdentifier` without modification."
+    ].join(" "),
+    children: [
+      {
+        type: "code",
+        language: "js",
+        content: `
+          knex.schema.queryContext({ foo: 'bar' })
+            .table('users', function (table) {
+              table.string('first_name');
+              table.string('last_name');
+            })
+        `
+      },
+      {
+        type: "text",
+        content: [
+          "The context configured will be passed to `wrapIdentifier`",
+          "for each identifier that needs to be formatted, including the table and column names.",
+          "However, a different context can be set for the column names via [table.queryContext](#Schema-table-queryContext)."
+        ].join(" ")
+      },
+      {
+        type: "text",
+        content: "Calling `queryContext` with no arguments will return any context configured for the schema builder instance."
+      }
+    ]
+  },
+  {
     type: "heading",
     size: "md",
     content: "Schema Building:",
@@ -464,6 +499,65 @@ export default [
     children: [    ]
   },
   {
+    type: "method",
+    method: "queryContext",
+    example: "table.queryContext(context)",
+    href: "Schema-table-queryContext",
+    description: [
+      "Allows configuring a context to be passed to the [wrapIdentifier](#Installation-wrap-identifier) hook for formatting table builder identifiers.",
+      "The context can be any kind of value and will be passed to `wrapIdentifier` without modification."
+    ].join(" "),
+    children: [
+      {
+        type: "code",
+        language: "js",
+        content: `
+          knex.schema.table('users', function (table) {
+            table.queryContext({ foo: 'bar' });
+            table.string('first_name');
+            table.string('last_name');
+          })
+        `
+      },
+      {
+        type: "text",
+        content: "This method also enables overwriting the context configured for a schema builder instance via [schema.queryContext](#Schema-queryContext):"
+      },
+      {
+        type: "code",
+        language: "js",
+        content: `
+          knex.schema.queryContext('schema context')
+            .table('users', function (table) {
+              table.queryContext('table context');
+              table.string('first_name');
+              table.string('last_name');
+          })
+        `
+      },
+      {
+        type: "text",
+        content: "Note that it's also possible to overwrite the table builder context for any column in the table definition:"
+      },
+      {
+        type: "code",
+        language: "js",
+        content: `
+          knex.schema.queryContext('schema context')
+            .table('users', function (table) {
+              table.queryContext('table context');
+              table.string('first_name').queryContext('first_name context');
+              table.string('last_name').queryContext('last_name context');
+          })
+        `
+      },
+      {
+        type: "text",
+        content: "Calling `queryContext` with no arguments will return any context configured for the table builder instance."
+      }
+    ]
+  },
+  {
     type: "heading",
     size: "md",
     content: "Chainable Methods:",
@@ -486,9 +580,9 @@ export default [
       knex.schema.alterTable('user', function(t) {
         t.increments().primary(); // add
         // drops previous default value from column, change type to string and add not nullable constraint
-        t.string('username', 35).notNullable().alter(); 
+        t.string('username', 35).notNullable().alter();
         // drops both not null contraint and the default value
-        t.integer('age').alter(); 
+        t.integer('age').alter();
       });
     `
   },
