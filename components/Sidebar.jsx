@@ -145,6 +145,10 @@ export default class Sidebar extends Component {
         <ul className="toc_section">
           <li>– <a href="#Schema-with">with</a></li>
           <li>– <a href="#Schema-withSchema">withSchema</a></li>
+          <li>– <a href="#Schema-createSchema">createSchema</a></li>
+          <li>– <a href="#Schema-createSchemaIfNotExists">createSchemaIfNotExists</a></li>
+          <li>– <a href="#Schema-dropSchema">dropSchema</a></li>
+          <li>– <a href="#Schema-dropSchemaIfExists">dropSchemaIfExists</a></li>
           <li>– <a href="#Schema-createTable">createTable</a></li>
           <li>– <a href="#Schema-createTableIfNotExists">createTableIfNotExists</a></li>
           <li>– <a href="#Schema-renameTable">renameTable</a></li>
