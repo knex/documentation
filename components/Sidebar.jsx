@@ -16,13 +16,6 @@ export default class Sidebar extends Component {
           <li>&raquo; <a href="#changelog">Change Log</a></li>
         </ul>
 
-        <a className="toc_title" href="#Upgrading">
-          Upgrading
-        </a>
-        <ul className="toc_section">
-          <li>– <a href="#Upgrading-from0.11">0.11.x -> 0.12</a></li>
-        </ul>
-
         <a className="toc_title" href="#Installation">
           Installation
         </a>
@@ -33,14 +26,19 @@ export default class Sidebar extends Component {
           <li>&nbsp;&nbsp;– <a href="#Installation-client">client</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-debug">debug</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-pooling">pooling</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Installation-pooling-afterCreate">afterCreate</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-acquireConnectionTimeout">acquireConnectionTimeout</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Installation-fetchAsString">fetchAsString</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-migrations">migrations</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Installation-post-process-response">postProcessResponse</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Installation-wrap-identifier">wrapIdentifier</a></li>
         </ul>
 
         <a className="toc_title" href="#Builder">
           Query Builder
         </a>
         <ul className="toc_section">
+          <li>– <a href="#Builder-identifier-syntax"><b>Identifier Syntax</b></a></li>
           <li>– <a href="#Builder-knex"><b>constructor</b></a></li>
           <li>– <a href="#Builder-timeout">timeout</a></li>
           <li>– <a href="#Builder-select">select</a></li>
@@ -69,7 +67,6 @@ export default class Sidebar extends Component {
           <li>&nbsp;&nbsp;– <a href="#Builder-leftOuterJoin">leftOuterJoin</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-rightJoin">rightJoin</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-rightOuterJoin">rightOuterJoin</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Builder-outerJoin">outerJoin</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-fullOuterJoin">fullOuterJoin</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-crossJoin">crossJoin</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-joinRaw">joinRaw</a></li>
@@ -99,7 +96,7 @@ export default class Sidebar extends Component {
           <li><b><a href="#Builder-clear">Clear Methods:</a></b></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-clearSelect">clearSelect</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-clearWhere">clearWhere</a></li>
-          
+
           <li>– <a href="#Builder-distinct">distinct</a></li>
           <li>– <a href="#Builder-groupBy">groupBy</a></li>
           <li>– <a href="#Builder-groupByRaw">groupByRaw</a></li>
@@ -148,7 +145,6 @@ export default class Sidebar extends Component {
           <li>– <a href="#Schema-with">with</a></li>
           <li>– <a href="#Schema-withSchema">withSchema</a></li>
           <li>– <a href="#Schema-createTable">createTable</a></li>
-          <li>– <a href="#Schema-createTableIfNotExists">createTableIfNotExists</a></li>
           <li>– <a href="#Schema-renameTable">renameTable</a></li>
           <li>– <a href="#Schema-dropTable">dropTable</a></li>
           <li>– <a href="#Schema-hasColumn">hasColumn</a></li>
@@ -207,8 +203,8 @@ export default class Sidebar extends Component {
           <li>– <a href="#Schema-nullable">nullable</a></li>
           <li>– <a href="#Schema-first">first</a></li>
           <li>– <a href="#Schema-after">after</a></li>
-          <li>– <a href="#Schema-comment">comment</a></li>
-          <li>– <a href="#Schema-collate">collate</a></li>
+          <li>– <a href="#Column-comment">comment</a></li>
+          <li>– <a href="#Column-collate">collate</a></li>
         </ul>
 
         <a className="toc_title" href="#Raw">
@@ -234,25 +230,26 @@ export default class Sidebar extends Component {
         </a>
         <ul className="toc_section">
           <li><b><a href="#Interfaces-Promises">Promises</a></b></li>
-          <li>&nbsp;&nbsp;– <a href="#Promises-then">then</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Promises-catch">catch</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Promises-tap">tap</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Promises-map">map</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Promises-reduce">reduce</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Promises-bind">bind</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Promises-return">return</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-then">then</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-catch">catch</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-tap">tap</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-map">map</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-reduce">reduce</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-bind">bind</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-return">return</a></li>
           <li><b><a href="#Interfaces-Callbacks">Callbacks</a></b></li>
           <li>&nbsp;&nbsp;– <a href="#Interfaces-asCallback">asCallback</a></li>
           <li><b><a href="#Interfaces-Streams">Streams</a></b></li>
-          <li>&nbsp;&nbsp;– <a href="#Streams-stream">stream</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Streams-pipe">pipe</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-stream">stream</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-pipe">pipe</a></li>
           <li><b><a href="#Interfaces-Events">Events</a></b></li>
-          <li>&nbsp;&nbsp;– <a href="#Events-query">query</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Events-query-error">query-error</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Events-query-response">query-response</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-query">query</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-query-error">query-error</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-query-response">query-response</a></li>
           <li><b><a href="#Interfaces-Other">Other:</a></b></li>
-          <li>&nbsp;&nbsp;– <a href="#Other-toString">toString</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Other-toSQL">toSQL</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-toString">toString</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-toSQL">toSQL</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-toSQL">toSQL().toNative()</a></li>
         </ul>
 
         <a className="toc_title" href="#Migrations">

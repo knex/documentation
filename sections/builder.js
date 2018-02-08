@@ -10,6 +10,33 @@ export default [
     content: "The heart of the library, the knex query builder is the interface used for building and executing standard SQL queries, such as `select`, `insert`, `update`, `delete`."
   },
   {
+    type: "heading",
+    size: "md",
+    content: "Identifier Syntax",
+    href: "Builder-identifier-syntax"
+  },
+  {
+    type: "text",
+    content: [
+      "In many places in APIs identifiers like table name or column name can be passed to methods.",
+      "Most commonly one needs just plain `tableName.columnName`, `tableName` or `columnName`, but in many cases one also needs to pass an alias how that identifier is referred later on in the query.",
+      "There are two ways to declare an alias for identifier. One can directly give `as aliasName` prefix for the identifier or oen can pass an object `{ aliasName: 'identifierName' }`.",
+      "If in the object has multiple aliases `{ alias1: 'identifier1', alias2: 'identifier2' }`, then all the aliased identifiers are expanded to comma separated list.",
+      "NOTE: identifier syntax has no place for selecting schema, so if you are doing `schemaName.tableName`, query might be rendered wrong. Use `.withSchema('schemaName')` instead."
+    ]
+  },
+  {
+    type: "runnable",
+    content: `
+      knex({ a: 'table', b: 'table' })
+        .select({
+          aTitle: 'a.title',
+          bTitle: 'b.title'
+        })
+        .whereRaw('?? = ??', ['a.column_1', 'b.column_2'])
+    `
+  },
+  {
     type: "method",
     method: "knex",
     example: "knex(tableName, options={only: boolean}) / knex.[methodName]",
@@ -76,7 +103,7 @@ export default [
     type: "method",
     method: "column",
     example: ".column(columns)",
-    description: "Specifically set the columns to be selected on a select query, taking an array or a list of of column names.",
+    description: "Specifically set the columns to be selected on a select query, taking an array, an object or a list of column names. Passing an object will automatically alias the columns with the given keys.",
     children: [
       {
         type: "runnable",
@@ -88,6 +115,12 @@ export default [
         type: "runnable",
         content: `
           knex.column(['title', 'author', 'year']).select().from('books')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex.column('title', {by: 'author'}, 'year').select().from('books')
         `
       }
     ]
@@ -554,7 +587,7 @@ export default [
   {
     type: "method",
     method: "innerJoin",
-    example: ".innerJoin(column, ~mixed~)",
+    example: ".innerJoin(table, ~mixed~)",
     description: "",
     children: [
       {
@@ -582,7 +615,7 @@ export default [
   {
     type: "method",
     method: "leftJoin",
-    example: ".leftJoin(column, ~mixed~)",
+    example: ".leftJoin(table, ~mixed~)",
     description: "",
     children: [
       {
@@ -604,7 +637,7 @@ export default [
   {
     type: "method",
     method: "leftOuterJoin",
-    example: ".leftOuterJoin(column, ~mixed~)",
+    example: ".leftOuterJoin(table, ~mixed~)",
     description: "",
     children: [
       {
@@ -626,7 +659,7 @@ export default [
   {
     type: "method",
     method: "rightJoin",
-    example: ".rightJoin(column, ~mixed~)",
+    example: ".rightJoin(table, ~mixed~)",
     description: "",
     children: [
       {
@@ -648,7 +681,7 @@ export default [
   {
     type: "method",
     method: "rightOuterJoin",
-    example: ".rightOuterJoin(column, ~mixed~)",
+    example: ".rightOuterJoin(table, ~mixed~)",
     description: "",
     children: [
       {
@@ -669,30 +702,8 @@ export default [
   },
   {
     type: "method",
-    method: "outerJoin",
-    example: ".outerJoin(column, ~mixed~)",
-    description: "",
-    children: [
-      {
-        type: "runnable",
-        content: `
-          knex.select('*').from('users').outerJoin('accounts', 'users.id', 'accounts.user_id')
-        `
-      },
-      {
-        type: "runnable",
-        content: `
-          knex.select('*').from('users').outerJoin('accounts', function() {
-            this.on('accounts.id', '=', 'users.account_id').orOn('accounts.owner_id', '=', 'users.id')
-          })
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
     method: "fullOuterJoin",
-    example: ".fullOuterJoin(column, ~mixed~)",
+    example: ".fullOuterJoin(table, ~mixed~)",
     description: "",
     children: [
       {
@@ -714,9 +725,15 @@ export default [
   {
     type: "method",
     method: "crossJoin",
-    example: ".crossJoin(column, ~mixed~)",
-    description: "",
+    example: ".crossJoin(table, ~mixed~)",
+    description: "Cross join conditions are only supported in MySQL and SQLite3. For join conditions rather use innerJoin.",
     children: [
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').crossJoin('accounts')
+        `
+      },
       {
         type: "runnable",
         content: `
@@ -1218,7 +1235,7 @@ export default [
     type: "method",
     method: "insert",
     example: ".insert(data, [returning])",
-    description: "Creates an insert query, taking either a hash of properties to be inserted into the row, or an array of inserts, to be executed as a single insert command. Resolves the promise / fulfills the callback with an array containing the first insert id of the inserted model, or an array containing all inserted ids for postgresql.",
+    description: "Creates an insert query, taking either a hash of properties to be inserted into the row, or an array of inserts, to be executed as a single insert command. Resolves the promise / fulfills the callback with an array containing the first insert id of the inserted model, or an array containing all inserted ids for postgresql, or a row count for Amazon Redshift.",
     children: [
       {
         type: "runnable",
@@ -1270,7 +1287,7 @@ export default [
     type: "method",
     method: "returning",
     example: ".returning(column) / .returning([column1, column2, ...])",
-    description: "Utilized by PostgreSQL, MSSQL, and Oracle databases, the returning method specifies which column should be returned by the insert and update methods. Passed column parameter may be a string or an array of strings. When passed in a string, makes the SQL result be reported as an array of values from the specified column. When passed in an array of strings, makes the SQL result be reported as an array of objects, each containing a single property for each of the specified columns.",
+    description: "Utilized by PostgreSQL, MSSQL, and Oracle databases, the returning method specifies which column should be returned by the insert and update methods. Passed column parameter may be a string or an array of strings. When passed in a string, makes the SQL result be reported as an array of values from the specified column. When passed in an array of strings, makes the SQL result be reported as an array of objects, each containing a single property for each of the specified columns. The returning method is not supported on Amazon Redshift.",
     children: [
       {
         type: "runnable",
@@ -1377,7 +1394,7 @@ export default [
     type: "method",
     method: "forUpdate",
     example: ".transacting(t).forUpdate()",
-    description: "Dynamically added after a transaction is specified, the forUpdate adds a FOR UPDATE in PostgreSQL and MySQL during a select statement.",
+    description: "Dynamically added after a transaction is specified, the forUpdate adds a FOR UPDATE in PostgreSQL and MySQL during a select statement. Not supported on Amazon Redshift due to lack of table locks.",
     children: [
       {
         type: "runnable",
@@ -1394,7 +1411,7 @@ export default [
     type: "method",
     method: "forShare",
     example: ".transacting(t).forShare()",
-    description: "Dynamically added after a transaction is specified, the forShare adds a FOR SHARE in PostgreSQL and a LOCK IN SHARE MODE for MySQL during a select statement.",
+    description: "Dynamically added after a transaction is specified, the forShare adds a FOR SHARE in PostgreSQL and a LOCK IN SHARE MODE for MySQL during a select statement. Not supported on Amazon Redshift due to lack of table locks.",
     children: [
       {
         type: "runnable",
@@ -1410,8 +1427,8 @@ export default [
   {
     type: "method",
     method: "count",
-    example: ".count(column)",
-    description: "Performs a count on the specified column. Note that in Postgres, count returns a bigint type which will be a String and not a Number (more info).",
+    example: ".count(column|raw)",
+    description: "Performs a count on the specified column. Also accepts raw expressions. Note that in Postgres, count returns a bigint type which will be a String and not a Number (more info).",
     children: [
       {
         type: "runnable",
@@ -1423,6 +1440,12 @@ export default [
         type: "runnable",
         content: `
           knex('users').count('active as a')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').count(knex.raw('??', ['active']))
         `
       }
     ]
@@ -1440,8 +1463,8 @@ export default [
   {
     type: "method",
     method: "min",
-    example: ".min(column)",
-    description: "Gets the minimum value for the specified column.",
+    example: ".min(column|raw)",
+    description: "Gets the minimum value for the specified column. Also accepts raw expressions.",
     children: [
       {
         type: "runnable",
@@ -1454,14 +1477,20 @@ export default [
         content: `
           knex('users').min('age as a')
         `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').min(knex.raw('??', ['age']))
+        `
       }
     ]
   },
   {
     type: "method",
     method: "max",
-    example: ".max(column)",
-    description: "Gets the maximum value for the specified column.",
+    example: ".max(column|raw)",
+    description: "Gets the maximum value for the specified column. Also accepts raw expressions.",
     children: [
       {
         type: "runnable",
@@ -1474,14 +1503,20 @@ export default [
         content: `
           knex('users').max('age as a')
         `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').max(knex.raw('??', ['age']))
+        `
       }
     ]
   },
   {
     type: "method",
     method: "sum",
-    example: ".sum(column)",
-    description: "Retrieve the sum of the values of a given column.",
+    example: ".sum(column|raw)",
+    description: "Retrieve the sum of the values of a given column. Also accepts raw expressions.",
     children: [
       {
         type: "runnable",
@@ -1493,6 +1528,12 @@ export default [
         type: "runnable",
         content: `
           knex('users').sum('products as p')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').sum(knex.raw('??', ['products']))
         `
       }
     ]
@@ -1510,8 +1551,8 @@ export default [
   {
     type: "method",
     method: "avg",
-    example: ".avg(column)",
-    description: "Retrieve the average of the values of a given column.",
+    example: ".avg(column|raw)",
+    description: "Retrieve the average of the values of a given column. Also accepts raw expressions.",
     children: [
       {
         type: "runnable",
@@ -1523,6 +1564,12 @@ export default [
         type: "runnable",
         content: `
           knex('users').avg('age as a')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').avg(knex.raw('??', ['age']))
         `
       }
     ]
@@ -1657,8 +1704,7 @@ export default [
   {
     type: "method",
     method: "connection",
-    example: ".connection(dbConnection)",
-    description: "Explicitly specify the connection for the query, allowing you to use the knex chain outside of the built-in pooling capabilities.",
+    description: " _ **(incomplete)** - This feature was incorrectly documented as functional._ <br/>If implemented, the method would set the db connection to use for the query without using the connection pool.",
     children: [    ]
   },
   {
@@ -1677,10 +1723,47 @@ export default [
             })
             .select(['a1.email', 'a2.email'])
             .where(knex.raw('a1.id = 1'))
-            .option({ nestTables: true, rowMode: 'array' })
+            .options({ nestTables: true, rowMode: 'array' })
             .limit(2)
             .then(...
         `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "queryContext",
+    example: ".queryContext(context)",
+    href: "Builder-queryContext",
+    children: [
+      {
+        type: 'text',
+        content: [
+          "Allows for configuring a context to be passed to the [wrapIdentifier](#Installation-wrap-identifier) and",
+          "[postProcessResponse](#Installation-post-process-response) hooks:",
+        ].join(" ")
+      },
+      {
+        type: "code",
+        language: "js",
+        content: `
+          knex('accounts as a1')
+            .queryContext({ foo: 'bar' })
+            .select(['a1.email', 'a2.email']
+        `
+      },
+      {
+        type: "text",
+        content: [
+          "The context can be any kind of value and will be passed to the hooks without modification.",
+          "However, note that **objects will be shallow-cloned** when a query builder instance is [cloned](#Builder-clone),",
+          "which means that they will contain all the properties of the original object but will not be the same object reference.",
+          "This allows modifying the context for the cloned query builder instance.",
+        ].join(" ")
+      },
+      {
+        type: "text",
+        content: "Calling `queryContext` with no arguments will return any context configured for the query builder instance."
       }
     ]
   }
