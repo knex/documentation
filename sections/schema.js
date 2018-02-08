@@ -418,9 +418,17 @@ export default [
   {
     type: "method",
     method: "index",
-    example: "table.index(columns, [indexName], [indexType])",
-    description: "Adds an index to a table over the given columns. A default index name using the columns is used unless indexName is specified. The indexType can be optionally specified for PostgreSQL.",
-    children: [    ]
+    example: "table.index(columns, [indexName], [indexType], [predicateBuilder])",
+    description: "Adds an index to a table over the given columns. A default index name using the columns is used unless indexName is specified. The indexType can be optionally specified for PostgreSQL.  For PostgreSQL, Microsoft SQL Server, and SQL Lite, a query builder can be supplied whose where clause will be an index predicate to form a partial/filtered index.",
+    children: [{
+      type: 'code',
+      language: 'js',
+      content: `
+        knex.schema.alterTable('users', function (t) {
+          t.index('phone', 'phone_idx', knex.whereNotNull('phone'));
+        })
+      `
+    }]
   },
   {
     type: "method",
