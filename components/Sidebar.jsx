@@ -16,13 +16,6 @@ export default class Sidebar extends Component {
           <li>&raquo; <a href="#changelog">Change Log</a></li>
         </ul>
 
-        <a className="toc_title" href="#Upgrading">
-          Upgrading
-        </a>
-        <ul className="toc_section">
-          <li>– <a href="#Upgrading-from0.11">0.11.x -> 0.12</a></li>
-        </ul>
-
         <a className="toc_title" href="#Installation">
           Installation
         </a>
@@ -33,15 +26,19 @@ export default class Sidebar extends Component {
           <li>&nbsp;&nbsp;– <a href="#Installation-client">client</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-debug">debug</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-pooling">pooling</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Installation-pooling-afterCreate">afterCreate</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-acquireConnectionTimeout">acquireConnectionTimeout</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-fetchAsString">fetchAsString</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-migrations">migrations</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Installation-post-process-response">postProcessResponse</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Installation-wrap-identifier">wrapIdentifier</a></li>
         </ul>
 
         <a className="toc_title" href="#Builder">
           Query Builder
         </a>
         <ul className="toc_section">
+          <li>– <a href="#Builder-identifier-syntax"><b>Identifier Syntax</b></a></li>
           <li>– <a href="#Builder-knex"><b>constructor</b></a></li>
           <li>– <a href="#Builder-timeout">timeout</a></li>
           <li>– <a href="#Builder-select">select</a></li>
@@ -148,7 +145,6 @@ export default class Sidebar extends Component {
           <li>– <a href="#Schema-with">with</a></li>
           <li>– <a href="#Schema-withSchema">withSchema</a></li>
           <li>– <a href="#Schema-createTable">createTable</a></li>
-          <li>– <a href="#Schema-createTableIfNotExists">createTableIfNotExists</a></li>
           <li>– <a href="#Schema-renameTable">renameTable</a></li>
           <li>– <a href="#Schema-dropTable">dropTable</a></li>
           <li>– <a href="#Schema-hasColumn">hasColumn</a></li>
@@ -207,8 +203,8 @@ export default class Sidebar extends Component {
           <li>– <a href="#Schema-nullable">nullable</a></li>
           <li>– <a href="#Schema-first">first</a></li>
           <li>– <a href="#Schema-after">after</a></li>
-          <li>– <a href="#Schema-comment">comment</a></li>
-          <li>– <a href="#Schema-collate">collate</a></li>
+          <li>– <a href="#Column-comment">comment</a></li>
+          <li>– <a href="#Column-collate">collate</a></li>
         </ul>
 
         <a className="toc_title" href="#Raw">
@@ -253,6 +249,7 @@ export default class Sidebar extends Component {
           <li><b><a href="#Interfaces-Other">Other:</a></b></li>
           <li>&nbsp;&nbsp;– <a href="#Interfaces-toString">toString</a></li>
           <li>&nbsp;&nbsp;– <a href="#Interfaces-toSQL">toSQL</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-toSQL">toSQL().toNative()</a></li>
         </ul>
 
         <a className="toc_title" href="#Migrations">

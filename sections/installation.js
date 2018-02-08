@@ -17,7 +17,7 @@ export default [
   },
   {
     type: "text",
-    content: "The primary target environment for Knex is Node.js, you will need to install the `knex` library, and then install the appropriate database library: [`pg`](https://github.com/brianc/node-postgres) for PostgreSQL, [`mysql`](https://github.com/felixge/node-mysql) for MySQL or MariaDB, [`sqlite3`](https://github.com/mapbox/node-sqlite3) for SQLite3, or [`mssql`](https://github.com/patriksimek/node-mssql) for MSSQL."
+    content: "The primary target environment for Knex is Node.js, you will need to install the `knex` library, and then install the appropriate database library: [`pg`](https://github.com/brianc/node-postgres) for PostgreSQL and Amazon Redshift, [`mysql`](https://github.com/felixge/node-mysql) for MySQL or MariaDB, [`sqlite3`](https://github.com/mapbox/node-sqlite3) for SQLite3, or [`mssql`](https://github.com/patriksimek/node-mssql) for MSSQL."
   },
   {
     type: "code",
@@ -75,13 +75,17 @@ export default [
     content: "The connection options are passed directly to the appropriate database client to create the connection, and may be either an object, or a connection string:"
   },
   {
+    type: "info",
+    content: "Note: Knex's PostgreSQL client allows you to set the initial search path for each connection automatically using an additional option \"searchPath\" as shown below."
+  },
+  {
     type: "code",
     language: "js",
     content: `
       var pg = require('knex')({
         client: 'pg',
         connection: process.env.PG_CONNECTION_STRING,
-        searchPath: 'knex,public'
+        searchPath: ['knex', 'public'],
       });
     `
   },
@@ -311,5 +315,79 @@ export default [
         }
       });
     `
-  }
+  },
+  {
+    type: "heading",
+    size: "md",
+    content: "postProcessResponse",
+    href: "Installation-post-process-response"
+  },
+  {
+    type: "text",
+    content: [
+      "Hook for modifying returned rows, before passing them forward to user. One can do for example",
+      "snake_case -> camelCase conversion for returned columns with this hook.",
+      "The `queryContext` is only available if configured for a query builder instance via [queryContext](#Builder-queryContext)."
+    ].join(' ')
+  },
+  {
+    type: "code",
+    language: "js",
+    content: `
+      var knex = require('knex')({
+        client: 'mysql',
+        // overly simplified snake_case -> camelCase converter
+        postProcessResponse: (result, queryContext) => {
+          // TODO: add special case for raw results (depends on dialect)
+          if (Array.isArray(result)) {
+            return result.map(row => convertToCamel(row));
+          } else {
+            return convertToCamel(result);
+          }
+        }
+      });
+    `
+  },
+  {
+    type: "heading",
+    size: "md",
+    content: "wrapIdentifier",
+    href: "Installation-wrap-identifier"
+  },
+  {
+    type: "text",
+    content: [
+      "Knex supports transforming identifier names automatically to quoted versions for each dialect.",
+      "For example `'Table.columnName as foo'` for PostgreSQL is converted to \"Table\".\"columnName\" as \"foo\".",
+    ].join(' ')
+  },
+  {
+    type: "text",
+    content: [
+      "With `wrapIdentifier` one may override the way how identifiers are transformed.",
+      "It can be used to override default functionality and for example to help doing `camelCase` -> `snake_case` conversion.",
+    ].join(' ')
+  },
+  {
+    type: "text",
+    content: [
+      "Conversion function `wrapIdentifier(value, dialectImpl, context): string` gets each part of the identifier",
+      "as a single `value`, the original conversion function from the dialect implementation and the `queryContext`,",
+      "which is only available if configured for a query builder instance via [builder.queryContext](#Builder-queryContext),",
+      "and for schema builder instances via [schema.queryContext](#Schema-queryContext) or [table.queryContext](#Schema-table-queryContext).",
+      "For example, with the query builder, `knex('table').withSchema('foo').select('table.field as otherName').where('id', 1)` will call",
+      "`wrapIdentifier` converter for following values `'table'`, `'foo'`, `'table'`, `'field'`, `'otherName'` and `'id'`.",
+    ].join(' ')
+  },
+  {
+    type: "code",
+    language: "js",
+    content: `
+      var knex = require('knex')({
+        client: 'mysql',
+        // overly simplified camelCase -> snake_case converter
+        wrapIdentifier: (value, origImpl, queryContext) => origImpl(convertToSnakeCase(value))
+      });
+    `
+  },
 ]
