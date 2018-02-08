@@ -45,24 +45,6 @@ export default [
   },
   {
     type: "method",
-    method: "createTableIfNotExists",
-    example: "knex.schema.createTableIfNotExists(tableName, callback)",
-    description: "Creates a new table on the database if it doesn't exists on database, with a callback function to modify the table's structure, using the schema-building commands.",
-    children: [
-      {
-        type: "runnable",
-        content: `
-          knex.schema.createTableIfNotExists('users', function (table) {
-            table.increments();
-            table.string('name');
-            table.timestamps();
-          })
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
     method: "renameTable",
     example: "knex.schema.renameTable(from, to)",
     description: "Renames a table from a current tableName to another.",
@@ -172,6 +154,41 @@ export default [
     ]
   },
   {
+    type: "method",
+    method: "queryContext",
+    example: "knex.schema.queryContext(context)",
+    href: "Schema-queryContext",
+    description: [
+      "Allows configuring a context to be passed to the [wrapIdentifier](#Installation-wrap-identifier) hook.",
+      "The context can be any kind of value and will be passed to `wrapIdentifier` without modification."
+    ].join(" "),
+    children: [
+      {
+        type: "code",
+        language: "js",
+        content: `
+          knex.schema.queryContext({ foo: 'bar' })
+            .table('users', function (table) {
+              table.string('first_name');
+              table.string('last_name');
+            })
+        `
+      },
+      {
+        type: "text",
+        content: [
+          "The context configured will be passed to `wrapIdentifier`",
+          "for each identifier that needs to be formatted, including the table and column names.",
+          "However, a different context can be set for the column names via [table.queryContext](#Schema-table-queryContext)."
+        ].join(" ")
+      },
+      {
+        type: "text",
+        content: "Calling `queryContext` with no arguments will return any context configured for the schema builder instance."
+      }
+    ]
+  },
+  {
     type: "heading",
     size: "md",
     content: "Schema Building:",
@@ -203,7 +220,28 @@ export default [
     method: "increments",
     example: "table.increments(name)",
     description: "Adds an auto incrementing column. In PostgreSQL this is a serial; in Amazon Redshift an integer identity(1,1). This will be used as the primary key for the table. Also available is a bigIncrements if you wish to add a bigint incrementing number (in PostgreSQL bigserial).",
-    children: [    ]
+    children: [  
+      {
+        type: 'code',
+        language: 'js',
+        content: `
+          // create table 'users' with a primary key using 'increments()'
+          knex.schema.createTable('users', function (table) {
+            table.increments('userId');
+            table.string('name');
+          });
+
+          // reference the 'users' primary key in new table 'posts'
+          knex.schema.createTable('posts', function (table) {
+            table.integer('author').unsigned().notNullable();
+            table.string('title', 30);
+            table.string('content');
+
+            table.foreign('author').references('userId').inTable('users');
+          });
+        `
+      } 
+    ]
   },
   {
     type: "method",
@@ -244,7 +282,7 @@ export default [
     type: "method",
     method: "decimal",
     example: "table.decimal(column, [precision], [scale])",
-    description: "Adds a decimal column, with optional precision (defaults to 8) and scale (defaults to 2).",
+    description: "Adds a decimal column, with optional precision (defaults to 8) and scale (defaults to 2). Specifying NULL as precision creates a decimal column that can store numbers of any precision and scale. (Only supported for Oracle, SQLite, Postgres)",
     children: [    ]
   },
   {
@@ -309,6 +347,7 @@ export default [
   },
   {
     type: "method",
+    id: "Schema-enum",
     method: "enum / enu",
     example: "table.enu(col, values)",
     description: "Adds a enum column, (aliased to enu, as enum is a reserved word in JavaScript). Implemented as unchecked varchar(255) on Amazon Redshift. Note that the second argument is an array of values. Example:",
@@ -411,8 +450,8 @@ export default [
   {
     type: "method",
     method: "unique",
-    example: "table.unique(columns)",
-    description: "Adds an unique index to a table over the given `columns`",
+    example: "table.unique(columns, [indexName])",
+    description: "Adds an unique index to a table over the given `columns`. A default index name using the columns is used unless indexName is specified.",
     children: [{
       type: 'code',
       language: 'js',
@@ -429,8 +468,8 @@ export default [
   {
     type: "method",
     method: "foreign",
-    example: "table.foreign(columns)",
-    description: "Adds a foreign key constraint to a table for an existing column using `table.foreign(column).references(column)` or multiple columns using `table.foreign(columns).references(columns)`. You can also chain onDelete and/or onUpdate to set the reference option (RESTRICT, CASCADE, SET NULL, NO ACTION) for the operation. Note, this is the same as column.references(column) but works for existing columns.",
+    example: "table.foreign(columns, [foreignKeyName])[.onDelete(statement).onUpdate(statement).withKeyName(foreignKeyName)]",
+    description: "Adds a foreign key constraint to a table for an existing column using `table.foreign(column).references(column)` or multiple columns using `table.foreign(columns).references(columns)`. A default key name using the columns is used unless foreignKeyName is specified. You can also chain onDelete() and/or onUpdate() to set the reference option (RESTRICT, CASCADE, SET NULL, NO ACTION) for the operation. You can also chain withKeyName() to override default key name that is generated from table and column names (result is identical to specifying second parameter to function foreign()). Note that using foreign() is the same as column.references(column) but it works for existing columns.",
     children: [{
       type: 'code',
       language: 'js',
@@ -464,6 +503,65 @@ export default [
     children: [    ]
   },
   {
+    type: "method",
+    method: "queryContext",
+    example: "table.queryContext(context)",
+    href: "Schema-table-queryContext",
+    description: [
+      "Allows configuring a context to be passed to the [wrapIdentifier](#Installation-wrap-identifier) hook for formatting table builder identifiers.",
+      "The context can be any kind of value and will be passed to `wrapIdentifier` without modification."
+    ].join(" "),
+    children: [
+      {
+        type: "code",
+        language: "js",
+        content: `
+          knex.schema.table('users', function (table) {
+            table.queryContext({ foo: 'bar' });
+            table.string('first_name');
+            table.string('last_name');
+          })
+        `
+      },
+      {
+        type: "text",
+        content: "This method also enables overwriting the context configured for a schema builder instance via [schema.queryContext](#Schema-queryContext):"
+      },
+      {
+        type: "code",
+        language: "js",
+        content: `
+          knex.schema.queryContext('schema context')
+            .table('users', function (table) {
+              table.queryContext('table context');
+              table.string('first_name');
+              table.string('last_name');
+          })
+        `
+      },
+      {
+        type: "text",
+        content: "Note that it's also possible to overwrite the table builder context for any column in the table definition:"
+      },
+      {
+        type: "code",
+        language: "js",
+        content: `
+          knex.schema.queryContext('schema context')
+            .table('users', function (table) {
+              table.queryContext('table context');
+              table.string('first_name').queryContext('first_name context');
+              table.string('last_name').queryContext('last_name context');
+          })
+        `
+      },
+      {
+        type: "text",
+        content: "Calling `queryContext` with no arguments will return any context configured for the table builder instance."
+      }
+    ]
+  },
+  {
     type: "heading",
     size: "md",
     content: "Chainable Methods:",
@@ -486,9 +584,9 @@ export default [
       knex.schema.alterTable('user', function(t) {
         t.increments().primary(); // add
         // drops previous default value from column, change type to string and add not nullable constraint
-        t.string('username', 35).notNullable().alter(); 
+        t.string('username', 35).notNullable().alter();
         // drops both not null contraint and the default value
-        t.integer('age').alter(); 
+        t.integer('age').alter();
       });
     `
   },
@@ -594,6 +692,7 @@ export default [
     method: "comment",
     example: "column.comment(value)",
     description: "Sets the comment for a column.",
+    id: "Column-comment",
     children: [    ]
   },
   {
@@ -610,6 +709,7 @@ export default [
     method: "collate",
     example: "column.collate(collation)",
     description: "Sets the collation for a column (only works in MySQL). Here is a list of all available collations: https://dev.mysql.com/doc/refman/5.5/en/charset-charsets.html",
+    id: "Column-collate",
     children: [    ]
   },
   {

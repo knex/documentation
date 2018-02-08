@@ -146,7 +146,6 @@ export default class Sidebar extends Component {
           <li>– <a href="#Schema-with">with</a></li>
           <li>– <a href="#Schema-withSchema">withSchema</a></li>
           <li>– <a href="#Schema-createTable">createTable</a></li>
-          <li>– <a href="#Schema-createTableIfNotExists">createTableIfNotExists</a></li>
           <li>– <a href="#Schema-renameTable">renameTable</a></li>
           <li>– <a href="#Schema-dropTable">dropTable</a></li>
           <li>– <a href="#Schema-hasColumn">hasColumn</a></li>
@@ -205,8 +204,8 @@ export default class Sidebar extends Component {
           <li>– <a href="#Schema-nullable">nullable</a></li>
           <li>– <a href="#Schema-first">first</a></li>
           <li>– <a href="#Schema-after">after</a></li>
-          <li>– <a href="#Schema-comment">comment</a></li>
-          <li>– <a href="#Schema-collate">collate</a></li>
+          <li>– <a href="#Column-comment">comment</a></li>
+          <li>– <a href="#Column-collate">collate</a></li>
         </ul>
 
         <a className="toc_title" href="#Raw">
