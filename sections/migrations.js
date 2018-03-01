@@ -150,7 +150,7 @@ export default [
   },
   {
     type: "text",
-    content: "A knexfile.js or knexfile.coffee generally contains all of the configuration for your database. It can optionally provide different configuration for different environments. You may pass a `--knexfile` option to any of the command line statements to specify an alternate path to your knexfile."
+    content: "A knexfile.js or knexfile.coffee generally contains all of the configuration for your database. It can optionally provide different configuration for different environments."
   },
   {
     type: "heading",
@@ -182,6 +182,19 @@ export default [
           connection: { user: 'me', database: 'my_app' }
         },
         production: { client: 'pg', connection: process.env.DATABASE_URL }
+      };
+    `
+  },
+  {
+    type: "text",
+    content: "You may pass a --knexfile option to any of the command line statements to specify an alternate path to your knexfile. Alternatively, you may add a .knex-cli.js file at the root of your project to specify a default knexfile.js path:"
+  },
+  {
+    type: "code",
+    language: "js",
+    content: `
+      module.exports = {
+        knexfilePath: "./path/to/myCustomKnexfile.js"
       };
     `
   },
