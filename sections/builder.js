@@ -1467,7 +1467,7 @@ export default [
       {
         type: "runnable",
         content: `
-          knex('users').count(['id', 'active'])
+          knex('users').count('id', 'active')
         `
       },
       {
@@ -1521,7 +1521,7 @@ export default [
       {
         type: "runnable",
         content: `
-          knex('users').min(['age', 'logins'])
+          knex('users').min('age', 'logins')
         `
       },
       {
@@ -1565,7 +1565,7 @@ export default [
       {
         type: "runnable",
         content: `
-          knex('users').max(['age', 'logins'])
+          knex('users').max('age', 'logins')
         `
       },
       {
@@ -1609,7 +1609,7 @@ export default [
       {
         type: "runnable",
         content: `
-          knex('users').sum(['products', 'orders'])
+          knex('users').sum('products', 'orders')
         `
       },
       {
@@ -1663,7 +1663,7 @@ export default [
       {
         type: "runnable",
         content: `
-          knex('users').avg(['age', 'logins'])
+          knex('users').avg('age', 'logins')
         `
       },
       {
