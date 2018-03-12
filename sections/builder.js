@@ -234,7 +234,7 @@ export default [
     type: "runnable",
     content: `
       knex('users')
-      .where((builder) => 
+      .where((builder) =>
         builder.whereIn('id', [1, 11, 15]).whereNotIn('id', [17, 19])
       )
       .andWhere(function() {
@@ -1443,8 +1443,8 @@ export default [
   {
     type: "method",
     method: "count",
-    example: ".count(column|raw)",
-    description: "Performs a count on the specified column. Also accepts raw expressions. Note that in Postgres, count returns a bigint type which will be a String and not a Number (more info).",
+    example: ".count(column|columns|raw)",
+    description: "Performs a count on the specified column or array of columns (note that some drivers do not support multiple columns). Also accepts raw expressions. Note that in Postgres, count returns a bigint type which will be a String and not a Number (more info).",
     children: [
       {
         type: "runnable",
@@ -1456,6 +1456,24 @@ export default [
         type: "runnable",
         content: `
           knex('users').count('active as a')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').count({ a: 'active' })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').count(['id', 'active'])
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').count({ count: ['id', 'active'] })
         `
       },
       {
@@ -1479,8 +1497,8 @@ export default [
   {
     type: "method",
     method: "min",
-    example: ".min(column|raw)",
-    description: "Gets the minimum value for the specified column. Also accepts raw expressions.",
+    example: ".min(column|columns|raw)",
+    description: "Gets the minimum value for the specified column or array of columns (note that some drivers do not support multiple columns). Also accepts raw expressions.",
     children: [
       {
         type: "runnable",
@@ -1497,6 +1515,24 @@ export default [
       {
         type: "runnable",
         content: `
+          knex('users').min({ a: 'age' })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').min(['age', 'logins'])
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').min({ min: ['age', 'logins'] })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
           knex('users').min(knex.raw('??', ['age']))
         `
       }
@@ -1505,8 +1541,8 @@ export default [
   {
     type: "method",
     method: "max",
-    example: ".max(column|raw)",
-    description: "Gets the maximum value for the specified column. Also accepts raw expressions.",
+    example: ".max(column|columns|raw)",
+    description: "Gets the maximum value for the specified column or array of columns (note that some drivers do not support multiple columns). Also accepts raw expressions.",
     children: [
       {
         type: "runnable",
@@ -1523,6 +1559,24 @@ export default [
       {
         type: "runnable",
         content: `
+          knex('users').max({ a: 'age' })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').max(['age', 'logins'])
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').max({ max: ['age', 'logins'] })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
           knex('users').max(knex.raw('??', ['age']))
         `
       }
@@ -1531,8 +1585,8 @@ export default [
   {
     type: "method",
     method: "sum",
-    example: ".sum(column|raw)",
-    description: "Retrieve the sum of the values of a given column. Also accepts raw expressions.",
+    example: ".sum(column|columns|raw)",
+    description: "Retrieve the sum of the values of a given column or array of columns (note that some drivers do not support multiple columns). Also accepts raw expressions.",
     children: [
       {
         type: "runnable",
@@ -1544,6 +1598,24 @@ export default [
         type: "runnable",
         content: `
           knex('users').sum('products as p')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').sum({ p: 'products' })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').sum(['products', 'orders'])
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').sum({ sum: ['products', 'orders'] })
         `
       },
       {
@@ -1567,8 +1639,8 @@ export default [
   {
     type: "method",
     method: "avg",
-    example: ".avg(column|raw)",
-    description: "Retrieve the average of the values of a given column. Also accepts raw expressions.",
+    example: ".avg(column|columns|raw)",
+    description: "Retrieve the average of the values of a given column or array of columns (note that some drivers do not support multiple columns). Also accepts raw expressions.",
     children: [
       {
         type: "runnable",
@@ -1580,6 +1652,24 @@ export default [
         type: "runnable",
         content: `
           knex('users').avg('age as a')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').avg({ a: 'age' })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').avg(['age', 'logins'])
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').avg({ avg: ['age', 'logins'] })
         `
       },
       {
