@@ -1389,6 +1389,16 @@ export default [
     ]
   },
   {
+    type: "text",
+    content: "For postgres, `UPDATE FROM` is supported:"
+  },
+  {
+    type: "runnable",
+    content: `
+      knex('users').update({ name: knex.raw('accounts.name') }).from('accounts')
+    `
+  },
+  {
     type: "method",
     method: "del / delete",
     example: ".del()",
