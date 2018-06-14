@@ -140,7 +140,7 @@ export default [
   },
   {
     type: "text",
-    content: "Seed files are executed in alphabetical order. Unlike migrations, _every_ seed file will be executed when you run the command. You should design your seed files to reset tables as needed before inserting data."
+    content: "Seed files are executed in alphabetical order. Unlike migrations, _every_ seed file will be executed when you run the command."
   },
   {
     type: "heading",
