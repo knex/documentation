@@ -218,8 +218,8 @@ export default [
   {
     type: "method",
     method: "increments",
-    example: "table.increments(name)",
-    description: "Adds an auto incrementing column. In PostgreSQL this is a serial; in Amazon Redshift an integer identity(1,1). This will be used as the primary key for the table. Also available is a bigIncrements if you wish to add a bigint incrementing number (in PostgreSQL bigserial).",
+    example: "table.increments(name, [options])",
+    description: "Adds an auto incrementing column. In PostgreSQL this is a serial; in Amazon Redshift an integer identity(1,1). Optionally provide `primaryKey: false` in options to disable primary key generation (defaults to true). Also available is a bigIncrements if you wish to add a bigint incrementing number (in PostgreSQL bigserial).",
     children: [  
       {
         type: 'code',
