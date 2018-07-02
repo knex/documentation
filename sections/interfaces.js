@@ -293,7 +293,7 @@ export default [
   {
     type: "method",
     method: "query",
-    description: "A query event is fired just before a query takes place, providing data about the query, including the connection's __cid property and any other information about the query as described in toSQL. Useful for logging all queries throughout your application.",
+    description: "A query event is fired just before a query takes place, providing data about the query, including the connection's `__knexUid` / `__knexTxId` properties and any other information about the query as described in toSQL. Useful for logging all queries throughout your application.",
     children: [
       {
         type: "code",
@@ -314,7 +314,7 @@ export default [
   {
     type: "method",
     method: "query-error",
-    description: "A query-error event is fired when an error occurs when running a query, providing the error object and data about the query, including the connection's __cid property and any other information about the query as described in toSQL. Useful for logging all query errors throughout your application.",
+    description: "A query-error event is fired when an error occurs when running a query, providing the error object and data about the query, including the connection's `__knexUid` / `__knexTxId` properties and any other information about the query as described in toSQL. Useful for logging all query errors throughout your application.",
     children: [
       {
         type: "code",
@@ -336,7 +336,7 @@ export default [
   {
     type: "method",
     method: "query-response",
-    description: "A query-response event is fired when a successful query has been run, providing the response of the query and data about the query, including the connection's __cid property and any other information about the query as described in toSQL, and finally the query builder used for the query.",
+    description: "A query-response event is fired when a successful query has been run, providing the response of the query and data about the query, including the connection's `__knexUid` / `__knexTxId` properties and any other information about the query as described in toSQL, and finally the query builder used for the query.",
     children: [
       {
         type: "code",
@@ -349,6 +349,29 @@ export default [
             })
             .then(function(response) {
               // Same response as the emitted event
+            })
+            .catch(function(error) { });
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "start",
+    description: "A `start` event is fired right before a query-builder is compiled. Note: While this event can be used to alter a builders state prior to compilation it is not to be recommended. Future goals include ways of doing this in a different manner such as hooks.",
+    children: [
+      {
+        type: "code",
+        language: "js",
+        content: `
+          knex.select('*')
+            .from('users')
+            .on('start', function(builder) {
+              builder
+              .where('IsPrivate', 0)
+            })
+            .then(function(Rows) {
+              //Only contains Rows where IsPrivate = 0
             })
             .catch(function(error) { });
         `

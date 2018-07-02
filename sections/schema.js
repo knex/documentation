@@ -220,7 +220,7 @@ export default [
     method: "increments",
     example: "table.increments(name)",
     description: "Adds an auto incrementing column. In PostgreSQL this is a serial; in Amazon Redshift an integer identity(1,1). This will be used as the primary key for the table. Also available is a bigIncrements if you wish to add a bigint incrementing number (in PostgreSQL bigserial).",
-    children: [  
+    children: [
       {
         type: 'code',
         language: 'js',
@@ -240,7 +240,7 @@ export default [
             table.foreign('author').references('userId').inTable('users');
           });
         `
-      } 
+      }
     ]
   },
   {
@@ -317,18 +317,21 @@ export default [
     type: "method",
     method: "timestamp",
     example: "table.timestamp(name, [standard])",
-    description: "Adds a timestamp column, defaults to timestamptz in PostgreSQL, unless true is passed as the second argument. For Example:",
+    description: "Adds a timestamp column, defaulting to timestamptz in PostgreSQL unless true is passed as the second argument. For Example:",
     children: [{
       type: 'code',
       language: 'js',
       content: `table.timestamp('created_at').defaultTo(knex.fn.now());`
+    }, {
+      type: 'text',
+      content: "Note that there's an issue of microsecond information being lost when stored on MySQL versions older than 5.6.4. If you need this kind of precision read the timestamps method documention below for further details."
     }]
   },
   {
     type: "method",
     method: "timestamps",
     example: "table.timestamps([useTimestamps], [defaultToNow])",
-    description: "Adds a created_at and updated_at column on the database, setting these each to dateTime types. When true is passed as the first argument a timestamp type is used. Both colums default to being not null and the current timestamp when true is passed as the second argument.",
+    description: "Adds created_at and updated_at columns on the database, setting each to dateTime types. When true is passed as the first argument a timestamp type is used instead. Both colums default to being not null and using the current timestamp when true is passed as the second argument. Note that on MySQL the timestamps will only have second precision by default because versions of MySQL Server older than 5.6.4 don't support storing microseconds. You can enable microsecond precision by specifying version 5.6 or greater in your settings when initializing Knex.",
     children: [    ]
   },
   {
@@ -349,12 +352,26 @@ export default [
     type: "method",
     id: "Schema-enum",
     method: "enum / enu",
-    example: "table.enu(col, values)",
+    example: "table.enu(col, values, [options])",
     description: "Adds a enum column, (aliased to enu, as enum is a reserved word in JavaScript). Implemented as unchecked varchar(255) on Amazon Redshift. Note that the second argument is an array of values. Example:",
     children: [{
       type: 'code',
       language: 'js',
       content: `table.enu('column', ['value1', 'value2'])`
+    }, {
+      type: 'text',
+      content: "For Postgres, an additional options argument can be provided to specify whether or not to use Postgres's native TYPE:"
+    }, {
+      type: 'code',
+      language: 'js',
+      content: `table.enu('column', ['value1', 'value2'], { useNative: true, enumName: 'foo_type' })`
+    }, {
+      type: 'text',
+      content: "It will use the values provided to generate the appropriate TYPE. Example:"
+    }, {
+      type: 'code',
+      language: 'sql',
+      content: `CREATE TYPE "foo_type" AS ENUM ('value1', 'value2');`
     }]
   },
   {
@@ -363,7 +380,10 @@ export default [
     example: "table.json(name)",
     children: [{
       type: 'text',
-      content: `Adds a json column, using the built-in json type in postgresql, defaulting to a text column in older versions of postgresql or in unsupported databases. Note that when setting an array (or a value that could be an array) as the value of a json or jsonb column, you should use JSON.stringify() to convert your value to a string prior to passing it to the query builder, e.g.`
+      content: `Adds a json column, using the built-in json type in postgresql and mysql, defaulting to a text column in older versions or in unsupported databases.`
+    }, {
+      type: 'text',
+      content: `For postgresql, due to incompatibility between native array and json types, when setting an array (or a value that could be an array) as the value of a json or jsonb column, you should use JSON.stringify() to convert your value to a string prior to passing it to the query builder, e.g.`
     }, {
       type: 'code',
       language: 'js',
@@ -372,9 +392,6 @@ export default [
           .where({id: 1})
           .update({json_data: JSON.stringify(mightBeAnArray)});
       `
-    }, {
-      type: 'text',
-      content: 'This is because postgresql has a native array type which uses a syntax incompatible with json; knex has no way of knowing which syntax to use, and calling JSON.stringify() forces json-style syntax.'
     }]
   },
   {

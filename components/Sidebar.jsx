@@ -25,6 +25,7 @@ export default class Sidebar extends Component {
           <li><b><a href="#Installation-client">Config Options:</a></b></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-client">client</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-debug">debug</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Installation-async-stack-traces">Async stacktraces</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-pooling">pooling</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-pooling-afterCreate">afterCreate</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-acquireConnectionTimeout">acquireConnectionTimeout</a></li>
@@ -32,6 +33,7 @@ export default class Sidebar extends Component {
           <li>&nbsp;&nbsp;– <a href="#Installation-migrations">migrations</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-post-process-response">postProcessResponse</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-wrap-identifier">wrapIdentifier</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Installation-log">log</a></li>
         </ul>
 
         <a className="toc_title" href="#Builder">
@@ -96,6 +98,7 @@ export default class Sidebar extends Component {
           <li><b><a href="#Builder-clear">Clear Methods:</a></b></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-clearSelect">clearSelect</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-clearWhere">clearWhere</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-clearOrder">clearOrder</a></li>
 
           <li>– <a href="#Builder-distinct">distinct</a></li>
           <li>– <a href="#Builder-groupBy">groupBy</a></li>
@@ -215,6 +218,15 @@ export default class Sidebar extends Component {
           <li>– <a href="#Raw-Expressions">Raw Expressions</a></li>
           <li>– <a href="#Raw-Queries">Raw Queries</a></li>
           <li>- <a href="#Raw-queries-wrapped">Wrapped Queries</a></li>
+        </ul>
+
+        <a className="toc_title" href="#Ref">
+         Ref
+        </a>
+        <ul className="toc_section">
+         <li>– <a href="#Ref-Usage">Usage</a></li>
+         <li>– <a href="#Ref-withSchema">withSchema</a></li>
+         <li>– <a href="#Ref-alias">alias</a></li>
         </ul>
 
 

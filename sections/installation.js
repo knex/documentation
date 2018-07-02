@@ -29,7 +29,6 @@ export default [
       $ npm install sqlite3
       $ npm install mysql
       $ npm install mysql2
-      $ npm install strong-oracle
       $ npm install oracle
       $ npm install mssql
     `
@@ -129,6 +128,26 @@ export default [
     `
   },
   {
+    type: "info",
+    content: "Note: The database version can be specified when using the MySQL adapter to take advantage of increased timestamp precision that is available in versions 5.6.4 and newer. In older versions the microsecond information is lost when storing datetime or timestamp values. The default in Knex is to not use microsecond precision, but this will change in a future version so, if you are using a version of MySQL older than 5.6.4, it is strongly advised to include the version in your options."
+  },
+  {
+    type: "code",
+    language: "js",
+    content: `
+      var knex = require('knex')({
+        client: 'mysql',
+        version: '5.7',
+        connection: {
+          host : '127.0.0.1',
+          user : 'your_database_user',
+          password : 'your_database_password',
+          database : 'myapp_test'
+        }
+      });
+    `
+  },
+  {
     type: "text",
     content: "You can also connect via an unix domain socket, which will ignore host and port."
   },
@@ -176,6 +195,16 @@ export default [
   {
     type: "text",
     content: "Passing a `debug: true` flag on your initialization object will turn on [debugging](#Builder-debug) for all queries."
+  },
+  {
+    type: "heading",
+    size: "md",
+    content: "Async stack traces",
+    href: "Installation-async-stack-traces"
+  },
+  {
+    type: "text",
+    content: "Passing an `asyncStackTraces: true` flag on your initialization object will turn on stack trace capture for all query builders, raw queries and schema builders. When a DB driver returns and error, this previously captured stack trace is thrown instead of a new one. This helps to mitigate default behaviour of `await` in node.js/V8 which blows the stack away. \n This has small performance overhead, so it is advised to use only for development. Turned off by default."
   },
   {
     type: "heading",
@@ -390,6 +419,38 @@ export default [
         client: 'mysql',
         // overly simplified camelCase -> snake_case converter
         wrapIdentifier: (value, origImpl, queryContext) => origImpl(convertToSnakeCase(value))
+      });
+    `
+  },
+  {
+    type: "heading",
+    size: "md",
+    content: "log",
+    href: "Installation-log"
+  },
+  {
+    type: "text",
+    content: [
+      "Knex contains some internal log functions for printing warnings, errors, deprecations, and debug information when applicable.",
+      "These log functions typically log to the console, but can be overwritten using the log option and providing alternative functions.",
+      "Different log functions can be used for separate knex instances.",
+    ].join(' ')
+  },
+  {
+    type: "code",
+    language: "js",
+    content: `
+      var knex = require('knex')({
+         log: {
+          warn(message) {
+          },
+          error(message) {
+          },
+          deprecate(message) {
+          },
+          debug(message) {
+          },
+        }
       });
     `
   },
