@@ -401,7 +401,7 @@ export default [
     content: [
       "Knex contains some internal log functions for printing warnings, errors, deprecations, and debug information when applicable.",
       "These log functions typically log to the console, but can be overwritten using the log option and providing alternative functions.",
-      "Can be different log functions for seperate knex instances.",
+      "Different log functions can be used for separate knex instances.",
     ].join(' ')
   },
   {
