@@ -361,12 +361,7 @@ export default [
     }, {
       type: 'code',
       language: 'js',
-      content: `
-      {
-        useNative: true,
-        enumName: 'foo_type'
-      }
-      `
+      content: `table.enu('column', ['value1', 'value2'], { useNative: true, enumName: 'foo_type' })`
     }, {
       type: 'text',
       content: "It will use the values provided to generate the appropriate TYPE. Example:"
