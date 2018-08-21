@@ -232,6 +232,12 @@ export default [
     ]
   },
   {
+    type: "text",
+    content: [
+      "The `config` object is also passed as an argument to the migrations themselves, to allow custom options to be passed to them."
+    ]
+  },
+  {
     type: "heading",
     size: "sm",
     content: "Transactions in migrations",
@@ -245,9 +251,9 @@ export default [
     type: "code",
     language: "js",
     content: `
-      exports.up = function(knex, Promise) { /* ... */ };
+      exports.up = function(knex, Promise, config) { /* ... */ };
 
-      exports.down = function(knex, Promise) { /* ... */ };
+      exports.down = function(knex, Promise, config) { /* ... */ };
 
       exports.config = { transaction: false };
     `
