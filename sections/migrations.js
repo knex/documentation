@@ -379,7 +379,7 @@ export default [
       }
 
       getMigrations() {
-          return Promise.resolve(this.migrationContext.keys())
+          return Promise.resolve(this.migrationContext.keys().sort())
       }
 
       getMigrationName(migration) {
@@ -393,7 +393,7 @@ export default [
 
     // pass an instance of your migration source as knex config
     knex.migrations.latest({
-      migrationSource: new WebpackMigrationSource(require.context('./migrations', false))
+      migrationSource: new WebpackMigrationSource(require.context('./migrations', false, /\.js$/))
     })
     `
   },
