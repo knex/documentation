@@ -185,6 +185,28 @@ export default [
   {
     type: "heading",
     size: "md",
+    content: "Getting parametrized instance",
+    href: "Installation-parametrization"
+  },
+  {
+    type: "text",
+    content: "You can call method `withUserParams` on a Knex instance if you want to get a copy (with same connections) with custom parameters (e. g. to execute same migrations with different parameters)"
+  },
+  {
+    type: "code",
+    language: "js",
+    content: `
+      var knex = require('knex')({
+        // Params
+      };
+      
+      var knexWithParams = knex.withUserParams({customUserParam: 'table1'});
+      var customUserParam = knexWithParams.userParams.customUserParam;
+    `
+  },
+  {
+    type: "heading",
+    size: "md",
     content: "Debugging",
     href: "Installation-debug"
   },
