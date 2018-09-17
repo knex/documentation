@@ -163,6 +163,28 @@ export default [
     `
   },
   {
+    type: "text",
+    content: "`userParams` is an optional parameter that allows you to pass arbitrary parameters which will be accessible via `knex.userParams` property:"
+  },
+  {
+    type: "code",
+    language: "js",
+    content: `
+      var knex = require('knex')({
+        client: 'mysql',
+        connection: {
+          host : '127.0.0.1',
+          user : 'your_database_user',
+          password : 'your_database_password',
+          database : 'myapp_test'
+        },
+        userParams: {
+          userParam1: '451'
+        }
+      });
+    `
+  },
+  {
     type: "info",
     content: "Initializing the library should normally only ever happen once in your application, as it creates a connection pool for the current database, you should use the instance returned from the initialize call throughout your library."
   },
