@@ -390,6 +390,13 @@ export default [
       type: 'code',
       language: 'sql',
       content: `CREATE TYPE "foo_type" AS ENUM ('value1', 'value2');`
+    }, {
+      type: 'text',
+      content: "To use an existing native type across columns, specify 'existingType' in the options (this assumes the type has already been created):",
+    }, {
+      type: 'code',
+      language: 'js',
+      content: `table.enu('column', ['value1', 'value2'], { useNative: true, existingType: true, enumName: 'foo_type' })`
     }]
   },
   {
