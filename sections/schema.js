@@ -303,7 +303,7 @@ export default [
     type: "method",
     method: "datetime",
     example: "table.datetime(name, [useTz], [precision])",
-    description: "Adds a datetime column, with optional timezone and precision for PostgreSQL. MySQL does not have useTz option, second argument is precision.",
+    description: "Adds a datetime column, defaulting to timestamptz in PostgreSQL unless false is passed as the second argument. MySQL does not have useTz option, second argument is precision.",
     children: [{
       type: 'text',
       content: "In MySQL a precision argument may be passed as the second argument to specify precision:"
@@ -331,7 +331,7 @@ export default [
     type: "method",
     method: "timestamp",
     example: "table.timestamp(name, [useTz], [precision])",
-    description: "Adds a timestamp column, defaulting to timestamptz in PostgreSQL unless true is passed as the second argument. PostgreSQL. MySQL does not have useTz option, second argument is precision.",
+    description: "Adds a timestamp column, defaulting to timestamptz in PostgreSQL unless false is passed as the second argument. MySQL does not have useTz option, second argument is precision.",
     children: [{
       type: 'code',
       language: 'js',
