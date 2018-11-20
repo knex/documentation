@@ -302,8 +302,8 @@ export default [
   {
     type: "method",
     method: "datetime",
-    example: "table.datetime(name, [precision])",
-    description: "Adds a datetime column, with optional precision for MySQL.",
+    example: "table.datetime(name, [useTz], [precision])",
+    description: "Adds a datetime column, with optional timezone and precision for PostgreSQL. MySQL does not have useTz option, second argument is precision.",
     children: [{
       type: 'text',
       content: "In MySQL a precision argument may be passed as the second argument to specify precision:"
@@ -320,7 +320,7 @@ export default [
     description: "Adds a time column, with optional precision for MySQL. Not supported on Amazon Redshift.",
     children: [{
       type: 'text',
-      content: "In MySQL a precision argument may be passed as the second argument to specify precision:"
+      content: "In MySQL a precision argument may be passed as the second argument to specify precision (in PostgreSQL it is a third parameter):"
     }, {
       type: 'code',
       language: 'js',
@@ -331,14 +331,14 @@ export default [
     type: "method",
     method: "timestamp",
     example: "table.timestamp(name, [useTz], [precision])",
-    description: "Adds a timestamp column, defaulting to timestamptz in PostgreSQL unless true is passed as the second argument.",
+    description: "Adds a timestamp column, defaulting to timestamptz in PostgreSQL unless true is passed as the second argument. PostgreSQL. MySQL does not have useTz option, second argument is precision.",
     children: [{
       type: 'code',
       language: 'js',
       content: `table.timestamp('created_at').defaultTo(knex.fn.now());`
     }, {
       type: 'text',
-      content: "In MySQL a precision argument may be passed as the second argument to specify precision:"
+      content: "In MySQL a precision argument may be passed as the second argument to specify precision (in PostgreSQL it is a third parameter):"
     }, {
       type: 'code',
       language: 'js',
