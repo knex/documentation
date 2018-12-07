@@ -100,7 +100,45 @@ export default [
       "Throwing an error directly from the transaction handler function automatically rolls back the transaction, same as returning a rejected promise.",
       "Notice that if a promise is not returned within the handler, it is up to you to ensure `trx.commit`, or `trx.rollback` are called, otherwise the transaction connection will hang.",
       "Calling `trx.rollback` will return a rejected Promise. If you don't pass any argument to `trx.rollback`, a generic `Error` object will be created and passed in to ensure the Promise always rejects with something.",
+    ]
+  },
+  {
+    type: "heading",
+    size: "md",
+    content: "Save Points:",
+    href: "Save-Points"
+  },
+  {
+    type: "text",
+    content: [
+      "By using save points you can roll back the transaction to an earlier state and retry statements that caused an error. Save points are like transactions within transactions.",
+      "One possible use of this is to catch validation errors and make adjustments based on them. For example a column with the unique constraint and trying to add a duplicate generated value, you could regenerate the value instead of aborting the whole transaction. An example of this is below.",
       "Note that Amazon Redshift does not support savepoints in transactions.",
     ]
-  }
+  },{
+    type: "code",
+    language: "js",
+    content: `
+      function insertEmailVerification(email, trx) {
+        var uniqueString = '...'; // Generate unique string here
+
+        return trx.savepoint(function(innerTrx) {
+          return innerTrx
+            .insert({
+              email: email,
+              uniqueString: uniqueString,
+            })
+            .into('email_verifications')
+            .catch(function(error) {
+              // This error will vary between clients
+              if(error.message.includes('duplicate key value violates unique constraint')) {
+                return insertEmailVerification(email, trx);
+              }
+
+              throw error;
+            });
+        });
+      }
+    `
+  },
 ]

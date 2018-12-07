@@ -140,6 +140,7 @@ export default class Sidebar extends Component {
         </a>
         <ul className="toc_section">
           <li>– <a href="#Transactions"><b>overview</b></a></li>
+          <li>– <a href="#Save-Points"><b>save points</b></a></li>
         </ul>
 
         <a className="toc_title" href="#Schema">
