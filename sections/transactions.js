@@ -111,8 +111,8 @@ export default [
   {
     type: "text",
     content: [
-      "By using save points you can roll back the transaction to an earlier state and retry statements that caused an error. Save points are like transactions within transactions.",
-      "One possible use of this is to catch validation errors and make adjustments based on them. For example a column with the unique constraint and trying to add a duplicate generated value, you could regenerate the value instead of aborting the whole transaction. An example of this is below.",
+      "By using save points you can roll back the transaction to an earlier state and retry statements that caused an error. Save points are like transactions within transactions, which is how you create them.",
+      "One possible use of this is to catch validation errors and make adjustments based on them. For example a column with the unique constraint and trying to add a duplicate generated value. You could regenerate the value instead of aborting the whole transaction. An example of this is below.",
       "Note that Amazon Redshift does not support savepoints in transactions.",
     ]
   },{
@@ -122,7 +122,7 @@ export default [
       function insertEmailVerification(email, trx) {
         var uniqueString = '...'; // Generate unique string here
 
-        return trx.savepoint(function(innerTrx) {
+        return trx.transaction(function(innerTrx) {
           return innerTrx
             .insert({
               email: email,
