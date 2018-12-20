@@ -293,7 +293,7 @@ export default [
     type: "method",
     method: "rollback",
     example: "knex.migrate.rollback([config], [all])",
-    description: "Rolls back the latest migration group. The `all` parameter can be used to rollback all applied migrations, instead of just the last batch.",
+    description: "Rolls back the latest migration group. If the `all` parameter is truthy, all applied migrations will be rolled back instead of just the last batch. The default value for this parameter is `false`.",
     children: [    ]
   },
   {
