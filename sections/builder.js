@@ -1412,7 +1412,7 @@ export default [
     type: "method",
     method: "returning",
     example: ".returning(column) / .returning([column1, column2, ...])",
-    description: "Utilized by PostgreSQL, MSSQL, and Oracle databases, the returning method specifies which column should be returned by the insert and update methods. Passed column parameter may be a string or an array of strings. When passed in a string, makes the SQL result be reported as an array of values from the specified column. When passed in an array of strings, makes the SQL result be reported as an array of objects, each containing a single property for each of the specified columns. The returning method is not supported on Amazon Redshift.",
+    description: "Utilized by PostgreSQL, MSSQL, and Oracle databases, the returning method specifies which column should be returned by the insert and update methods. Passed column parameter may be a string or an array of strings. When passed in a string, makes the SQL result be reported as an array of values from the specified column. When passed in an array of strings, makes the SQL result be reported as an array of objects, each containing a single property for each of the specified columns. The returning method is not supported on Amazon Redshift, MySQL and SQLite3.",
     children: [
       {
         type: "runnable",
@@ -1426,7 +1426,7 @@ export default [
       {
         type: "runnable",
         content: `
-          // Returns [2] in \"mysql\", \"sqlite\"; [2, 3] in \"postgresql\"
+          // Returns [2, 3]
           knex('books')
             .returning('id')
             .insert([{title: 'Great Gatsby'}, {title: 'Fahrenheit 451'}])
