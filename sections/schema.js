@@ -303,10 +303,10 @@ export default [
     type: "method",
     method: "datetime",
     example: "table.datetime(name, options={[useTz: boolean], [precision: number]})",
-    description: "Adds a datetime column.  By default PostgreSQL creates column with timezone (timestamptz type). This behaviour can be overriden by passing the useTz option (which is by default true for PostgreSQL). MySQL and MSSQL do not have useTz option.",
+    description: "Adds a datetime column. By default PostgreSQL creates column with timezone (timestamptz type). This behaviour can be overriden by passing the useTz option (which is by default true for PostgreSQL). MySQL and MSSQL do not have useTz option.",
     children: [{
       type: 'text',
-      content: "A precision option may be passed to specify precision:"
+      content: "A precision option may be passed:"
     }, {
       type: 'code',
       language: 'js',
@@ -320,11 +320,11 @@ export default [
     description: "Adds a time column, with optional precision for MySQL. Not supported on Amazon Redshift.",
     children: [{
       type: 'text',
-      content: "In MySQL a precision argument may be passed as the second argument to specify precision (in PostgreSQL it is a third parameter):"
+      content: "In MySQL a precision option may be passed:"
     }, {
       type: 'code',
       language: 'js',
-      content: `table.time('some_time', 6)`
+      content: `table.time('some_time', { precision: 6 })`
     }]
   },
   {
