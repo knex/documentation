@@ -25,7 +25,7 @@ export default class Sidebar extends Component {
           <li><b><a href="#Installation-client">Config Options:</a></b></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-client">client</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-debug">debug</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Installation-async-stack-traces">Async stacktraces</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Installation-asyncStackTraces">Async stacktraces</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-pooling">pooling</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-pooling-afterCreate">afterCreate</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-acquireConnectionTimeout">acquireConnectionTimeout</a></li>
@@ -48,6 +48,7 @@ export default class Sidebar extends Component {
           <li>– <a href="#Builder-column">column</a></li>
           <li>– <a href="#Builder-from">from</a></li>
           <li>– <a href="#Builder-with">with</a></li>
+          <li>– <a href="#Builder-withRecursive">withRecursive</a></li>
           <li>– <a href="#Builder-withSchema">withSchema</a></li>
 
           <li><b><a href="#Builder-wheres">Where Methods:</a></b></li>
@@ -99,6 +100,7 @@ export default class Sidebar extends Component {
           <li>&nbsp;&nbsp;– <a href="#Builder-clearSelect">clearSelect</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-clearWhere">clearWhere</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-clearOrder">clearOrder</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-clearCounters">clearCounters</a></li>
 
           <li>– <a href="#Builder-distinct">distinct</a></li>
           <li>– <a href="#Builder-groupBy">groupBy</a></li>
@@ -156,6 +158,7 @@ export default class Sidebar extends Component {
           <li>– <a href="#Schema-dropTableIfExists">dropTableIfExists</a></li>
           <li>– <a href="#Schema-table">table</a></li>
           <li>– <a href="#Schema-raw">raw</a></li>
+          <li>– <a href="#Schema-queryContext">queryContext</a></li>
           <li><b><a href="#Schema-Building">Schema Building:</a></b></li>
           <li>– <a href="#Schema-dropColumn">dropColumn</a></li>
           <li>– <a href="#Schema-dropColumns">dropColumns</a></li>
@@ -192,6 +195,7 @@ export default class Sidebar extends Component {
           <li>– <a href="#Schema-dropForeign">dropForeign</a></li>
           <li>– <a href="#Schema-dropUnique">dropUnique</a></li>
           <li>– <a href="#Schema-dropPrimary">dropPrimary</a></li>
+          <li>– <a href="#Schema-table-queryContext">queryContext</a></li>
           <li><a href="#Chainable"><b>Chainable:</b></a></li>
           <li>– <a href="#Schema-alter">alter</a></li>
           <li>– <a href="#Schema-index">index</a></li>

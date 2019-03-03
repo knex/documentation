@@ -47,7 +47,7 @@ export default [
     type: "method",
     method: "timeout",
     example: ".timeout(ms, options={cancel: boolean})",
-    description: "Sets a timeout for the query and will throw a TimeoutError if the timeout is exceeded. The error contains information about the query, bindings, and the timeout that was set. Useful for complex queries that you want to make sure are not taking too long to execute. Optional second argument for passing options:*   **cancel**: if `true`, cancel query if timeout is reached. **NOTE:** only supported in MySQL and MariaDB for now.",
+    description: "Sets a timeout for the query and will throw a TimeoutError if the timeout is exceeded. The error contains information about the query, bindings, and the timeout that was set. Useful for complex queries that you want to make sure are not taking too long to execute. Optional second argument for passing options:*   **cancel**: if `true`, cancel query if timeout is reached. **NOTE:** only supported in MySQL and PostgreSQL for now.",
     children: [
       {
         type: "runnable",
@@ -58,7 +58,7 @@ export default [
       {
         type: "runnable",
         content: `
-          knex.select().from('books').timeout(1000, {cancel: true}) // MySQL and MariaDB only
+          knex.select().from('books').timeout(1000, {cancel: true}) // MySQL and PostgreSQL only
         `
       }
     ]
@@ -157,6 +157,24 @@ export default [
           knex.with('with_alias', (qb) => {
             qb.select('*').from('books').where('author', 'Test')
           }).select('*').from('with_alias')
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "withRecursive",
+    example: ".withRecursive(alias, function|raw)",
+    description: "Indentical to the `with` method except \"recursive\" is appended to \"with\" to make self-referential CTEs possible.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex.withRecursive('ancestors', (qb) => {
+            qb.select('*').from('people').where('people.id', 1).union((qb) => {
+              qb.select('*').from('people').join('ancestors', 'ancestors.parentId', 'people.id')
+            })
+          }).select('*').from('ancestors')
         `
       }
     ]
@@ -988,6 +1006,26 @@ export default [
   },
   {
     type: "method",
+    method: "clearCounters",
+    example: ".clearCounters()",
+    description: "Clears all increments/decrements clauses from the query.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex('accounts')
+            .where('id', '=', 1)
+            .update({ email: 'foo@bar.com' })
+            .decrement({
+              balance: 50,
+            })
+            .clearCounters()
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
     method: "distinct",
     example: ".distinct()",
     description: "Sets a distinct clause on the query.",
@@ -1034,13 +1072,39 @@ export default [
   {
     type: "method",
     method: "orderBy",
-    example: ".orderBy(column, [direction])",
-    description: "Adds an order by clause to the query.",
+    example: ".orderBy(column|columns, [direction])",
+    description: "Adds an order by clause to the query. column can be string, or list mixed with string and object.",
     children: [
+      {
+        type: "text",
+        content: "Single Column:"
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').orderBy('email')
+        `
+      },
       {
         type: "runnable",
         content: `
           knex('users').orderBy('name', 'desc')
+        `
+      },
+      {
+        type: "text",
+        content: "Multiple Columns:"
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').orderBy(['email', { column: 'age', order: 'desc' }])
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').orderBy([{ column: 'email' }, { column: 'age', order: 'desc' }])
         `
       }
     ]
@@ -1247,14 +1311,31 @@ export default [
     type: "method",
     method: "union",
     example: ".union([*queries], [wrap])",
-    description: "Creates a union query, taking an array or a list of callbacks to build the union statement, with optional boolean wrap. The queries will be individually wrapped in parentheses with a true wrap parameter.",
+    description: "Creates a union query, taking an array or a list of callbacks, builders, or raw statements to build the union statement, with optional boolean wrap. If the `wrap` parameter is `true`, the queries will be individually wrapped in parentheses.",
     children: [
       {
         type: "runnable",
         content: `
           knex.select('*').from('users').whereNull('last_name').union(function() {
-            this.select('*').from('users').whereNull('first_name');
+            this.select('*').from('users').whereNull('first_name')
           })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').whereNull('last_name').union([
+            knex.select('*').from('users').whereNull('first_name')
+          ])
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').whereNull('last_name').union(
+            knex.raw('select * from users where first_name is null'),
+            knex.raw('select * from users where email is null')
+          )
         `
       }
     ]
@@ -1279,7 +1360,7 @@ export default [
     type: "method",
     method: "insert",
     example: ".insert(data, [returning])",
-    description: "Creates an insert query, taking either a hash of properties to be inserted into the row, or an array of inserts, to be executed as a single insert command. Resolves the promise / fulfills the callback with an array containing the first insert id of the inserted model, or an array containing all inserted ids for postgresql, or a row count for Amazon Redshift.",
+    description: "Creates an insert query, taking either a hash of properties to be inserted into the row, or an array of inserts, to be executed as a single insert command. If returning array is passed e.g. ['id', 'title'], it resolves the promise / fulfills the callback with an array of all the added rows with specified columns. It's a shortcut for [returning method](##Builder-returning)",
     children: [
       {
         type: "runnable",
@@ -1299,7 +1380,7 @@ export default [
         type: "runnable",
         content: `
           // Returns [2] in \"mysql\", \"sqlite\"; [2, 3] in \"postgresql\"
-          knex.insert([{title: 'Great Gatsby'}, {title: 'Fahrenheit 451'}], 'id').into('books')
+          knex.insert([{title: 'Great Gatsby'}, {title: 'Fahrenheit 451'}], ['id']).into('books')
         `
       }
     ]
@@ -1331,7 +1412,7 @@ export default [
     type: "method",
     method: "returning",
     example: ".returning(column) / .returning([column1, column2, ...])",
-    description: "Utilized by PostgreSQL, MSSQL, and Oracle databases, the \"returning\" method specifies which column should be returned by the insert and update methods. Passed column parameter may be a string or an array of strings. When an array of string is passed in, makes the SQL result to be reported as an array of values from the specified column. When passed in an array of strings, makes the SQL result be reported as an array of objects, each containing a single property for each of the specified columns. The returning method is is entirely unsupported on Amazon Redshift and has no support for multiple inserts on MySQL and SQLite.",
+    description: "Utilized by PostgreSQL, MSSQL, and Oracle databases, the returning method specifies which column should be returned by the insert and update methods. Passed column parameter may be a string or an array of strings. When passed in a string, makes the SQL result be reported as an array of values from the specified column. When passed in an array of strings, makes the SQL result be reported as an array of objects, each containing a single property for each of the specified columns. The returning method is not supported on Amazon Redshift.",
     children: [
       {
         type: "runnable",
@@ -1366,7 +1447,7 @@ export default [
     type: "method",
     method: "update",
     example: ".update(data, [returning]) / .update(key, value, [returning])",
-    description: "Creates an update query, taking a hash of properties or a key/value pair to be updated based on the other query constraints. Resolves the promise / fulfills the callback with the number of affected rows for the query. If a key to be updated has value undefined it is ignored.",
+    description: "Creates an update query, taking a hash of properties or a key/value pair to be updated based on the other query constraints. If returning array is passed e.g. ['id', 'title'], it resolves the promise / fulfills the callback with an array of all the updated rows with specified columns. It's a shortcut for [returning method](##Builder-returning)",
     children: [
       {
         type: "runnable",
@@ -1384,6 +1465,18 @@ export default [
         content: `
           // Returns [1] in \"mysql\", \"sqlite\", \"oracle\"; [] in \"postgresql\" unless the 'returning' parameter is set.
           knex('books').update('title', 'Slaughterhouse Five')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          // Returns [2] in \"mysql\", \"sqlite\"; [2, 3] in \"postgresql\"
+          knex('books')
+            .where({ id: 42 })
+            .update({ title: 'The Hitchhiker\'s Guide to the Galaxy' }, ['id', 'title'])
+            .then((updatedRows) => {
+              // updatedRows === [{id: 42, title: 'The Hitchhiker\'s Guide to the Galaxy'}]
+            })
         `
       }
     ]
@@ -1722,7 +1815,7 @@ export default [
     type: "method",
     method: "increment",
     example: ".increment(column, amount)",
-    description: "Increments a column value by the specified amount.",
+    description: "Increments a column value by the specified amount. Object syntax is supported for `column`.",
     children: [
       {
         type: "runnable",
@@ -1731,6 +1824,17 @@ export default [
             .where('userid', '=', 1)
             .increment('balance', 10)
         `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('accounts')
+            .where('id', '=', 1)
+            .increment({
+              balance: 10,
+              times: 1,
+            })
+        `
       }
     ]
   },
@@ -1738,12 +1842,22 @@ export default [
     type: "method",
     method: "decrement",
     example: ".decrement(column, amount)",
-    description: "Decrements a column value by the specified amount.",
+    description: "Decrements a column value by the specified amount. Object syntax is supported for `column`.",
     children: [
       {
         type: "runnable",
         content: `
           knex('accounts').where('userid', '=', 1).decrement('balance', 5)
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('accounts')
+            .where('id', '=', 1)
+            .decrement({
+              balance: 50,
+            })
         `
       }
     ]
@@ -1838,8 +1952,26 @@ export default [
   {
     type: "method",
     method: "connection",
-    description: " _ **(incomplete)** - This feature was incorrectly documented as functional._ <br/>If implemented, the method would set the db connection to use for the query without using the connection pool.",
-    children: [    ]
+    example: ".connection(dbConnection)",
+    description: "The method sets the db connection to use for the query without using the connection pool. You should pass to it the same object that acquireConnection() for the corresponding driver returns",
+    children: [
+      {
+        type: "code",
+        language: "js",
+        content: `
+          const Pool = require('pg-pool')
+          const pool = new Pool({ ... })
+          const connection = await pool.connect();
+            try {
+              return await knex.connection(connection); // knex here is a query builder with query already built
+            } catch (error) {
+              // Process error
+            } finally {
+              connection.release();
+            }
+        `
+      }
+    ]
   },
   {
     type: "method",

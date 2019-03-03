@@ -343,6 +343,13 @@ export default [
       type: 'code',
       language: 'js',
       content: `table.timestamp('created_at', 6).defaultTo(knex.fn.now(6));`
+    }, {
+      type: 'text',
+      content: "In MSSQL an option argument may be passed as the second argument to specify whether or not use timezone:"
+    }, {
+      type: 'code',
+      language: 'js',
+      content: `table.timestamp('created_at', { useTz: true });`
     }]
   },
   {
@@ -368,7 +375,7 @@ export default [
   },
   {
     type: "method",
-    id: "Schema-enum",
+    href: "Schema-enum",
     method: "enum / enu",
     example: "table.enu(col, values, [options])",
     description: "Adds a enum column, (aliased to enu, as enum is a reserved word in JavaScript). Implemented as unchecked varchar(255) on Amazon Redshift. Note that the second argument is an array of values. Example:",
@@ -390,6 +397,16 @@ export default [
       type: 'code',
       language: 'sql',
       content: `CREATE TYPE "foo_type" AS ENUM ('value1', 'value2');`
+    }, {
+      type: 'text',
+      content: "To use an existing native type across columns, specify 'existingType' in the options (this assumes the type has already been created):",
+    }, {
+      type: 'info',
+      content: "Note: Since the enum values aren't utilized for a native && existing type, the type being passed in for values is immaterial."
+    }, {
+      type: 'code',
+      language: 'js',
+      content: `table.enu('column', null, { useNative: true, existingType: true, enumName: 'foo_type' })`
     }]
   },
   {
@@ -398,10 +415,10 @@ export default [
     example: "table.json(name)",
     children: [{
       type: 'text',
-      content: `Adds a json column, using the built-in json type in postgresql and mysql, defaulting to a text column in older versions or in unsupported databases.`
+      content: `Adds a json column, using the built-in json type in PostgreSQL, MySQL and SQLite, defaulting to a text column in older versions or in unsupported databases.`
     }, {
       type: 'text',
-      content: `For postgresql, due to incompatibility between native array and json types, when setting an array (or a value that could be an array) as the value of a json or jsonb column, you should use JSON.stringify() to convert your value to a string prior to passing it to the query builder, e.g.`
+      content: `For PostgreSQL, due to incompatibility between native array and json types, when setting an array (or a value that could be an array) as the value of a json or jsonb column, you should use JSON.stringify() to convert your value to a string prior to passing it to the query builder, e.g.`
     }, {
       type: 'code',
       language: 'js',
@@ -423,7 +440,7 @@ export default [
     type: "method",
     method: "uuid",
     example: "table.uuid(name)",
-    description: "Adds a uuid column - this uses the built-in uuid type in postgresql, and falling back to a char(36) in other databases.",
+    description: "Adds a uuid column - this uses the built-in uuid type in PostgreSQL, and falling back to a char(36) in other databases.",
     children: [    ]
   },
   {
@@ -472,7 +489,7 @@ export default [
     type: "method",
     method: "index",
     example: "table.index(columns, [indexName], [indexType])",
-    description: "Adds an index to a table over the given columns. A default index name using the columns is used unless indexName is specified. The indexType can be optionally specified for PostgreSQL. Amazon Redshift does not allow creating an index.",
+    description: "Adds an index to a table over the given columns. A default index name using the columns is used unless indexName is specified. The indexType can be optionally specified for PostgreSQL and MySQL. Amazon Redshift does not allow creating an index.",
     children: [    ]
   },
   {
@@ -504,7 +521,7 @@ export default [
     type: "method",
     method: "foreign",
     example: "table.foreign(columns, [foreignKeyName])[.onDelete(statement).onUpdate(statement).withKeyName(foreignKeyName)]",
-    description: "Adds a foreign key constraint to a table for an existing column using `table.foreign(column).references(column)` or multiple columns using `table.foreign(columns).references(columns).on(table)`. A default key name using the columns is used unless foreignKeyName is specified. You can also chain onDelete() and/or onUpdate() to set the reference option (RESTRICT, CASCADE, SET NULL, NO ACTION) for the operation. You can also chain withKeyName() to override default key name that is generated from table and column names (result is identical to specifying second parameter to function foreign()). Note that using foreign() is the same as column.references(column) but it works for existing columns.",
+    description: "Adds a foreign key constraint to a table for an existing column using `table.foreign(column).references(column)` or multiple columns using `table.foreign(columns).references(columns).inTable(table)`. A default key name using the columns is used unless foreignKeyName is specified. You can also chain onDelete() and/or onUpdate() to set the reference option (RESTRICT, CASCADE, SET NULL, NO ACTION) for the operation. You can also chain withKeyName() to override default key name that is generated from table and column names (result is identical to specifying second parameter to function foreign()). Note that using foreign() is the same as column.references(column) but it works for existing columns.",
     children: [{
       type: 'code',
       language: 'js',
@@ -629,20 +646,14 @@ export default [
     type: "method",
     method: "index",
     example: "column.index([indexName], [indexType])",
-    description: "Specifies a field as an index. If an indexName is specified, it is used in place of the standard index naming convention of tableName_columnName. The indexType can be optionally specified for PostgreSQL. No-op if this is chained off of a field that cannot be indexed.",
+    description: "Specifies a field as an index. If an indexName is specified, it is used in place of the standard index naming convention of tableName_columnName. The indexType can be optionally specified for PostgreSQL and MySQL. No-op if this is chained off of a field that cannot be indexed.",
     children: [    ]
   },
   {
     type: "method",
     method: "primary",
-    example: "column.primary([constraintName])",
-    description: `
-      When called on a single column it will set that column as the primary key for a table.
-      To create a compound primary key, pass an array of column names:
-      \`table.primary(['column1', 'column2'])\`.
-      Constraint name defaults to \`tablename_pkey\` unless \`constraintName\` is specified.
-      On Amazon Redshift, all columns included in a primary key must be not nullable.
-    `,
+    example: "column.primary([constraintName]); table.primary(columns, [constraintName])",
+    description: "When called on a single column it will set that column as the primary key for a table. If you need to create a composite primary key, call it on a table with an array of column names instead. Constraint name defaults to `tablename_pkey` unless `constraintName` is specified. On Amazon Redshift, all columns included in a primary key must be not nullable.",
     children: [    ]
   },
   {
@@ -727,7 +738,7 @@ export default [
     method: "comment",
     example: "column.comment(value)",
     description: "Sets the comment for a column.",
-    id: "Column-comment",
+    href: "Column-comment",
     children: [    ]
   },
   {
@@ -744,7 +755,7 @@ export default [
     method: "collate",
     example: "column.collate(collation)",
     description: "Sets the collation for a column (only works in MySQL). Here is a list of all available collations: https://dev.mysql.com/doc/refman/5.5/en/charset-charsets.html",
-    id: "Column-collate",
+    href: "Column-collate",
     children: [    ]
   },
   {
