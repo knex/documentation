@@ -16,12 +16,12 @@ export default [
     type: "code",
     language: "js",
     content: `
-      var Promise = require('bluebird');
+      const Promise = require('bluebird');
 
       // Using trx as a query builder:
       knex.transaction(function(trx) {
 
-        var books = [
+        const books = [
           {title: 'Canterbury Tales'},
           {title: 'Moby Dick'},
           {title: 'Hamlet'}
@@ -58,7 +58,7 @@ export default [
     type: "code",
     language: "js",
     content: `
-      var Promise = require('bluebird');
+      const Promise = require('bluebird');
 
       // Using trx as a transaction object:
       knex.transaction(function(trx) {
@@ -102,5 +102,30 @@ export default [
       "Calling `trx.rollback` will return a rejected Promise. If you don't pass any argument to `trx.rollback`, a generic `Error` object will be created and passed in to ensure the Promise always rejects with something.",
       "Note that Amazon Redshift does not support savepoints in transactions.",
     ]
+  },
+  {
+    type: "text",
+    content: "In some cases you may prefer to create transaction but only execute statements in it later. In such case call method `transaction` without a handler function:"
+  },
+  {
+    type: "code",
+    language: "js",
+    content: `
+      // Using trx as a transaction object:
+      const trx = await knex.transaction();
+
+      knex.insert({name: 'Old Books'}, 'id')
+        .into('catalogues')
+        .transacting(trx)
+        .then(function(ids) {
+          return Promise.map(books, function(book) {
+            book.catalogue_id = ids[0];
+            return knex.insert(book).into('books').transacting(trx);
+          });
+        })
+        .then(trx.commit)
+        .catch(trx.rollback);
+      })
+    `
   }
 ]
