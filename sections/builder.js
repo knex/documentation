@@ -1563,6 +1563,40 @@ export default [
   },
   {
     type: "method",
+    method: "skipLocked",
+    example: ".skipLocked()",
+    description: "PostgreSQL only. This method can be used after a lock mode has been specified with either forUpdate or forShare, and will cause the query to skip any locked rows, returning an empty set if none are available.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex('tableName')
+            .select('*')
+            .forUpdate()
+            .skipLocked()
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "noWait",
+    example: ".noWait()",
+    description: "PostgreSQL only. This method can be used after a lock mode has been specified with either forUpdate or forShare, and will cause the query to fail immediately if any selected rows are currently locked.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex('tableName')
+            .select('*')
+            .forUpdate()
+            .noWait()
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
     method: "count",
     example: ".count(column|columns|raw)",
     description: "Performs a count on the specified column or array of columns (note that some drivers do not support multiple columns). Also accepts raw expressions. Note that in Postgres, count returns a bigint type which will be a String and not a Number (more info).",
