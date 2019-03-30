@@ -58,27 +58,20 @@ export default [
     type: "code",
     language: "js",
     content: `
-      const Promise = require('bluebird');
-
       // Using trx as a transaction object:
       knex.transaction(function(trx) {
 
-        var books = [
+        const books = [
           {title: 'Canterbury Tales'},
           {title: 'Moby Dick'},
           {title: 'Hamlet'}
         ];
 
-        knex.insert({name: 'Old Books'}, 'id')
+        trx.insert({name: 'Old Books'}, 'id')
           .into('catalogues')
-          .transacting(trx)
           .then(function(ids) {
-            return Promise.map(books, function(book) {
-              book.catalogue_id = ids[0];
-
-              // Some validation could take place here.
-
-              return knex.insert(book).into('books').transacting(trx);
+            books.forEach((book) => book.catalogue_id = ids[0]);
+            return trx('books').insert(books);
             });
           })
           .then(trx.commit)
@@ -114,14 +107,17 @@ export default [
       // Using trx as a transaction object:
       const trx = await knex.transaction();
 
-      knex.insert({name: 'Old Books'}, 'id')
-        .into('catalogues')
-        .transacting(trx)
+      const books = [
+        {title: 'Canterbury Tales'},
+        {title: 'Moby Dick'},
+        {title: 'Hamlet'}
+      ];
+
+      trx('catalogues')
+        .insert({name: 'Old Books'}, 'id')
         .then(function(ids) {
-          return Promise.map(books, function(book) {
-            book.catalogue_id = ids[0];
-            return knex.insert(book).into('books').transacting(trx);
-          });
+          books.forEach((book) => book.catalogue_id = ids[0]);
+          return trx('books').insert(books);
         })
         .then(trx.commit)
         .catch(trx.rollback);
