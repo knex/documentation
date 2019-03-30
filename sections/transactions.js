@@ -16,8 +16,6 @@ export default [
     type: "code",
     language: "js",
     content: `
-      const Promise = require('bluebird');
-
       // Using trx as a query builder:
       knex.transaction(function(trx) {
 
@@ -31,12 +29,8 @@ export default [
           .insert({name: 'Old Books'}, 'id')
           .into('catalogues')
           .then(function(ids) {
-            return Promise.map(books, function(book) {
-              book.catalogue_id = ids[0];
-
-              // Some validation could take place here.
-
-              return trx.insert(book).into('books');
+            books.forEach((book) => book.catalogue_id = ids[0]);
+            return trx('books').insert(books);
             });
           });
       })
@@ -67,11 +61,12 @@ export default [
           {title: 'Hamlet'}
         ];
 
-        trx.insert({name: 'Old Books'}, 'id')
+        knex.insert({name: 'Old Books'}, 'id')
           .into('catalogues')
+          .transacting(trx)
           .then(function(ids) {
             books.forEach((book) => book.catalogue_id = ids[0]);
-            return trx('books').insert(books);
+            return knex('books').insert(books).transacting(trx);
             });
           })
           .then(trx.commit)
