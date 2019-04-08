@@ -259,11 +259,13 @@ export default [
              table.decimal('price').notNullable();
              table.string('name', 1000).notNullable();
           });
+      };
 
       exports.down = function(knex) {
         return knex.schema
             .dropTable("product")
             .dropTable("user");
+      };
 
       exports.config = { transaction: false };
     `
