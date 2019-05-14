@@ -94,6 +94,16 @@ export default [
     `
   },
   {
+    type: "text",
+    content: "To run the next migration that has not yet been run"
+  },
+  {
+    type: "code",
+    content: `
+      $ knex migrate:up
+    `
+  },
+  {
     type: "heading",
     size: "lg",
     content: "Seed files",
