@@ -334,6 +334,13 @@ export default [
   },
   {
     type: "method",
+    method: "up",
+    example: "knex.migrate.up([config])",
+    description: "Runs the next chronological migration that has not yet be run",
+    children: [    ]
+  },
+  {
+    type: "method",
     method: "currentVersion",
     example: "knex.migrate.currentVersion([config])",
     description: "Retrieves and returns the current migration version, as a promise. If there aren't any migrations run yet, returns \"none\" as the value for the currentVersion.",
