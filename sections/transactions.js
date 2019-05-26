@@ -118,5 +118,37 @@ export default [
         .catch(trx.rollback);
       })
     `
+  },
+  {
+    type: "text",
+    content: "If you want to create a reusable transaction instance, but do not want to actually start it until it is used, you can create a transaction provider instance. It will start transaction after being called for the first time, and return same transaction on subsequent calls:"
+  },
+  {
+    type: "code",
+    language: "js",
+    content: `
+      // Does not start a transaction yet
+      const trxProvider = knex.transactionProvider();
+
+      const books = [
+        {title: 'Canterbury Tales'},
+        {title: 'Moby Dick'},
+        {title: 'Hamlet'}
+      ];
+
+      // Starts a transaction
+      const trx = await trxProvider();
+      const ids = await trx('catalogues')
+        .insert({name: 'Old Books'}, 'id')
+      books.forEach((book) => book.catalogue_id = ids[0]);
+      await  trx('books').insert(books);
+      
+      // Reuses same transaction
+      const sameTrx = await trxProvider();
+      const ids2 = await sameTrx('catalogues')
+        .insert({name: 'New Books'}, 'id')
+      books.forEach((book) => book.catalogue_id = ids2[0]);
+      await sameTrx('books').insert(books);
+    `
   }
 ]
