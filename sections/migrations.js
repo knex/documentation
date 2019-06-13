@@ -265,7 +265,7 @@ export default [
   {
     type: "heading",
     size: "sm",
-    content: "Stub extension:"
+    content: "Generated migration extension:"
   },
   {
     type: "text",
