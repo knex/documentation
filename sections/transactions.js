@@ -153,7 +153,7 @@ export default [
   },
   {
     type: "text",
-    content: "You can access promise that gets resolved after transaction is committed, or rejected if it gets rolled back, when using either way of creating transaction, from field `executionPromise`:"
+    content: "You can access promise that gets resolved after transaction is rolled back explicitly by user or committed, or rejected if it gets rolled back by DB itself, when using either way of creating transaction, from field `executionPromise`:"
   },
   {
     type: "code",
