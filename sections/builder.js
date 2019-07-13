@@ -2282,5 +2282,32 @@ export default [
         content: "Calling `queryContext` with no arguments will return any context configured for the query builder instance."
       }
     ]
-  }
+  },
+  {
+    type: "heading",
+    size: "md",
+    content: "Extending Query Builder",
+    href: "Builder-extending"
+  },
+  {
+    type: "text",
+    content: [
+      "**Important:** this feature is experimental and it's API may change in the future.",
+      "It allows to add custom function the the Query Builder. It should be invoked only once in the app.",
+      "Example:"
+    ]
+  },
+  {
+    type: "code",
+    language: "js",
+    content: `
+      const Knex = require('knex');
+      Knex.QueryBuilder.extend('customSelect', function(value) {
+        return this.select(this.client.raw(\`\${value} as value\`));
+      });
+      
+      const meaningOflife = await knex('accounts')
+        .customSelect(42);
+    `
+  },
 ]
