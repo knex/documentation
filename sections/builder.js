@@ -1565,7 +1565,7 @@ export default [
     type: "method",
     method: "skipLocked",
     example: ".skipLocked()",
-    description: "PostgreSQL only. This method can be used after a lock mode has been specified with either forUpdate or forShare, and will cause the query to skip any locked rows, returning an empty set if none are available.",
+    description: "MySQL 8.0+ and PostgreSQL 9.5+ only. This method can be used after a lock mode has been specified with either forUpdate or forShare, and will cause the query to skip any locked rows, returning an empty set if none are available.",
     children: [
       {
         type: "runnable",
@@ -1582,7 +1582,7 @@ export default [
     type: "method",
     method: "noWait",
     example: ".noWait()",
-    description: "PostgreSQL only. This method can be used after a lock mode has been specified with either forUpdate or forShare, and will cause the query to fail immediately if any selected rows are currently locked.",
+    description: "MySQL 8.0+ and PostgreSQL 9.5+ only. This method can be used after a lock mode has been specified with either forUpdate or forShare, and will cause the query to fail immediately if any selected rows are currently locked.",
     children: [
       {
         type: "runnable",
