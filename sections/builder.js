@@ -2306,8 +2306,51 @@ export default [
         return this.select(this.client.raw(\`\${value} as value\`));
       });
       
-      const meaningOflife = await knex('accounts')
+      const meaningOfLife = await knex('accounts')
         .customSelect(42);
+    `
+  },
+  {
+    type: "text",
+    content: [
+      "If using TypeScript, you can extend the QueryBuilder interface with your custom method.",
+      "1. Create a `knex.d.ts` file inside a `@types` folder.",
+    ]
+  },
+  {
+    type: "code",
+    language: "ts",
+    content: `
+      // knex.d.ts
+      
+      import * as Knex from 'knex';
+
+      declare module 'knex' {
+        interface QueryBuilder {
+        customSelect<TRecord, TResult>(value: number): QueryBuilder<TRecord, TResult>;
+      }
+    `
+  },
+  {
+    type: "text",
+    content: [
+      "2. Add the new `@types` folder to `typeRoots` in your `tsconfig.json`.",
+    ]
+  },
+  {
+    type: "code",
+    language: "ts",
+    content: `
+      // tsconfig.json
+      
+      {
+        "compilerOptions": {
+          "typeRoots": [
+            "node_modules/@types",
+            "@types"
+          ],
+        }
+      }
     `
   },
 ]
