@@ -2292,8 +2292,8 @@ export default [
   {
     type: "text",
     content: [
-      "**Important:** this feature is experimental and it's API may change in the future.",
-      "It allows to add custom function the the Query Builder. It should be invoked only once in the app.",
+      "**Important:** this feature is experimental and its API may change in the future.",
+      "It allows to add custom function the the Query Builder.",
       "Example:"
     ]
   },
@@ -2314,7 +2314,7 @@ export default [
     type: "text",
     content: [
       "If using TypeScript, you can extend the QueryBuilder interface with your custom method.",
-      "1. Create a `knex.d.ts` file inside a `@types` folder.",
+      "1. Create a `knex.d.ts` file inside a `@types` folder (or any other folder).",
     ]
   },
   {
