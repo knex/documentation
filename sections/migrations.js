@@ -170,12 +170,12 @@ export default [
   },
   {
     type: "text",
-    content: "To List Both Completed and Pending Migrations"
+    content: "To list both completed and pending migrations:"
   },
   {
     type: "code",
     content: `
-      $ knex list
+      $ knex migrate:list
     `
   },
   {
@@ -476,7 +476,7 @@ export default [
     type: "method",
     method: "list",
     example: "knex.migrate.list([config])",
-    description: "Will Return List of completed and pending migrations",
+    description: "Will return list of completed and pending migrations",
     children: []
   },
   {
