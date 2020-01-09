@@ -275,7 +275,7 @@ export default [
     type: "method",
     method: "float",
     example: "table.float(column, [precision], [scale])",
-    description: "Adds a float column, with optional precision (defaults to 8) and scale (defaults to 2).",
+    description: "Adds a float column, with optional precision (defaults to 8) and scale (defaults to 2).  Because PostgreSQL does not support precision, in that database Knex will ignore the precision argument and create a 32-bit float or \"real\" number column",
     children: [    ]
   },
   {
