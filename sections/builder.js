@@ -1735,6 +1735,23 @@ export default [
       },
       {
         type: "text",
+        content: "This also works with batch inserts:"
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('tableName')
+            .insert(
+              { email: "john@example.com", name: "John Doe" },
+              { email: "jane@example.com", name: "Jane Doe" },
+              { email: "alex@example.com", name: "Alex Doe" },
+            )
+            .onConflict('email')
+            .update()
+        `
+      },
+      {
+        type: "text",
         content: "It is also possible to specify data to update seperately from the data to insert. This is useful if you only want to update a subset of the columns. For example, you may want to set a 'created_at' column when inserting, but not wish to update it if the row already exists:"
       },
       {
