@@ -1685,6 +1685,81 @@ export default [
   },
   {
     type: "method",
+    method: "onConflict",
+    example: "insert(..).onConflict(column) / insert(..).onConflict([column1, column2, ...])",
+    description: "Utlized by PostgreSQL and Sqlite databases. When chained onto an insert query, it specifies the columns to be used in `ON CONFLICT` clause. A call to .onConflict should always be followed by either .ignore or .update (otherwise it does nothing). In MySQL this method is noop, and .ignore and .merge can be used without .onConflict.",
+    children: [
+      {
+        type: "text",
+        content: "Note: The column(s) specified by this method must have a UNIQUE index on them or the INSERT..ON CONFLICT query will fail to execute. When specifying multiple columns, they must have composite UNIQUE index."
+      },
+    ]
+  },
+  {
+    type: "method",
+    method: "ignore",
+    example: "insert(..).onConflict(..).ignore()",
+    description: "Implemented for the PostgreSQL, MySQL, and Sqlite databases. Modifies an insert query, and causes it silently dropped without error if a conflict occurs. Uses INSERT IGNORE in MySQL, and adds an ON CONFLICT (columns) DO NOTHING clause to the insert statement in PostgreSQL and Sqlite.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex('tableName')
+            .insert({
+              email: "ignore@example.com",
+              name: "John Doe"
+            })
+            .onConflict('email')
+            .ignore()
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "merge",
+    example: "insert(..).onConflict(..).merge() / insert(..).onConflict(..).merge(updates)",
+    description: "Implemented for the PostgreSQL, MySQL, and Sqlite databases. Modifies an insert query, to turn it into an 'upsert' operation. Uses ON DUPLICATE KEY UPDATE in MySQL, and adds an ON CONFLICT (columns) DO UPDATE clause to the insert statement in PostgreSQL and Sqlite.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex('tableName')
+            .insert({
+              email: "ignore@example.com",
+              name: "John Doe"
+            })
+            .onConflict('email')
+            .update()
+        `
+      },
+      {
+        type: "text",
+        content: "It is also possible to specify data to update seperately from the data to insert. This is useful if you only want to update a subset of the columns. For example, you may want to set a 'created_at' column when inserting, but not wish to update it if the row already exists:"
+      },
+      {
+        type: "code",
+        language: "js",
+        content: `
+          const timestamp = Date.now();
+          knex('tableName')
+            .insert({
+              email: "ignore@example.com",
+              name: "John Doe",
+              created_at: timestamp,
+              updated_at: timestamp,
+            })
+            .onConflict('email')
+            .update({
+              name: "John Doe",
+              updated_at: timestamp,
+            })
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
     method: "update",
     example: ".update(data, [returning]) / .update(key, value, [returning])",
     description: "Creates an update query, taking a hash of properties or a key/value pair to be updated based on the other query constraints. If returning array is passed e.g. ['id', 'title'], it resolves the promise / fulfills the callback with an array of all the updated rows with specified columns. It's a shortcut for [returning method](#Builder-returning)",
