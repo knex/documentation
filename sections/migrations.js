@@ -229,7 +229,7 @@ export default [
   {
     type: "text",
     content:
-      "Seed files are created in the directory specified in your knexfile.js for the current environment. A sample seed configuration looks like:"
+      "Seed files are created in the directory specified in your knexfile.js for the current environment. Using the `--timestamp-filename-prefix` flag in `seed:make` command, the filename will be prefixed with a timestamp, like the migration file names. A sample seed configuration looks like:"
   },
   {
     type: "code",
@@ -242,6 +242,12 @@ export default [
         }
       }
     `
+  },
+  {
+    type: "text",
+    content: [
+      "Check out [Seed API](./#Seeds-API) section for more details about seeds configuration object and their options.",
+    ]
   },
   {
     type: "text",
