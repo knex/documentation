@@ -58,7 +58,7 @@ export default [
     type: "runnable",
     content: `
       knex('users')
-        .select(knex.ref('Id').as('UserId'))
+        .select(knex.ref('Id').alias('UserId'))
     `
   },
 ]
