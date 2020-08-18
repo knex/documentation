@@ -1,3 +1,4 @@
+import esmInterop from "./esm-interop"
 export default [
   {
     type: "heading",
@@ -45,7 +46,7 @@ export default [
       "`--migrations-table-name`: Set the migration table name without a knexfile",
       "`--migrations-directory`: Set the migrations directory without a knexfile",
       "`--env`: environment, default: process.env.NODE_ENV || development",
-      "`--esm`: Enables ESM module interoperability", // 
+      "`--esm`: [Enables ESM module interoperability](#esm-interop)",
       "`--help`: Display help text for a particular command and exit."
     ]
   },
@@ -652,113 +653,6 @@ export default [
     })
     `
   },
-  {
-    type: "heading",
-    size: "md",
-    content: "ECMAScript modules (ESM) Interoperability",
-    href: "esm-module-interop"
-  },
-  {
-
-    type: "text",
-    content: `[**ESM**](https://nodejs.org/api/esm.html) Module interop is enabled by the cli's \`--esm\` flag.  
-    ECMAScript Interoperability is provided by the [*'esm'*](https://github.com/standard-things/esm) module.
-    With the exception of 'mjs' files which are handled by NodeJS import mechanics.  
-    You can find [here](https://github.com/standard-things/esm) more information about 'esm' super powers.  
-    And [here](https://nodejs.org/api/esm.html) details about NodeJS ECMAScript modules.      
-    `
-  },
-  {
-    type: "code",
-    language: "js",
-    content: `
-    /* 
-     * When using migration and seed files with '.cjs' or '.mjs' extensions, 
-     * You will need to let knex know about.  
-     */
-    export default {      
-      migrations: {
-        directory: './migrations',
-        loadExtensions: ['.mjs'] // 
-      }
-    }`
-  },
-  {
-    type: "code",
-    language: "js",
-    content: `
-    /**
-     * filename: knexfile.js
-     * For the knexfile you can use a default export
-     **/        
-    export default {
-      client: 'sqlite3',
-      connection: {
-        filename: '../test.sqlite3',
-      },
-      migrations: {
-        directory: './migrations',
-      },
-      seeds: {
-        directory: './seeds',
-      },
-    }
-    `
-  },
-  {
-    type: "code",
-    language: "js",
-    content: `
-    /**
-     * filename: knexfile.js
-     * Let knex find the configuration by providing named exports.
-     * but if exported a default, it will take precedence, and it will be used instead
-     **/
-    const config = {
-      client: 'sqlite3',
-      connection: {
-        filename: '../test.sqlite3',
-      },
-      migrations: {
-        directory: './migrations',
-      },
-      seeds: {
-        directory: './seeds',
-      },
-    };
-    /** this will be used, its has precedence over named export */
-    export deefault config;
-    /** Named exports, will only be used if you didn't provide a default export */
-    export const { client, connection, migrations, seeds } = config;       
-    `
-  },
-  {
-    type: "code",
-    language: "js",
-    content: `
-    // file: seed.js
-    /** 
-     * Same as with the CommonJS modules
-     * You will need to export a "seed" named function.
-     * */
-    export function seed(next) {
-      // ... seed logic here
-    }`
-  },
-  {
-    type: "code",
-    language: "js",
-    content: `
-    // file: migration.js
-    /** 
-     * Same as the CommonJS version, the miration file should export 
-     * "up" and "down" named functions
-     */
-    export function up(knex) {
-      // ... migration logic here
-    }
-    export function down(knex) {
-    // ... migration logic here
-    }`
-  },
+  // esm interop
+  ...esmInterop
 ]
