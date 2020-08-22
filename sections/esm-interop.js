@@ -18,21 +18,21 @@ export default [
         content: `Node 'mjs' files are handled by NodeJS own import mechanics  
         and do not require the use of the '--esm' flag.  
         But you might need it anyway for Node v10 under certain scenarios.  
-        You can find [here](https://nodejs.org/api/esm.html) details about NodeJS ECMAScript modules
+        You can find details about NodeJS ECMAScript modules [here](https://nodejs.org/api/esm.html)
         `
       },
       {
         type:"text",
-        content: `While is possible to mix and match different module formats (extensions),  
-        between your knexfile, seeds and migrations.         
-        Some format combinations will require specific NodeJS versions,   
+        content: `While it is possible to mix and match different module formats (extensions)  
+        between your knexfile, seeds and migrations,         
+        some format combinations will require specific NodeJS versions,   
         _Notably mjs/cjs files will follow NodeJS import and require restrictions._  
-        You can see [here](https://github.com/knex/knex/blob/master/test/cli/esm-interop.spec.js) many possible scenarios  
-        And [here](https://github.com/knex/knex/tree/master/test/jake-util/knexfile-imports) some sample configurations`
+        You can see [here](https://github.com/knex/knex/blob/master/test/cli/esm-interop.spec.js) many possible scenarios,  
+        and [here](https://github.com/knex/knex/tree/master/test/jake-util/knexfile-imports) some sample configurations`
       },
       {
         type: "text",
-        content: `Node v10.* require the use of the '--experimental-module' flag to use the 'mjs' or 'cjs' extension.`
+        content: `Node v10.* require the use of the '--experimental-module' flag in order to use the 'mjs' or 'cjs' extension.`
       },
       {
         type: "code",
@@ -44,8 +44,8 @@ export default [
       },
       {
         type: "text",
-        content: `When using migration and seed files with '.cjs' or '.mjs' extensions.
-        You will need to let knex know about.  
+        content: `When using migration and seed files with '.cjs' or '.mjs' extensions,
+        you will need to specify that explicitly:  
     
         `
       },
@@ -66,8 +66,8 @@ export default [
       },
       {
         type: "text",
-        content: `When using '.mjs' extensions for your knexfile and '.js' for the seeds/migrations
-        You will need to let knex know about it, explicitly.  
+        content: `When using '.mjs' extensions for your knexfile and '.js' for the seeds/migrations,
+        you will need to specify that explicitly.  
     
         `
       },
@@ -82,14 +82,14 @@ export default [
           migrations: {
             // ... client, connection,etc .... 
             directory: './migrations',
-            loadExtensions: ['.js'] // knex will search for 'mjs'file by default
+            loadExtensions: ['.js'] // knex will search for 'mjs' file by default
           }
         }`
       },
       {
         type: "text",
         content: `For the knexfile you can use a default export,   
-        It will take precedence over named export.
+        it will take precedence over named export.
         `
       },
       {
@@ -120,7 +120,7 @@ export default [
         content: `
         /**
          * filename: knexfile.js
-         * Let knex find the configuration by providing named exports.
+         * Let knex find the configuration by providing named exports,
          * but if exported a default, it will take precedence, and it will be used instead
          **/
         const config = {
