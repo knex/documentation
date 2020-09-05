@@ -1100,6 +1100,162 @@ export default [
   {
     type: "heading",
     size: "md",
+    content: "Having Clauses",
+    href: "Builder-havings"
+  },
+  {
+    type: "method",
+    method: "having",
+    example: ".having(column, operator, value)",
+    description: "Adds a having clause to the query.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex('users')
+            .groupBy('count')
+            .orderBy('name', 'desc')
+            .having('count', '>', 100)
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "havingIn",
+    example: ".havingIn(column, values)",
+    description: "Adds a havingIn clause to the query.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').havingIn('id', [5, 3, 10, 17])
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "havingNotIn",
+    example: ".havingNotIn(column, values)",
+    description: "Adds a havingNotIn clause to the query.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').havingNotIn('id', [5, 3, 10, 17])
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "havingNull",
+    example: ".havingNull(column)",
+    description: "Adds a havingNull clause to the query.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').havingNull('email')
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "havingNotNull",
+    example: ".havingNotNull(column)",
+    description: "Adds a havingNotNull clause to the query.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').havingNotNull('email')
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "havingExists",
+    example: ".havingExists(builder | callback)",
+    description: "Adds a havingExists clause to the query.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+        knex.select('*').from('users').havingExists(function() {
+          this.select('*').from('accounts').whereRaw('users.account_id = accounts.id');
+        })
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "havingNotExists",
+    example: ".havingNotExists(builder | callback)",
+    description: "Adds a havingNotExists clause to the query.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+        knex.select('*').from('users').havingNotExists(function() {
+          this.select('*').from('accounts').whereRaw('users.account_id = accounts.id');
+        })
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "havingBetween",
+    example: ".havingBetween(column, range)",
+    description: "Adds a havingBetween clause to the query.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').havingBetween('id', [5, 10])
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "havingNotBetween",
+    example: ".havingNotBetween(column, range)",
+    description: "Adds a havingNotBetween clause to the query.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').havingNotBetween('id', [5, 10])
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "havingRaw",
+    example: ".havingRaw(column, operator, value)",
+    description: "Adds a havingRaw clause to the query.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex('users')
+            .groupBy('count')
+            .orderBy('name', 'desc')
+            .havingRaw('count > ?', [100])
+        `
+      }
+    ]
+  },
+  {
+    type: "heading",
+    size: "md",
     content: "ClearClauses",
     href: "Builder-clear"
   },
@@ -1309,162 +1465,6 @@ export default [
         type: "runnable",
         content: `
           knex.select('*').from('table').orderByRaw('col DESC NULLS LAST')
-        `
-      }
-    ]
-  },
-  {
-    type: "heading",
-    size: "md",
-    content: "Having Clauses",
-    href: "Builder-havings"
-  },
-  {
-    type: "method",
-    method: "having",
-    example: ".having(column, operator, value)",
-    description: "Adds a having clause to the query.",
-    children: [
-      {
-        type: "runnable",
-        content: `
-          knex('users')
-            .groupBy('count')
-            .orderBy('name', 'desc')
-            .having('count', '>', 100)
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "havingIn",
-    example: ".havingIn(column, values)",
-    description: "Adds a havingIn clause to the query.",
-    children: [
-      {
-        type: "runnable",
-        content: `
-          knex.select('*').from('users').havingIn('id', [5, 3, 10, 17])
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "havingNotIn",
-    example: ".havingNotIn(column, values)",
-    description: "Adds a havingNotIn clause to the query.",
-    children: [
-      {
-        type: "runnable",
-        content: `
-          knex.select('*').from('users').havingNotIn('id', [5, 3, 10, 17])
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "havingNull",
-    example: ".havingNull(column)",
-    description: "Adds a havingNull clause to the query.",
-    children: [
-      {
-        type: "runnable",
-        content: `
-          knex.select('*').from('users').havingNull('email')
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "havingNotNull",
-    example: ".havingNotNull(column)",
-    description: "Adds a havingNotNull clause to the query.",
-    children: [
-      {
-        type: "runnable",
-        content: `
-          knex.select('*').from('users').havingNotNull('email')
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "havingExists",
-    example: ".havingExists(builder | callback)",
-    description: "Adds a havingExists clause to the query.",
-    children: [
-      {
-        type: "runnable",
-        content: `
-        knex.select('*').from('users').havingExists(function() {
-          this.select('*').from('accounts').whereRaw('users.account_id = accounts.id');
-        })
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "havingNotExists",
-    example: ".havingNotExists(builder | callback)",
-    description: "Adds a havingNotExists clause to the query.",
-    children: [
-      {
-        type: "runnable",
-        content: `
-        knex.select('*').from('users').havingNotExists(function() {
-          this.select('*').from('accounts').whereRaw('users.account_id = accounts.id');
-        })
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "havingBetween",
-    example: ".havingBetween(column, range)",
-    description: "Adds a havingBetween clause to the query.",
-    children: [
-      {
-        type: "runnable",
-        content: `
-          knex.select('*').from('users').havingBetween('id', [5, 10])
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "havingNotBetween",
-    example: ".havingNotBetween(column, range)",
-    description: "Adds a havingNotBetween clause to the query.",
-    children: [
-      {
-        type: "runnable",
-        content: `
-          knex.select('*').from('users').havingNotBetween('id', [5, 10])
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "havingRaw",
-    example: ".havingRaw(column, operator, value)",
-    description: "Adds a havingRaw clause to the query.",
-    children: [
-      {
-        type: "runnable",
-        content: `
-          knex('users')
-            .groupBy('count')
-            .orderBy('name', 'desc')
-            .havingRaw('count > ?', [100])
         `
       }
     ]
