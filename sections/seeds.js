@@ -15,7 +15,7 @@ export default [
   {
     type: "list",
     content: [
-      "`directory`: a relative path to the directory containing the seed files. Can be an array of paths (default `./seeds`)",
+      "`directory`: a project root relative path to the directory containing the seed files. Can be an array of paths (default `./seeds`). If set, this value overrides the `directory` set in the client config.",
       "`loadExtensions`: array of file extensions which knex will treat as seeds. For example, if you have typescript transpiled into javascript in the same folder, you want to execute only javascript seeds. In this case, set `loadExtensions` to `['.js']`  (Notice the dot!)  (default `['.co', '.coffee', '.eg', '.iced', '.js', '.litcoffee', '.ls', '.ts']`)",
       "`recursive`: if true, will find seed files recursively in the directory / directories specified",
       "`specific`: a specific seed file to run from the seeds directory, if its value is `undefined` it will run all the seeds (default `undefined`)",
