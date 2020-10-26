@@ -107,7 +107,7 @@ export default class Sidebar extends Component {
           <li>&nbsp;&nbsp;– <a href="#Builder-clearWhere">clearWhere (deprecated)</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-clearOrder">clearOrder (deprecated)</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-clearHaving">clearHaving (deprecated)</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Builder-clearCounters">clearCounters (deprecated)</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-clearCounters">clearCounters</a></li>
 
           <li>– <a href="#Builder-distinct">distinct</a></li>
           <li>– <a href="#Builder-distinctOn">distinctOn</a></li>
