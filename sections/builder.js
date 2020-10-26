@@ -1107,7 +1107,7 @@ export default [
     type: "method",
     method: "clear",
     example: ".clear(statement)",
-    description: "Clears the specified operator from the query. Avalilables: 'select' alias 'columns', 'with', 'select', 'columns', 'where', 'union', 'join', 'group', 'order', 'having', 'limit', 'offset'",
+    description: "Clears the specified operator from the query. Avalilables: 'select' alias 'columns', 'with', 'select', 'columns', 'where', 'union', 'join', 'group', 'order', 'having', 'limit', 'offset', 'counter', 'counters'. Counter(s) alias for method .clearCounter()",
     children: [
       {
         type: "runnable",
@@ -1191,7 +1191,7 @@ export default [
     type: "method",
     method: "clearCounters",
     example: ".clearCounters()",
-    description: "Deprecated, use clear(statement). Clears all increments/decrements clauses from the query.",
+    description: "Clears all increments/decrements clauses from the query.",
     children: [
       {
         type: "runnable",
