@@ -1121,7 +1121,7 @@ export default [
     type: "method",
     method: "clearSelect",
     example: ".clearSelect()",
-    description: "Clears all select clauses from the query, excluding subqueries.",
+    description: "Deprecated, use clear(statement). Clears all select clauses from the query, excluding subqueries.",
     children: [
       {
         type: "runnable",
@@ -1135,7 +1135,7 @@ export default [
     type: "method",
     method: "clearWhere",
     example: ".clearWhere()",
-    description: "Clears all where clauses from the query, excluding subqueries.",
+    description: "Deprecated, use clear(statement). Clears all where clauses from the query, excluding subqueries.",
     children: [
       {
         type: "runnable",
@@ -1149,7 +1149,7 @@ export default [
     type: "method",
     method: "clearGroup",
     example: ".clearGroup()",
-    description: "Clears all group clauses from the query, excluding subqueries.",
+    description: "Deprecated, use clear(statement). Clears all group clauses from the query, excluding subqueries.",
     children: [
       {
         type: "runnable",
@@ -1163,7 +1163,7 @@ export default [
     type: "method",
     method: "clearOrder",
     example: ".clearOrder()",
-    description: "Clears all order clauses from the query, excluding subqueries.",
+    description: "Deprecated, use clear(statement). Clears all order clauses from the query, excluding subqueries.",
     children: [
       {
         type: "runnable",
@@ -1177,7 +1177,7 @@ export default [
     type: "method",
     method: "clearHaving",
     example: ".clearHaving()",
-    description: "Clears all having clauses from the query, excluding subqueries.",
+    description: "Deprecated, use clear(statement). Clears all having clauses from the query, excluding subqueries.",
     children: [
       {
         type: "runnable",
@@ -1191,7 +1191,7 @@ export default [
     type: "method",
     method: "clearCounters",
     example: ".clearCounters()",
-    description: "Clears all increments/decrements clauses from the query.",
+    description: "Deprecated, use clear(statement). Clears all increments/decrements clauses from the query.",
     children: [
       {
         type: "runnable",
