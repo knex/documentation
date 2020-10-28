@@ -1121,7 +1121,7 @@ export default [
     type: "method",
     method: "clearSelect",
     example: ".clearSelect()",
-    description: "Deprecated, use clear(statement). Clears all select clauses from the query, excluding subqueries.",
+    description: "Deprecated, use clear('select'). Clears all select clauses from the query, excluding subqueries.",
     children: [
       {
         type: "runnable",
@@ -1135,7 +1135,7 @@ export default [
     type: "method",
     method: "clearWhere",
     example: ".clearWhere()",
-    description: "Deprecated, use clear(statement). Clears all where clauses from the query, excluding subqueries.",
+    description: "Deprecated, use clear('where'). Clears all where clauses from the query, excluding subqueries.",
     children: [
       {
         type: "runnable",
@@ -1149,7 +1149,7 @@ export default [
     type: "method",
     method: "clearGroup",
     example: ".clearGroup()",
-    description: "Deprecated, use clear(statement). Clears all group clauses from the query, excluding subqueries.",
+    description: "Deprecated, use clear('group'). Clears all group clauses from the query, excluding subqueries.",
     children: [
       {
         type: "runnable",
@@ -1163,7 +1163,7 @@ export default [
     type: "method",
     method: "clearOrder",
     example: ".clearOrder()",
-    description: "Deprecated, use clear(statement). Clears all order clauses from the query, excluding subqueries.",
+    description: "Deprecated, use clear('order'). Clears all order clauses from the query, excluding subqueries.",
     children: [
       {
         type: "runnable",
@@ -1177,7 +1177,7 @@ export default [
     type: "method",
     method: "clearHaving",
     example: ".clearHaving()",
-    description: "Deprecated, use clear(statement). Clears all having clauses from the query, excluding subqueries.",
+    description: "Deprecated, use clear('having'). Clears all having clauses from the query, excluding subqueries.",
     children: [
       {
         type: "runnable",
