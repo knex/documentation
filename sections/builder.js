@@ -1656,22 +1656,9 @@ export default [
     children: [
       {
         type: "text",
-        content: ""
-      },
-      {
-        type: "text",
         content: "Note: For PostgreSQL and Sqlite, the column(s) specified by this method must either be the table's PRIMARY KEY or have a UNIQUE index on them or the query will fail to execute. When specifying multiple columns, they must be a composite PRIMARY KEY or have composite UNIQUE index. MySQL will ignore the specified columns and always use the table's PRIMARY KEY. For cross-platform support across PostgreSQL, MySQL, and Sqlite you must both explicitly specifiy the columns in .onConflict() and those column(s) must be the table's PRIMARY KEY."
       },
-      // {
-      //   type: "text",
-      //   content: "MySQL will always use the tables PRIMARY KEY to determine if rows conflict, and the argument to .onConflict() is optional and ignored. PostgreSQL and Sqlite can detect conflicts using PRIMARY KEY or any other UNIQUE index. For these database the argument to .conflict() is mandatory specifies which column(s) to detect conflicts on. For cross-platform support across all 3 databases you must both explicitly specifiy the columns in .onConflict() and those column(s) must be the table's PRIMARY KEY."
-      // },
       {
-        type: "text",
-        content: ""
-      },
-      {
-        // When chained onto an insert query, it specifies the columns to be used in `ON CONFLICT` clause. 
         type: "text",
         content: "See documentation on .ignore() and .merge() methods for more details."
       }
