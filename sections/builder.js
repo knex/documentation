@@ -1652,12 +1652,29 @@ export default [
     type: "method",
     method: "onConflict",
     example: "insert(..).onConflict(column) / insert(..).onConflict([column1, column2, ...])",
-    description: "Utilized by PostgreSQL and Sqlite databases. When chained onto an insert query, it specifies the columns to be used in `ON CONFLICT` clause. A call to .onConflict should always be followed by either .ignore or .update (otherwise it does nothing). In MySQL this method is noop, and .ignore and .merge can be used without .onConflict.",
+    description: "Implemented for the PostgreSQL, MySQL, and Sqlite databases. A modifier for insert queries that specifies alternative behaviour in the case of a conflict. A conflict occurs when a table has a PRIMARY KEY or a UNIQUE index on a column (or a composite index on a set of columns) and a row being inserted has the same value as a row which already exists in the table in those column(s). The default behaviour in case of conflict is to raise an error and abort the query. Using this method you can change this behaviour to either silently ignore the error by using .onConflict().ignore() or to update the existing row with new data (perform an \"UPSERT\") by using .onConflict().merge().",
     children: [
       {
         type: "text",
-        content: "Note: The column(s) specified by this method must have a UNIQUE index on them or the INSERT..ON CONFLICT query will fail to execute. When specifying multiple columns, they must have composite UNIQUE index."
+        content: ""
       },
+      {
+        type: "text",
+        content: "Note: For PostgreSQL and Sqlite, the column(s) specified by this method must either be the table's PRIMARY KEY or have a UNIQUE index on them or the query will fail to execute. When specifying multiple columns, they must be a composite PRIMARY KEY or have composite UNIQUE index. MySQL will ignore the specified columns and always use the table's PRIMARY KEY. For cross-platform support across PostgreSQL, MySQL, and Sqlite you must both explicitly specifiy the columns in .onConflict() and those column(s) must be the table's PRIMARY KEY."
+      },
+      // {
+      //   type: "text",
+      //   content: "MySQL will always use the tables PRIMARY KEY to determine if rows conflict, and the argument to .onConflict() is optional and ignored. PostgreSQL and Sqlite can detect conflicts using PRIMARY KEY or any other UNIQUE index. For these database the argument to .conflict() is mandatory specifies which column(s) to detect conflicts on. For cross-platform support across all 3 databases you must both explicitly specifiy the columns in .onConflict() and those column(s) must be the table's PRIMARY KEY."
+      // },
+      {
+        type: "text",
+        content: ""
+      },
+      {
+        // When chained onto an insert query, it specifies the columns to be used in `ON CONFLICT` clause. 
+        type: "text",
+        content: "See documentation on .ignore() and .merge() methods for more details."
+      }
     ]
   },
   {
