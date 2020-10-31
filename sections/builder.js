@@ -1730,7 +1730,7 @@ export default [
               name: "John Doe"
             })
             .onConflict('email')
-            .update()
+            .merge()
         `
       },
       {
@@ -1747,7 +1747,7 @@ export default [
               { email: "alex@example.com", name: "Alex Doe" },
             )
             .onConflict('email')
-            .update()
+            .merge()
         `
       },
       {
@@ -1767,7 +1767,7 @@ export default [
               updated_at: timestamp,
             })
             .onConflict('email')
-            .update({
+            .merge({
               name: "John Doe",
               updated_at: timestamp,
             })
