@@ -1650,41 +1650,6 @@ export default [
   },
   {
     type: "method",
-    method: "returning",
-    example: ".returning(column) / .returning([column1, column2, ...])",
-    description: "Utilized by PostgreSQL, MSSQL, and Oracle databases, the returning method specifies which column should be returned by the insert and update methods. Passed column parameter may be a string or an array of strings. When passed in a string, makes the SQL result be reported as an array of values from the specified column. When passed in an array of strings, makes the SQL result be reported as an array of objects, each containing a single property for each of the specified columns. The returning method is not supported on Amazon Redshift.",
-    children: [
-      {
-        type: "runnable",
-        content: `
-          // Returns [1]
-          knex('books')
-            .returning('id')
-            .insert({title: 'Slaughterhouse Five'})
-        `
-      },
-      {
-        type: "runnable",
-        content: `
-          // Returns [2] in \"mysql\", \"sqlite\"; [2, 3] in \"postgresql\"
-          knex('books')
-            .returning('id')
-            .insert([{title: 'Great Gatsby'}, {title: 'Fahrenheit 451'}])
-        `
-      },
-      {
-        type: "runnable",
-        content: `
-          // Returns [ { id: 1, title: 'Slaughterhouse Five' } ]
-          knex('books')
-            .returning(['id','title'])
-            .insert({title: 'Slaughterhouse Five'})
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
     method: "onConflict",
     example: "insert(..).onConflict(column) / insert(..).onConflict([column1, column2, ...])",
     description: "Utilized by PostgreSQL and Sqlite databases. When chained onto an insert query, it specifies the columns to be used in `ON CONFLICT` clause. A call to .onConflict should always be followed by either .ignore or .update (otherwise it does nothing). In MySQL this method is noop, and .ignore and .merge can be used without .onConflict.",
@@ -1822,6 +1787,41 @@ export default [
           knex('accounts')
             .where('activated', false)
             .del()
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "returning",
+    example: ".returning(column) / .returning([column1, column2, ...])",
+    description: "Utilized by PostgreSQL, MSSQL, and Oracle databases, the returning method specifies which column should be returned by the insert, update and delete methods. Passed column parameter may be a string or an array of strings. When passed in a string, makes the SQL result be reported as an array of values from the specified column. When passed in an array of strings, makes the SQL result be reported as an array of objects, each containing a single property for each of the specified columns. The returning method is not supported on Amazon Redshift.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          // Returns [1]
+          knex('books')
+            .returning('id')
+            .insert({title: 'Slaughterhouse Five'})
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          // Returns [2] in \"mysql\", \"sqlite\"; [2, 3] in \"postgresql\"
+          knex('books')
+            .returning('id')
+            .insert([{title: 'Great Gatsby'}, {title: 'Fahrenheit 451'}])
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          // Returns [ { id: 1, title: 'Slaughterhouse Five' } ]
+          knex('books')
+            .returning(['id','title'])
+            .insert({title: 'Slaughterhouse Five'})
         `
       }
     ]
