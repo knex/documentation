@@ -39,12 +39,13 @@ export default [
           // This is same as specifying \`knex<User>('users')\`
           users: User;
           // For more advanced types, you can specify separate type
-          // for base model, "insert" type and "update" type.
+          // for base model, "insert" type and "update" type using CompositeTableType (it's part of module
+          // so you don't have to import it separately – it's just there).
           // This is like specifying
           //    knex
           //    .insert<{ name: string }>({ name: 'name' })
           //    .into<{ name: string, id: number }>('users')
-          users_composite: Knex.CompositeTableType<
+          users_composite: CompositeTableType<
             // This interface will be used for return type and 
             // \`where\`, \`having\` etc where full type is required 
             User,
