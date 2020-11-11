@@ -280,6 +280,13 @@ export default [
   },
   {
     type: "method",
+    method: "double",
+    example: "table.double(column, [precision], [scale])",
+    description: "Adds a double column, with optional precision (defaults to 8) and scale (defaults to 2). Not supported on Postgres",
+    children: [    ]
+  },
+  {
+    type: "method",
     method: "decimal",
     example: "table.decimal(column, [precision], [scale])",
     description: "Adds a decimal column, with optional precision (defaults to 8) and scale (defaults to 2). Specifying NULL as precision creates a decimal column that can store numbers of any precision and scale. (Only supported for Oracle, SQLite, Postgres)",
