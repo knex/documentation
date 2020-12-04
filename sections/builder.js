@@ -1469,7 +1469,7 @@ export default [
   {
     type: "method",
     method: "havingRaw",
-    example: ".havingRaw(column, operator, value)",
+    example: ".havingRaw(sql, [bindings])",
     description: "Adds a havingRaw clause to the query.",
     children: [
       {
