@@ -1682,7 +1682,7 @@ export default [
     type: "method",
     method: "ignore",
     example: "insert(..).onConflict(..).ignore()",
-    description: "Implemented for the PostgreSQL, MySQL, and Sqlite databases. Modifies an insert query, and causes it to be silently dropped without an error if a conflict occurs. Uses INSERT IGNORE in MySQL, and adds an ON CONFLICT (columns) DO NOTHING clause to the insert statement in PostgreSQL and Sqlite.",
+    description: "Implemented for the PostgreSQL, MySQL, and SQLite databases. Modifies an insert query, and causes it to be silently dropped without an error if a conflict occurs. Uses INSERT IGNORE in MySQL, and adds an ON CONFLICT (columns) DO NOTHING clause to the insert statement in PostgreSQL and SQLite.",
     children: [
       {
         type: "runnable",
@@ -1702,7 +1702,7 @@ export default [
     type: "method",
     method: "merge",
     example: "insert(..).onConflict(..).merge() / insert(..).onConflict(..).merge(updates)",
-    description: "Implemented for the PostgreSQL, MySQL, and Sqlite databases. Modifies an insert query, to turn it into an 'upsert' operation. Uses ON DUPLICATE KEY UPDATE in MySQL, and adds an ON CONFLICT (columns) DO UPDATE clause to the insert statement in PostgreSQL and Sqlite.",
+    description: "Implemented for the PostgreSQL, MySQL, and SQLite databases. Modifies an insert query, to turn it into an 'upsert' operation. Uses ON DUPLICATE KEY UPDATE in MySQL, and adds an ON CONFLICT (columns) DO UPDATE clause to the insert statement in PostgreSQL and SQLite.",
     children: [
       {
         type: "runnable",
@@ -1758,7 +1758,7 @@ export default [
       },
       {
         type: "text",
-        content: "**For PostgreSQL/Sqlite databases only**, it is also possible to add [a WHERE clause](#Builder-wheres) to conditionally update only the matching rows:"
+        content: "**For PostgreSQL/SQLite databases only**, it is also possible to add [a WHERE clause](#Builder-wheres) to conditionally update only the matching rows:"
       },
       {
         type: "code",
