@@ -1755,7 +1755,31 @@ export default [
               updated_at: timestamp,
             })
         `
-      }
+      },
+      {
+        type: "text",
+        content: "**For PostgreSQL/Sqlite databases only**, it is also possible to add [a WHERE clause](#Builder-wheres) to conditionally update only the matching rows:"
+      },
+      {
+        type: "code",
+        language: "js",
+        content: `
+          const timestamp = Date.now();
+          knex('tableName')
+            .insert({
+              email: "ignore@example.com",
+              name: "John Doe",
+              created_at: timestamp,
+              updated_at: timestamp,
+            })
+            .onConflict('email')
+            .merge({
+              name: "John Doe",
+              updated_at: timestamp,
+            })
+            .where('updated_at', '<', timestamp)
+        `
+      },
     ]
   },
   {
@@ -2510,7 +2534,7 @@ export default [
       Knex.QueryBuilder.extend('customSelect', function(value) {
         return this.select(this.client.raw(\`\${value} as value\`));
       });
-      
+
       const meaningOfLife = await knex('accounts')
         .customSelect(42);
     `
@@ -2527,7 +2551,7 @@ export default [
     language: "ts",
     content: `
       // knex.d.ts
-      
+
       import * as Knex from 'knex';
 
       declare module 'knex' {
@@ -2547,7 +2571,7 @@ export default [
     language: "ts",
     content: `
       // tsconfig.json
-      
+
       {
         "compilerOptions": {
           "typeRoots": [
