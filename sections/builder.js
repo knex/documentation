@@ -360,7 +360,7 @@ export default [
     type: "method",
     method: "where",
     example: ".where(~mixed~)",
-    children: [    ]
+    children: []
   },
   {
     type: "text",
@@ -455,7 +455,7 @@ export default [
     type: "method",
     method: "whereNot",
     example: ".whereNot(~mixed~)",
-    children: [    ]
+    children: []
   },
   {
     type: "text",
@@ -1636,6 +1636,13 @@ export default [
           // Returns [2] in \"mysql\", \"sqlite\"; [2, 3] in \"postgresql\"
           knex.insert([{title: 'Great Gatsby'}, {title: 'Fahrenheit 451'}], ['id']).into('books')
         `
+      },
+      {
+        type: "runnable",
+        content: `
+          // Run on tables that contain triggers with the following option
+          knex('books').insert({title: 'Alice in Wonderland'}, ['id'], { includeTriggerModifications: true })
+        `
       }
     ]
   },
@@ -1814,6 +1821,13 @@ export default [
             .where({ id: 42 })
             .update({ title: "The Hitchhiker's Guide to the Galaxy" }, ['id', 'title'])
         `
+      },
+      {
+        type: "runnable",
+        content: `
+          // Run on tables that contain triggers with the following option
+          knex('books').update({title: 'Alice in Wonderland'}, ['id', 'title'], { includeTriggerModifications: true })
+        `
       }
     ]
   },
@@ -1829,6 +1843,13 @@ export default [
           knex('accounts')
             .where('activated', false)
             .del()
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          // Run on tables that contain triggers with the following option
+          knex('books').where('title', 'Alice in Wonderland').del(['id', 'title'], { includeTriggerModifications: true })
         `
       }
     ]
@@ -2386,7 +2407,7 @@ export default [
     method: "clone",
     example: ".clone()",
     description: "Clones the current query chain, useful for re-using partial query snippets in other queries without mutating the original.",
-    children: [    ]
+    children: []
   },
   {
     type: "method",
@@ -2426,7 +2447,7 @@ export default [
     method: "debug",
     example: ".debug([enabled])",
     description: "Overrides the global debug setting for the current query chain. If enabled is omitted, query debugging will be turned on.",
-    children: [    ]
+    children: []
   },
   {
     type: "method",
