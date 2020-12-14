@@ -47,7 +47,7 @@ export default [
     type: "method",
     method: "then",
     example: ".then(onFulfilled, [onRejected])",
-    description: "Coerces the current query builder chain into a promise state, accepting the resolve and reject handlers as specified by the Promises/A+ spec. As stated in the spec, more than one call to the then method for the current query chain will resolve with the same value, in the order they were called; the query will not be executed multiple times. An additional option can be included if the table has triggers associated with it.",
+    description: "Coerces the current query builder chain into a promise state, accepting the resolve and reject handlers as specified by the Promises/A+ spec. As stated in the spec, more than one call to the then method for the current query chain will resolve with the same value, in the order they were called; the query will not be executed multiple times.",
     children: [
       {
         type: "code",
@@ -57,8 +57,7 @@ export default [
             .from('users')
             .where({name: 'Tim'})
             .then(function(rows) {
-              return knex.insert({user_id: rows[0].id, name: 'Test'}, 'id', { includeTriggerModifications: false })
-                .into('accounts');
+              return knex.insert({user_id: rows[0].id, name: 'Test'}, 'id').into('accounts');
             })
             .then(function(id) {
               console.log('Inserted Account ' + id);
