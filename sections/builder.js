@@ -1879,7 +1879,7 @@ export default [
   {
     type: "method",
     method: "returning",
-    example: ".returning(column) / .returning([column1, column2, ...])",
+    example: ".returning(column, [options]) / .returning([column1, column2, ...], [options])",
     description: "Utilized by PostgreSQL, MSSQL, and Oracle databases, the returning method specifies which column should be returned by the insert, update and delete methods. Passed column parameter may be a string or an array of strings. When passed in a string, makes the SQL result be reported as an array of values from the specified column. When passed in an array of strings, makes the SQL result be reported as an array of objects, each containing a single property for each of the specified columns. The returning method is not supported on Amazon Redshift.",
     children: [
       {
@@ -1906,6 +1906,21 @@ export default [
           // Returns [ { id: 1, title: 'Slaughterhouse Five' } ]
           knex('books')
             .returning(['id','title'])
+            .insert({title: 'Slaughterhouse Five'})
+        `
+      },
+      {
+        type: "text",
+        content: "For MSSQL, triggers on tables can interrupt returning a valid value from the standard DML statements. You can add the `includeTriggerModifications` option to get around this issue. This modifies the SQL so the proper values can be returned. This only modifies the statement if you are using MSSQL, a returning value is specified, and the `includeTriggerModifications` option is set."
+      },
+      {
+        type: "code",
+        language: "js",
+        content: `
+          // Adding the option includeTriggerModifications allows you 
+          // to run statements on tables that contain triggers. Only affects MSSQL.
+          knex('books')
+            .returning(['id','title'], { includeTriggerModifications: true })
             .insert({title: 'Slaughterhouse Five'})
         `
       }
