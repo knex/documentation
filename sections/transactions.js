@@ -265,7 +265,7 @@ export default [
   },
   {
     type: "text",
-    content: "In case you need to specify an isolation level for your transaction, you can use a config parameter `isolationLevel`. Not supported by oracle and sqlite, options are read uncommitted, read committed, repeatable read, snapshot (mssql only), serializable."
+    content: "In case you need to specify an isolation level for your transaction, you can use a config parameter `isolationLevel`. Not supported by oracle and sqlite, options are `read uncommitted`, `read committed`, `repeatable read`, `snapshot` (mssql only), `serializable`."
   },
   {
     type: "code",
