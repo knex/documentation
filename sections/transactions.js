@@ -265,7 +265,7 @@ export default [
   },
   {
     type: "text",
-    content: "Isolation levels can be important for certain invariants you require as part of your business logic. Use it as part of a config object."
+    content: "In case you need to specify an isolation level for your transaction, you can use a config parameter `isolationLevel`. Not supported by oracle and sqlite, options are read uncommitted, read committed, repeatable read, snapshot (mssql only), serializable."
   },
   {
     type: "code",
