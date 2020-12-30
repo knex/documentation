@@ -263,4 +263,25 @@ export default [
     type: "text",
     content: "You can check the property `knex.isTransaction` to see if the current knex instance you are working with is a transaction."
   },
+  {
+    type: "method",
+    method: "setIsolationLevel",
+    example: ".setIsolationLevel(isolationLevel)",
+    description: "Specifies the isolation level for the transaction in supported databases.",
+    children: [
+      {
+        type: "code",
+        language: "js",
+        content: `
+          // Simple read skew example
+          const trx = await knex.transaction().setIsolationLevel(isolationLevel);
+          const result1 = await trx(tableName).select();
+          await knex(tableName).insert({ id: 1, value: 1 });
+          const result2 = await trx(tableName).select();
+          await trx.commit();
+          // result1 may or may nto equal result2 depending on isolation level
+        `
+      }
+    ]
+  },
 ]
