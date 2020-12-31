@@ -10,17 +10,139 @@ export default [
     content: "The heart of the library, the knex query builder is the interface used for building and executing standard SQL queries, such as `select`, `insert`, `update`, `delete`."
   },
   {
+    type: "heading",
+    size: "md",
+    content: "Identifier Syntax",
+    href: "Builder-identifier-syntax"
+  },
+  {
+    type: "text",
+    content: [
+      "In many places in APIs identifiers like table name or column name can be passed to methods.",
+      "Most commonly one needs just plain `tableName.columnName`, `tableName` or `columnName`, but in many cases one also needs to pass an alias how that identifier is referred later on in the query.",
+      "There are two ways to declare an alias for identifier. One can directly give `as aliasName` suffix for the identifier (e.g. `identifierName as aliasName`) or one can pass an object `{ aliasName: 'identifierName' }`.",
+      "If the object has multiple aliases `{ alias1: 'identifier1', alias2: 'identifier2' }`, then all the aliased identifiers are expanded to comma separated list.",
+      "NOTE: identifier syntax has no place for selecting schema, so if you are doing `schemaName.tableName`, query might be rendered wrong. Use `.withSchema('schemaName')` instead."
+    ]
+  },
+  {
+    type: "runnable",
+    content: `
+      knex({ a: 'table', b: 'table' })
+        .select({
+          aTitle: 'a.title',
+          bTitle: 'b.title'
+        })
+        .whereRaw('?? = ??', ['a.column_1', 'b.column_2'])
+    `
+  },
+  {
     type: "method",
     method: "knex",
-    example: "knex(tableName) / knex.[methodName]",
-    description: "The query builder starts off either by specifying a tableName you wish to query against, or by calling any method directly on the knex object. This kicks off a jQuery-like chain, with which you can call additional query builder methods as needed to construct the query, eventually calling any of the interface methods, to either convert toString, or execute the query with a promise, callback, or stream.",
-    children: [    ]
+    example: "knex(tableName, options={only: boolean}) / knex.[methodName]",
+    description: "The query builder starts off either by specifying a tableName you wish to query against, or by calling any method directly on the knex object. This kicks off a jQuery-like chain, with which you can call additional query builder methods as needed to construct the query, eventually calling any of the interface methods, to either convert toString, or execute the query with a promise, callback, or stream. Optional second argument for passing options:*   **only**: if `true`, the ONLY keyword is used before the `tableName` to discard inheriting tables' data. **NOTE:** only supported in PostgreSQL for now.",
+    children: [{
+      type: "heading",
+      size: "md",
+      content: "Usage with TypeScript"
+    }, {
+      type: "text",
+      content: "If using TypeScript, you can pass the type of database row as a type parameter to get better autocompletion support down the chain."
+    }, {
+      type: "code",
+      language: "ts",
+      content: `
+        interface User {
+          id: number;
+          name: string;
+          age: number;
+        }
+
+        knex('users')
+          .where('id')
+          .first(); // Resolves to any
+
+        knex<User>('users') // User is the type of row in database
+          .where('id', 1) // Your IDE will be able to help with the completion of id
+          .first(); // Resolves to User | undefined
+      `
+    }, {
+      type: "text",
+      content: "It is also possible to take advantage of auto-completion support (in TypeScript-aware IDEs) with generic type params when writing code in plain JavaScript through JSDoc comments."
+    }, {
+      type: "code",
+      language: "ts",
+      content: `
+        /**
+         * @typedef {Object} User
+         * @property {number} id
+         * @property {number} age
+         * @property {string} name
+         *
+         * @returns {Knex.QueryBuilder<User, {}>}
+         */
+        const Users = () => knex('Users')
+
+        Users().where('id', 1) // 'id' property can be autocompleted by editor
+      `
+    }, {
+      type: "heading",
+      size: "md",
+      content: "Caveat with type inference and mutable fluent APIs"
+    }, {
+      type: "text",
+      content: "Most of the knex APIs mutate current object and return it. This pattern does not work well with type-inference."
+    }, {
+      type: "code",
+      language: "ts",
+      content: `
+        knex<User>('users')
+          .select('id')
+          .then((users) => { // Type of users is inferred as Pick<User, "id">[]
+            // Do something with users
+          });
+
+        knex<User>('users')
+          .select('id')
+          .select('age')
+          .then((users) => { // Type of users is inferred as Pick<User, "id" | "age">[]
+            // Do something with users
+          });
+
+        // The type of usersQueryBuilder is determined here
+        const usersQueryBuilder = knex<User>('users').select('id');
+
+        if (someCondition) {
+          // This select will not change the type of usersQueryBuilder
+          // We can not change the type of a pre-declared variabe in TypeScript
+          usersQueryBuilder.select('age');
+        }
+        usersQueryBuilder.then((users) => {
+          // Type of users here will be Pick<User, "id">[]
+          // which may not be what you expect.
+        });
+
+        // You can specify the type of result explicitly through a second type parameter:
+        const queryBuilder = knex<User, Pick<User, "id" | "age">>('users');
+
+        // But there is no type constraint to ensure that these properties have actually been
+        // selected.
+
+        // So, this will compile:
+        queryBuilder.select('name').then((users) => {
+          // Type of users is Pick<User, "id"> but it will only have name
+        })
+      `
+    }, {
+      type: "text",
+      content: "If you don't want to manually specify the result type, it is recommended to always use the type of last value of the chain and assign result of any future chain continuation to a separate variable (which will have a different type)."
+    }]
   },
   {
     type: "method",
     method: "timeout",
     example: ".timeout(ms, options={cancel: boolean})",
-    description: "Sets a timeout for the query and will throw a TimeoutError if the timeout is exceeded. The error contains information about the query, bindings, and the timeout that was set. Useful for complex queries that you want to make sure are not taking too long to execute. Optional second argument for passing options:*   **cancel**: if `true`, cancel query if timeout is reached. **NOTE:** only supported in MySQL and MariaDB for now.",
+    description: "Sets a timeout for the query and will throw a TimeoutError if the timeout is exceeded. The error contains information about the query, bindings, and the timeout that was set. Useful for complex queries that you want to make sure are not taking too long to execute. Optional second argument for passing options:*   **cancel**: if `true`, cancel query if timeout is reached. **NOTE:** only supported in MySQL and PostgreSQL for now.",
     children: [
       {
         type: "runnable",
@@ -31,7 +153,7 @@ export default [
       {
         type: "runnable",
         content: `
-          knex.select().from('books').timeout(1000, {cancel: true}) // MySQL and MariaDB only
+          knex.select().from('books').timeout(1000, {cancel: true}) // MySQL and PostgreSQL only
         `
       }
     ]
@@ -52,6 +174,34 @@ export default [
         type: "runnable",
         content: `
           knex.select().table('books')
+        `
+      },
+      {
+        type: "heading",
+        size: "md",
+        content: "Usage with TypeScript"
+      },
+      {
+        type: "text",
+        content: "We are generally able to infer the result type based on the columns being selected as long as the select arguments match exactly the key names in record type. However, aliasing and scoping can get in the way of inference."
+      },
+      {
+        type: "code",
+        language: "ts",
+        content: `
+          knex.select('id').from<User>('users'); // Resolves to Pick<User, "id">[]
+
+          knex.select('users.id').from<User>('users'); // Resolves to any[]
+          // ^ TypeScript doesn't provide us a way to look into a string and infer the type
+          //   from a substring, so we fall back to any
+
+          // We can side-step this using knex.ref:
+          knex.select(knex.ref('id').withSchema('users')).from<User>('users'); // Resolves to Pick<User, "id">[]
+
+          knex.select('id as identifier').from<User>('users'); // Resolves to any[], for same reason as above
+
+          // Refs are handy here too:
+          knex.select(knex.ref('id').as('identifier')).from<User>('users'); // Resolves to { identifier: number; }[]
         `
       }
     ]
@@ -76,7 +226,7 @@ export default [
     type: "method",
     method: "column",
     example: ".column(columns)",
-    description: "Specifically set the columns to be selected on a select query, taking an array or a list of of column names.",
+    description: "Specifically set the columns to be selected on a select query, taking an array, an object or a list of column names. Passing an object will automatically alias the columns with the given keys.",
     children: [
       {
         type: "runnable",
@@ -89,19 +239,43 @@ export default [
         content: `
           knex.column(['title', 'author', 'year']).select().from('books')
         `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex.column('title', {by: 'author'}, 'year').select().from('books')
+        `
       }
     ]
   },
   {
     type: "method",
     method: "from",
-    example: ".from([tableName])",
-    description: "Specifies the table used in the current query, replacing the current table name if one has already been specified. This is typically used in the sub-queries performed in the advanced where or union methods.",
+    example: ".from([tableName], options={only: boolean})",
+    description: "Specifies the table used in the current query, replacing the current table name if one has already been specified. This is typically used in the sub-queries performed in the advanced where or union methods. Optional second argument for passing options:*   **only**: if `true`, the ONLY keyword is used before the `tableName` to discard inheriting tables' data. **NOTE:** only supported in PostgreSQL for now.",
     children: [
       {
         type: "runnable",
         content: `
           knex.select('*').from('users')
+        `
+      },
+      {
+        type: "heading",
+        size: "md",
+        content: "Usage with TypeScript"
+      },
+      {
+        type: "text",
+        content: "We can specify the type of database row through the TRecord type parameter"
+      },
+      {
+        type: "code",
+        language: "ts",
+        content: `
+          knex.select('id').from('users'); // Resolves to any[]
+
+          knex.select('id').from<User>('users'); // Results to Pick<User, "id">[]
         `
       }
     ]
@@ -124,6 +298,24 @@ export default [
           knex.with('with_alias', (qb) => {
             qb.select('*').from('books').where('author', 'Test')
           }).select('*').from('with_alias')
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "withRecursive",
+    example: ".withRecursive(alias, function|raw)",
+    description: "Indentical to the `with` method except \"recursive\" is appended to \"with\" to make self-referential CTEs possible.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex.withRecursive('ancestors', (qb) => {
+            qb.select('*').from('people').where('people.id', 1).union((qb) => {
+              qb.select('*').from('people').join('ancestors', 'ancestors.parentId', 'people.id')
+            })
+          }).select('*').from('ancestors')
         `
       }
     ]
@@ -168,7 +360,7 @@ export default [
     type: "method",
     method: "where",
     example: ".where(~mixed~)",
-    children: [    ]
+    children: []
   },
   {
     type: "text",
@@ -195,6 +387,22 @@ export default [
   },
   {
     type: "text",
+    content: "Functions:"
+  },
+  {
+    type: "runnable",
+    content: `
+      knex('users')
+      .where((builder) =>
+        builder.whereIn('id', [1, 11, 15]).whereNotIn('id', [17, 19])
+      )
+      .andWhere(function() {
+        this.where('id', '>', 10)
+      })
+    `
+  },
+  {
+    type: "text",
     content: "Grouped Chain:"
   },
   {
@@ -212,13 +420,23 @@ export default [
   {
     type: "runnable",
     content: `
+      knex('users').where('columnName', 'like', '%rowlikeme%')
+    `
+  },
+  {
+    type: "text",
+    content: "The above query demonstrates the common use case of returning all users for which a specific pattern appears within a designated column."
+  },
+  {
+    type: "runnable",
+    content: `
       knex('users').where('votes', '>', 100)
     `
   },
   {
     type: "runnable",
     content: `
-      var subquery = knex('users').where('votes', '>', 100).andWhere('status', 'active').orWhere('name', 'John').select('id');
+      const subquery = knex('users').where('votes', '>', 100).andWhere('status', 'active').orWhere('name', 'John').select('id');
 
       knex('accounts').where('id', 'in', subquery)
     `
@@ -237,7 +455,7 @@ export default [
     type: "method",
     method: "whereNot",
     example: ".whereNot(~mixed~)",
-    children: [    ]
+    children: []
   },
   {
     type: "text",
@@ -291,7 +509,7 @@ export default [
   {
     type: "runnable",
     content: `
-      var subquery = knex('users')
+      const subquery = knex('users')
         .whereNot('votes', '>', 100)
         .andWhere('status', 'active')
         .orWhere('name', 'John')
@@ -303,8 +521,8 @@ export default [
   {
     type: "method",
     method: "whereIn",
-    example: ".whereIn(column, array|callback|builder) / .orWhereIn",
-    description: "Shorthand for .where('id', 'in', obj), the .whereIn and .orWhereIn methods add a \"where in\" clause to the query. Click the \"play\" button below to see the queries.",
+    example: ".whereIn(column|columns, array|callback|builder) / .orWhereIn",
+    description: "Shorthand for .where('id', 'in', obj), the .whereIn and .orWhereIn methods add a \"where in\" clause to the query. Note that passing empty array as the value results in a query that never returns any rows (`WHERE 1 = 0`)",
     children: [
       {
         type: "runnable",
@@ -326,7 +544,7 @@ export default [
       {
         type: "runnable",
         content: `
-          var subquery = knex.select('id').from('accounts');
+          const subquery = knex.select('id').from('accounts');
 
           knex.select('name').from('users')
             .whereIn('account_id', subquery)
@@ -335,11 +553,15 @@ export default [
       {
         type: "runnable",
         content: `
-          knex('users')
-            .where('name', '=', 'John')
-            .orWhere(function() {
-              this.where('votes', '>', 100).andWhere('title', '<>', 'Admin');
-            })
+          knex.select('name').from('users')
+            .whereIn(['account_id', 'email'], [[3, 'test3@example.com'], [4, 'test4@example.com']])
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex.select('name').from('users')
+            .whereIn(['account_id', 'email'], knex.select('id', 'email').from('accounts'))
         `
       }
     ]
@@ -554,7 +776,7 @@ export default [
   {
     type: "method",
     method: "innerJoin",
-    example: ".innerJoin(column, ~mixed~)",
+    example: ".innerJoin(table, ~mixed~)",
     description: "",
     children: [
       {
@@ -582,7 +804,7 @@ export default [
   {
     type: "method",
     method: "leftJoin",
-    example: ".leftJoin(column, ~mixed~)",
+    example: ".leftJoin(table, ~mixed~)",
     description: "",
     children: [
       {
@@ -604,7 +826,7 @@ export default [
   {
     type: "method",
     method: "leftOuterJoin",
-    example: ".leftOuterJoin(column, ~mixed~)",
+    example: ".leftOuterJoin(table, ~mixed~)",
     description: "",
     children: [
       {
@@ -626,7 +848,7 @@ export default [
   {
     type: "method",
     method: "rightJoin",
-    example: ".rightJoin(column, ~mixed~)",
+    example: ".rightJoin(table, ~mixed~)",
     description: "",
     children: [
       {
@@ -648,7 +870,7 @@ export default [
   {
     type: "method",
     method: "rightOuterJoin",
-    example: ".rightOuterJoin(column, ~mixed~)",
+    example: ".rightOuterJoin(table, ~mixed~)",
     description: "",
     children: [
       {
@@ -669,30 +891,8 @@ export default [
   },
   {
     type: "method",
-    method: "outerJoin",
-    example: ".outerJoin(column, ~mixed~)",
-    description: "",
-    children: [
-      {
-        type: "runnable",
-        content: `
-          knex.select('*').from('users').outerJoin('accounts', 'users.id', 'accounts.user_id')
-        `
-      },
-      {
-        type: "runnable",
-        content: `
-          knex.select('*').from('users').outerJoin('accounts', function() {
-            this.on('accounts.id', '=', 'users.account_id').orOn('accounts.owner_id', '=', 'users.id')
-          })
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
     method: "fullOuterJoin",
-    example: ".fullOuterJoin(column, ~mixed~)",
+    example: ".fullOuterJoin(table, ~mixed~)",
     description: "",
     children: [
       {
@@ -714,9 +914,15 @@ export default [
   {
     type: "method",
     method: "crossJoin",
-    example: ".crossJoin(column, ~mixed~)",
-    description: "",
+    example: ".crossJoin(table, ~mixed~)",
+    description: "Cross join conditions are only supported in MySQL and SQLite3. For join conditions rather use innerJoin.",
     children: [
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').crossJoin('accounts')
+        `
+      },
       {
         type: "runnable",
         content: `
@@ -892,10 +1098,120 @@ export default [
     ]
   },
   {
+    type: "heading",
+    size: "md",
+    content: "ClearClauses",
+    href: "Builder-clear"
+  },
+  {
+    type: "method",
+    method: "clear",
+    example: ".clear(statement)",
+    description: "Clears the specified operator from the query. Avalilables: 'select' alias 'columns', 'with', 'select', 'columns', 'where', 'union', 'join', 'group', 'order', 'having', 'limit', 'offset', 'counter', 'counters'. Counter(s) alias for method .clearCounter()",
+    children: [
+      {
+        type: "runnable",
+        content: `
+        knex.select('email', 'name').from('users').where('id', '<', 10).clear('select').clear('where')
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "clearSelect",
+    example: ".clearSelect()",
+    description: "Deprecated, use clear('select'). Clears all select clauses from the query, excluding subqueries.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+        knex.select('email', 'name').from('users').clearSelect()
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "clearWhere",
+    example: ".clearWhere()",
+    description: "Deprecated, use clear('where'). Clears all where clauses from the query, excluding subqueries.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+        knex.select('email', 'name').from('users').where('id', 1).clearWhere()
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "clearGroup",
+    example: ".clearGroup()",
+    description: "Deprecated, use clear('group'). Clears all group clauses from the query, excluding subqueries.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+        knex.select().from('users').groupBy('id').clearGroup()
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "clearOrder",
+    example: ".clearOrder()",
+    description: "Deprecated, use clear('order'). Clears all order clauses from the query, excluding subqueries.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+        knex.select().from('users').orderBy('name', 'desc').clearOrder()
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "clearHaving",
+    example: ".clearHaving()",
+    description: "Deprecated, use clear('having'). Clears all having clauses from the query, excluding subqueries.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+        knex.select().from('users').having('id', '>', 5).clearHaving()
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "clearCounters",
+    example: ".clearCounters()",
+    description: "Clears all increments/decrements clauses from the query.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex('accounts')
+            .where('id', '=', 1)
+            .update({ email: 'foo@bar.com' })
+            .decrement({
+              balance: 50,
+            })
+            .clearCounters()
+        `
+      }
+    ]
+  },
+  {
     type: "method",
     method: "distinct",
-    example: ".distinct()",
-    description: "Sets a distinct clause on the query.",
+    example: ".distinct([*columns])",
+    description: "Sets a distinct clause on the query. If the parameter is falsy or empty array, method falls back to '*'.",
     children: [
       {
         type: "runnable",
@@ -903,7 +1219,28 @@ export default [
           // select distinct 'first_name' from customers
           knex('customers')
             .distinct('first_name', 'last_name')
-            .select()
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+            // select which eleminates duplicate rows
+           knex('customers')
+            .distinct()
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "distinctOn",
+    example: ".distinctOn([*columns])",
+    description: "PostgreSQL only. Adds a distinctOn clause to the query.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex('users').distinctOn('age')
         `
       }
     ]
@@ -925,7 +1262,7 @@ export default [
   {
     type: "method",
     method: "groupByRaw",
-    example: ".groupBy(sql)",
+    example: ".groupByRaw(sql)",
     description: "Adds a raw group by clause to the query.",
     children: [
       {
@@ -939,13 +1276,39 @@ export default [
   {
     type: "method",
     method: "orderBy",
-    example: ".orderBy(column, [direction])",
-    description: "Adds an order by clause to the query.",
+    example: ".orderBy(column|columns, [direction])",
+    description: "Adds an order by clause to the query. column can be string, or list mixed with string and object.",
     children: [
+      {
+        type: "text",
+        content: "Single Column:"
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').orderBy('email')
+        `
+      },
       {
         type: "runnable",
         content: `
           knex('users').orderBy('name', 'desc')
+        `
+      },
+      {
+        type: "text",
+        content: "Multiple Columns:"
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').orderBy(['email', { column: 'age', order: 'desc' }])
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').orderBy([{ column: 'email' }, { column: 'age', order: 'desc' }])
         `
       }
     ]
@@ -959,7 +1322,7 @@ export default [
       {
         type: "runnable",
         content: `
-          knex.select('*').from('table').orderByRaw('col NULLS LAST DESC')
+          knex.select('*').from('table').orderByRaw('col DESC NULLS LAST')
         `
       }
     ]
@@ -1152,14 +1515,31 @@ export default [
     type: "method",
     method: "union",
     example: ".union([*queries], [wrap])",
-    description: "Creates a union query, taking an array or a list of callbacks to build the union statement, with optional boolean wrap. The queries will be individually wrapped in parentheses with a true wrap parameter.",
+    description: "Creates a union query, taking an array or a list of callbacks, builders, or raw statements to build the union statement, with optional boolean wrap. If the `wrap` parameter is `true`, the queries will be individually wrapped in parentheses.",
     children: [
       {
         type: "runnable",
         content: `
           knex.select('*').from('users').whereNull('last_name').union(function() {
-            this.select('*').from('users').whereNull('first_name');
+            this.select('*').from('users').whereNull('first_name')
           })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').whereNull('last_name').union([
+            knex.select('*').from('users').whereNull('first_name')
+          ])
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').whereNull('last_name').union(
+            knex.raw('select * from users where first_name is null'),
+            knex.raw('select * from users where email is null')
+          )
         `
       }
     ]
@@ -1167,8 +1547,8 @@ export default [
   {
     type: "method",
     method: "unionAll",
-    example: ".unionAll(query)",
-    description: "Creates a union all query, with the same method signature as the union method.",
+    example: ".unionAll([*queries], [wrap])",
+    description: "Creates a union all query, with the same method signature as the union method.  If the `wrap` parameter is `true`, the queries will be individually wrapped in parentheses.",
     children: [
       {
         type: "runnable",
@@ -1177,14 +1557,64 @@ export default [
             this.select('*').from('users').whereNull('first_name');
           })
         `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').whereNull('last_name').unionAll([
+            knex.select('*').from('users').whereNull('first_name')
+          ])
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').whereNull('last_name').unionAll(
+            knex.raw('select * from users where first_name is null'),
+            knex.raw('select * from users where email is null')
+          )
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "intersect",
+    example: ".intersect([*queries], [wrap])",
+    description: "Creates an intersect query, taking an array or a list of callbacks, builders, or raw statements to build the intersect statement, with optional boolean wrap. If the `wrap` parameter is `true`, the queries will be individually wrapped in parentheses. The intersect method is unsupported on MySQL.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').whereNull('last_name').intersect(function() {
+            this.select('*').from('users').whereNull('first_name')
+          })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').whereNull('last_name').intersect([
+            knex.select('*').from('users').whereNull('first_name')
+          ])
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').whereNull('last_name').intersect(
+            knex.raw('select * from users where first_name is null'),
+            knex.raw('select * from users where email is null')
+          )
+        `
       }
     ]
   },
   {
     type: "method",
     method: "insert",
-    example: ".insert(data, [returning])",
-    description: "Creates an insert query, taking either a hash of properties to be inserted into the row, or an array of inserts, to be executed as a single insert command. Resolves the promise / fulfills the callback with an array containing the first insert id of the inserted model, or an array containing all inserted ids for postgresql.",
+    example: ".insert(data, [returning], [options])",
+    description: "Creates an insert query, taking either a hash of properties to be inserted into the row, or an array of inserts, to be executed as a single insert command. If returning array is passed e.g. ['id', 'title'], it resolves the promise / fulfills the callback with an array of all the added rows with specified columns. It's a shortcut for [returning method](#Builder-returning)",
     children: [
       {
         type: "runnable",
@@ -1204,7 +1634,21 @@ export default [
         type: "runnable",
         content: `
           // Returns [2] in \"mysql\", \"sqlite\"; [2, 3] in \"postgresql\"
-          knex.insert([{title: 'Great Gatsby'}, {title: 'Fahrenheit 451'}], 'id').into('books')
+          knex.insert([{title: 'Great Gatsby'}, {title: 'Fahrenheit 451'}], ['id']).into('books')
+        `
+      },
+      {
+        type: "text",
+        content: "For MSSQL, triggers on tables can interrupt returning a valid value from the standard insert statements. You can add the `includeTriggerModifications` option to get around this issue. This modifies the SQL so the proper values can be returned. This only modifies the statement if you are using MSSQL, a returning value is specified, and the `includeTriggerModifications` option is set."
+      },
+      {
+        type: "code",
+        language: "js",
+        content: `
+          // Adding the option includeTriggerModifications allows you to 
+          // run statements on tables that contain triggers. Only affects MSSQL.
+          knex('books')
+            .insert({title: 'Alice in Wonderland'}, ['id'], { includeTriggerModifications: true })
         `
       }
     ]
@@ -1217,7 +1661,7 @@ export default [
     type: "code",
     language: "js",
     content: `
-      var knex = require('knex')({
+      const knex = require('knex')({
         client: 'mysql',
         connection: {
           host : '127.0.0.1',
@@ -1234,9 +1678,209 @@ export default [
   },
   {
     type: "method",
+    method: "onConflict",
+    example: "insert(..).onConflict(column) / insert(..).onConflict([column1, column2, ...])",
+    description: "Implemented for the PostgreSQL, MySQL, and SQLite databases. A modifier for insert queries that specifies alternative behaviour in the case of a conflict. A conflict occurs when a table has a PRIMARY KEY or a UNIQUE index on a column (or a composite index on a set of columns) and a row being inserted has the same value as a row which already exists in the table in those column(s). The default behaviour in case of conflict is to raise an error and abort the query. Using this method you can change this behaviour to either silently ignore the error by using .onConflict().ignore() or to update the existing row with new data (perform an \"UPSERT\") by using .onConflict().merge().",
+    children: [
+      {
+        type: "text",
+        content: "Note: For PostgreSQL and SQLite, the column(s) specified by this method must either be the table's PRIMARY KEY or have a UNIQUE index on them, or the query will fail to execute. When specifying multiple columns, they must be a composite PRIMARY KEY or have composite UNIQUE index. MySQL will ignore the specified columns and always use the table's PRIMARY KEY. For cross-platform support across PostgreSQL, MySQL, and SQLite you must both explicitly specifiy the columns in .onConflict() and those column(s) must be the table's PRIMARY KEY."
+      },
+      {
+        type: "text",
+        content: "See documentation on .ignore() and .merge() methods for more details."
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "ignore",
+    example: "insert(..).onConflict(..).ignore()",
+    description: "Implemented for the PostgreSQL, MySQL, and SQLite databases. Modifies an insert query, and causes it to be silently dropped without an error if a conflict occurs. Uses INSERT IGNORE in MySQL, and adds an ON CONFLICT (columns) DO NOTHING clause to the insert statement in PostgreSQL and SQLite.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex('tableName')
+            .insert({
+              email: "ignore@example.com",
+              name: "John Doe"
+            })
+            .onConflict('email')
+            .ignore()
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "merge",
+    example: "insert(..).onConflict(..).merge() / insert(..).onConflict(..).merge(updates)",
+    description: "Implemented for the PostgreSQL, MySQL, and SQLite databases. Modifies an insert query, to turn it into an 'upsert' operation. Uses ON DUPLICATE KEY UPDATE in MySQL, and adds an ON CONFLICT (columns) DO UPDATE clause to the insert statement in PostgreSQL and SQLite.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex('tableName')
+            .insert({
+              email: "ignore@example.com",
+              name: "John Doe"
+            })
+            .onConflict('email')
+            .merge()
+        `
+      },
+      {
+        type: "text",
+        content: "This also works with batch inserts:"
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('tableName')
+            .insert(
+              { email: "john@example.com", name: "John Doe" },
+              { email: "jane@example.com", name: "Jane Doe" },
+              { email: "alex@example.com", name: "Alex Doe" },
+            )
+            .onConflict('email')
+            .merge()
+        `
+      },
+      {
+        type: "text",
+        content: "It is also possible to specify data to update seperately from the data to insert. This is useful if you only want to update a subset of the columns. For example, you may want to set a 'created_at' column when inserting but would prefer not to update it if the row already exists:"
+      },
+      {
+        type: "code",
+        language: "js",
+        content: `
+          const timestamp = Date.now();
+          knex('tableName')
+            .insert({
+              email: "ignore@example.com",
+              name: "John Doe",
+              created_at: timestamp,
+              updated_at: timestamp,
+            })
+            .onConflict('email')
+            .merge({
+              name: "John Doe",
+              updated_at: timestamp,
+            })
+        `
+      },
+      {
+        type: "text",
+        content: "**For PostgreSQL/SQLite databases only**, it is also possible to add [a WHERE clause](#Builder-wheres) to conditionally update only the matching rows:"
+      },
+      {
+        type: "code",
+        language: "js",
+        content: `
+          const timestamp = Date.now();
+          knex('tableName')
+            .insert({
+              email: "ignore@example.com",
+              name: "John Doe",
+              created_at: timestamp,
+              updated_at: timestamp,
+            })
+            .onConflict('email')
+            .merge({
+              name: "John Doe",
+              updated_at: timestamp,
+            })
+            .where('updated_at', '<', timestamp)
+        `
+      },
+    ]
+  },
+  {
+    type: "method",
+    method: "update",
+    example: ".update(data, [returning], [options]) / .update(key, value, [returning], [options])",
+    description: "Creates an update query, taking a hash of properties or a key/value pair to be updated based on the other query constraints. If returning array is passed e.g. ['id', 'title'], it resolves the promise / fulfills the callback with an array of all the updated rows with specified columns. It's a shortcut for [returning method](#Builder-returning)",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex('books')
+            .where('published_date', '<', 2000)
+            .update({
+              status: 'archived',
+              thisKeyIsSkipped: undefined
+            })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          // Returns [1] in \"mysql\", \"sqlite\", \"oracle\"; [] in \"postgresql\" unless the 'returning' parameter is set.
+          knex('books').update('title', 'Slaughterhouse Five')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          // Returns [ { id: 42, title: "The Hitchhiker's Guide to the Galaxy" } ]
+          knex('books')
+            .where({ id: 42 })
+            .update({ title: "The Hitchhiker's Guide to the Galaxy" }, ['id', 'title'])
+        `
+      },
+      {
+        type: "text",
+        content: "For MSSQL, triggers on tables can interrupt returning a valid value from the standard update statements. You can add the `includeTriggerModifications` option to get around this issue. This modifies the SQL so the proper values can be returned. This only modifies the statement if you are using MSSQL, a returning value is specified, and the `includeTriggerModifications` option is set."
+      },
+      {
+        type: "code",
+        language: "js",
+        content: `
+          // Adding the option includeTriggerModifications allows you 
+          // to run statements on tables that contain triggers. Only affects MSSQL.
+          knex('books')
+            .update({title: 'Alice in Wonderland'}, ['id', 'title'], { includeTriggerModifications: true })
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "del / delete",
+    example: ".del([returning], [options])",
+    description: "Aliased to del as delete is a reserved word in JavaScript, this method deletes one or more rows, based on other conditions specified in the query. Resolves the promise / fulfills the callback with the number of affected rows for the query.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex('accounts')
+            .where('activated', false)
+            .del()
+        `
+      },
+      {
+        type: "text",
+        content: "For MSSQL, triggers on tables can interrupt returning a valid value from the standard delete statements. You can add the `includeTriggerModifications` option to get around this issue. This modifies the SQL so the proper values can be returned. This only modifies the statement if you are using MSSQL, a returning value is specified, and the `includeTriggerModifications` option is set."
+      },
+      {
+        type: "code",
+        language: "js",
+        content: `
+          // Adding the option includeTriggerModifications allows you 
+          // to run statements on tables that contain triggers. Only affects MSSQL.
+          knex('books')
+            .where('title', 'Alice in Wonderland')
+            .del(['id', 'title'], { includeTriggerModifications: true })
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
     method: "returning",
-    example: ".returning(column) / .returning([column1, column2, ...])",
-    description: "Utilized by PostgreSQL, MSSQL, and Oracle databases, the returning method specifies which column should be returned by the insert and update methods. Passed column parameter may be a string or an array of strings. When passed in a string, makes the SQL result be reported as an array of values from the specified column. When passed in an array of strings, makes the SQL result be reported as an array of objects, each containing a single property for each of the specified columns.",
+    example: ".returning(column, [options]) / .returning([column1, column2, ...], [options])",
+    description: "Utilized by PostgreSQL, MSSQL, and Oracle databases, the returning method specifies which column should be returned by the insert, update and delete methods. Passed column parameter may be a string or an array of strings. When passed in a string, makes the SQL result be reported as an array of values from the specified column. When passed in an array of strings, makes the SQL result be reported as an array of objects, each containing a single property for each of the specified columns. The returning method is not supported on Amazon Redshift.",
     children: [
       {
         type: "runnable",
@@ -1264,47 +1908,20 @@ export default [
             .returning(['id','title'])
             .insert({title: 'Slaughterhouse Five'})
         `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "update",
-    example: ".update(data, [returning]) / .update(key, value, [returning])",
-    description: "Creates an update query, taking a hash of properties or a key/value pair to be updated based on the other query constraints. Resolves the promise / fulfills the callback with the number of affected rows for the query. If a key to be updated has value undefined it is ignored.",
-    children: [
-      {
-        type: "runnable",
-        content: `
-          knex('books')
-            .where('published_date', '<', 2000)
-            .update({
-              status: 'archived',
-              thisKeyIsSkipped: undefined
-            })
-        `
       },
       {
-        type: "runnable",
-        content: `
-          // Returns [1] in \"mysql\", \"sqlite\", \"oracle\"; [] in \"postgresql\" unless the 'returning' parameter is set.
-          knex('books').update('title', 'Slaughterhouse Five')
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "del / delete",
-    example: ".del()",
-    description: "Aliased to del as delete is a reserved word in javascript, this method deletes one or more rows, based on other conditions specified in the query. Resolves the promise / fulfills the callback with the number of affected rows for the query.",
-    children: [
+        type: "text",
+        content: "For MSSQL, triggers on tables can interrupt returning a valid value from the standard DML statements. You can add the `includeTriggerModifications` option to get around this issue. This modifies the SQL so the proper values can be returned. This only modifies the statement if you are using MSSQL, a returning value is specified, and the `includeTriggerModifications` option is set."
+      },
       {
-        type: "runnable",
+        type: "code",
+        language: "js",
         content: `
-          knex('accounts')
-            .where('activated', false)
-            .del()
+          // Adding the option includeTriggerModifications allows you 
+          // to run statements on tables that contain triggers. Only affects MSSQL.
+          knex('books')
+            .returning(['id','title'], { includeTriggerModifications: true })
+            .insert({title: 'Slaughterhouse Five'})
         `
       }
     ]
@@ -1319,11 +1936,11 @@ export default [
         type: "code",
         language: "js",
         content: `
-          var Promise = require('bluebird');
+          const Promise = require('bluebird');
           knex.transaction(function(trx) {
             knex('books').transacting(trx).insert({name: 'Old Books'})
               .then(function(resp) {
-                var id = resp[0];
+                const id = resp[0];
                 return someExternalMethod(id, trx);
               })
               .then(trx.commit)
@@ -1343,7 +1960,7 @@ export default [
     type: "method",
     method: "forUpdate",
     example: ".transacting(t).forUpdate()",
-    description: "Dynamically added after a transaction is specified, the forUpdate adds a FOR UPDATE in PostgreSQL and MySQL during a select statement.",
+    description: "Dynamically added after a transaction is specified, the forUpdate adds a FOR UPDATE in PostgreSQL and MySQL during a select statement. Not supported on Amazon Redshift due to lack of table locks.",
     children: [
       {
         type: "runnable",
@@ -1360,7 +1977,7 @@ export default [
     type: "method",
     method: "forShare",
     example: ".transacting(t).forShare()",
-    description: "Dynamically added after a transaction is specified, the forShare adds a FOR SHARE in PostgreSQL and a LOCK IN SHARE MODE for MySQL during a select statement.",
+    description: "Dynamically added after a transaction is specified, the forShare adds a FOR SHARE in PostgreSQL and a LOCK IN SHARE MODE for MySQL during a select statement. Not supported on Amazon Redshift due to lack of table locks.",
     children: [
       {
         type: "runnable",
@@ -1375,9 +1992,43 @@ export default [
   },
   {
     type: "method",
+    method: "skipLocked",
+    example: ".skipLocked()",
+    description: "MySQL 8.0+ and PostgreSQL 9.5+ only. This method can be used after a lock mode has been specified with either forUpdate or forShare, and will cause the query to skip any locked rows, returning an empty set if none are available.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex('tableName')
+            .select('*')
+            .forUpdate()
+            .skipLocked()
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "noWait",
+    example: ".noWait()",
+    description: "MySQL 8.0+ and PostgreSQL 9.5+ only. This method can be used after a lock mode has been specified with either forUpdate or forShare, and will cause the query to fail immediately if any selected rows are currently locked.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex('tableName')
+            .select('*')
+            .forUpdate()
+            .noWait()
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
     method: "count",
-    example: ".count(column)",
-    description: "Performs a count on the specified column. Note that in Postgres, count returns a bigint type which will be a String and not a Number (more info).",
+    example: ".count(column|columns|raw, [options])",
+    description: "Performs a count on the specified column or array of columns (note that some drivers do not support multiple columns). Also accepts raw expressions. The value returned from count (and other aggregation queries) is an array of objects like: `[{'COUNT(*)': 1}]`. The actual keys are dialect specific, so usually we would want to specify an alias (Refer examples below). Note that in Postgres, count returns a bigint type which will be a String and not a Number ([more info](https://github.com/brianc/node-pg-types#use)).",
     children: [
       {
         type: "runnable",
@@ -1388,7 +2039,81 @@ export default [
       {
         type: "runnable",
         content: `
+          knex('users').count('active', {as: 'a'})
+        `
+      },
+      {
+        type: "runnable",
+        content: `
           knex('users').count('active as a')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').count({ a: 'active' })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').count({ a: 'active', v: 'valid' })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').count('id', 'active')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').count({ count: ['id', 'active'] })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').count(knex.raw('??', ['active']))
+        `
+      },
+      {
+        type: "heading",
+        size: "md",
+        content: "Usage with TypeScript"
+      },
+      {
+        type: "text",
+        content: "The value of count will, by default, have type of `string | number`. This may be counter-intuitive but some connectors (eg. postgres) will automatically cast BigInt result to string when javascript's Number type is not large enough for the value."
+      },
+      {
+        type: "code",
+        language: "ts",
+        content: `
+          knex('users').count('age') // Resolves to: Record<string, number | string>
+
+          knex('users').count({count: '*'}) // Resolves to { count?: string | number | undefined; }
+        `
+      },
+      {
+        type: "text",
+        content: "Working with `string | number` can be inconvenient if you are not working with large tables. Two alternatives are available:"
+      },
+      {
+        type: "code",
+        language: "ts",
+        content: `
+          // Be explicit about what you want as a result:
+          knex('users').count<Record<string, number>>('age');
+
+          // Setup a one time declaration to make knex use number as result type for all
+          // count and countDistinct invocations (for any table)
+          declare module "knex/types/result" {
+              interface Registry {
+                  Count: number;
+              }
+          }
         `
       }
     ]
@@ -1406,8 +2131,8 @@ export default [
   {
     type: "method",
     method: "min",
-    example: ".min(column)",
-    description: "Gets the minimum value for the specified column.",
+    example: ".min(column|columns|raw, [options])",
+    description: "Gets the minimum value for the specified column or array of columns (note that some drivers do not support multiple columns). Also accepts raw expressions.",
     children: [
       {
         type: "runnable",
@@ -1418,7 +2143,43 @@ export default [
       {
         type: "runnable",
         content: `
+          knex('users').min('age', {as: 'a'})
+        `
+      },
+      {
+        type: "runnable",
+        content: `
           knex('users').min('age as a')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').min({ a: 'age' })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').min({ a: 'age', b: 'experience' })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').min('age', 'logins')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').min({ min: ['age', 'logins'] })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').min(knex.raw('??', ['age']))
         `
       }
     ]
@@ -1426,8 +2187,8 @@ export default [
   {
     type: "method",
     method: "max",
-    example: ".max(column)",
-    description: "Gets the maximum value for the specified column.",
+    example: ".max(column|columns|raw, [options])",
+    description: "Gets the maximum value for the specified column or array of columns (note that some drivers do not support multiple columns). Also accepts raw expressions.",
     children: [
       {
         type: "runnable",
@@ -1438,7 +2199,43 @@ export default [
       {
         type: "runnable",
         content: `
+          knex('users').max('age', {as: 'a'})
+        `
+      },
+      {
+        type: "runnable",
+        content: `
           knex('users').max('age as a')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').max({ a: 'age' })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').max('age', 'logins')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').max({ max: ['age', 'logins'] })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').max({ max: 'age', exp: 'experience' })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').max(knex.raw('??', ['age']))
         `
       }
     ]
@@ -1446,8 +2243,8 @@ export default [
   {
     type: "method",
     method: "sum",
-    example: ".sum(column)",
-    description: "Retrieve the sum of the values of a given column.",
+    example: ".sum(column|columns|raw)",
+    description: "Retrieve the sum of the values of a given column or array of columns (note that some drivers do not support multiple columns). Also accepts raw expressions.",
     children: [
       {
         type: "runnable",
@@ -1459,6 +2256,30 @@ export default [
         type: "runnable",
         content: `
           knex('users').sum('products as p')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').sum({ p: 'products' })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').sum('products', 'orders')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').sum({ sum: ['products', 'orders'] })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').sum(knex.raw('??', ['products']))
         `
       }
     ]
@@ -1476,8 +2297,8 @@ export default [
   {
     type: "method",
     method: "avg",
-    example: ".avg(column)",
-    description: "Retrieve the average of the values of a given column.",
+    example: ".avg(column|columns|raw)",
+    description: "Retrieve the average of the values of a given column or array of columns (note that some drivers do not support multiple columns). Also accepts raw expressions.",
     children: [
       {
         type: "runnable",
@@ -1489,6 +2310,30 @@ export default [
         type: "runnable",
         content: `
           knex('users').avg('age as a')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').avg({ a: 'age' })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').avg('age', 'logins')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').avg({ avg: ['age', 'logins'] })
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('users').avg(knex.raw('??', ['age']))
         `
       }
     ]
@@ -1507,7 +2352,7 @@ export default [
     type: "method",
     method: "increment",
     example: ".increment(column, amount)",
-    description: "Increments a column value by the specified amount.",
+    description: "Increments a column value by the specified amount. Object syntax is supported for `column`.",
     children: [
       {
         type: "runnable",
@@ -1516,6 +2361,17 @@ export default [
             .where('userid', '=', 1)
             .increment('balance', 10)
         `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('accounts')
+            .where('id', '=', 1)
+            .increment({
+              balance: 10,
+              times: 1,
+            })
+        `
       }
     ]
   },
@@ -1523,12 +2379,22 @@ export default [
     type: "method",
     method: "decrement",
     example: ".decrement(column, amount)",
-    description: "Decrements a column value by the specified amount.",
+    description: "Decrements a column value by the specified amount. Object syntax is supported for `column`.",
     children: [
       {
         type: "runnable",
         content: `
           knex('accounts').where('userid', '=', 1).decrement('balance', 5)
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex('accounts')
+            .where('id', '=', 1)
+            .decrement({
+              balance: 50,
+            })
         `
       }
     ]
@@ -1578,7 +2444,7 @@ export default [
     method: "clone",
     example: ".clone()",
     description: "Clones the current query chain, useful for re-using partial query snippets in other queries without mutating the original.",
-    children: [    ]
+    children: []
   },
   {
     type: "method",
@@ -1758,7 +2624,7 @@ export default [
         type: "code",
         language: "js",
         content: `
-          var withUserName = function(queryBuilder, foreignKey) {
+          const withUserName = function(queryBuilder, foreignKey) {
             queryBuilder.leftJoin('users', foreignKey, 'users.id').select('users.user_name');
           };
           knex.table('articles').select('title', 'body').modify(withUserName, 'articles_user.id').then(function(article) {
@@ -1786,14 +2652,31 @@ export default [
     method: "debug",
     example: ".debug([enabled])",
     description: "Overrides the global debug setting for the current query chain. If enabled is omitted, query debugging will be turned on.",
-    children: [    ]
+    children: []
   },
   {
     type: "method",
     method: "connection",
     example: ".connection(dbConnection)",
-    description: "Explicitly specify the connection for the query, allowing you to use the knex chain outside of the built-in pooling capabilities.",
-    children: [    ]
+    description: "The method sets the db connection to use for the query without using the connection pool. You should pass to it the same object that acquireConnection() for the corresponding driver returns",
+    children: [
+      {
+        type: "code",
+        language: "js",
+        content: `
+          const Pool = require('pg-pool')
+          const pool = new Pool({ ... })
+          const connection = await pool.connect();
+            try {
+              return await knex.connection(connection); // knex here is a query builder with query already built
+            } catch (error) {
+              // Process error
+            } finally {
+              connection.release();
+            }
+        `
+      }
+    ]
   },
   {
     type: "method",
@@ -1811,11 +2694,118 @@ export default [
             })
             .select(['a1.email', 'a2.email'])
             .where(knex.raw('a1.id = 1'))
-            .option({ nestTables: true, rowMode: 'array' })
+            .options({ nestTables: true, rowMode: 'array' })
             .limit(2)
             .then(...
         `
       }
     ]
-  }
+  },
+  {
+    type: "method",
+    method: "queryContext",
+    example: ".queryContext(context)",
+    href: "Builder-queryContext",
+    children: [
+      {
+        type: 'text',
+        content: [
+          "Allows for configuring a context to be passed to the [wrapIdentifier](#Installation-wrap-identifier) and",
+          "[postProcessResponse](#Installation-post-process-response) hooks:",
+        ].join(" ")
+      },
+      {
+        type: "code",
+        language: "js",
+        content: `
+          knex('accounts as a1')
+            .queryContext({ foo: 'bar' })
+            .select(['a1.email', 'a2.email'])
+        `
+      },
+      {
+        type: "text",
+        content: [
+          "The context can be any kind of value and will be passed to the hooks without modification.",
+          "However, note that **objects will be shallow-cloned** when a query builder instance is [cloned](#Builder-clone),",
+          "which means that they will contain all the properties of the original object but will not be the same object reference.",
+          "This allows modifying the context for the cloned query builder instance.",
+        ].join(" ")
+      },
+      {
+        type: "text",
+        content: "Calling `queryContext` with no arguments will return any context configured for the query builder instance."
+      }
+    ]
+  },
+  {
+    type: "heading",
+    size: "md",
+    content: "Extending Query Builder",
+    href: "Builder-extending"
+  },
+  {
+    type: "text",
+    content: [
+      "**Important:** this feature is experimental and its API may change in the future.",
+      "It allows to add custom function the the Query Builder.",
+      "Example:"
+    ]
+  },
+  {
+    type: "code",
+    language: "js",
+    content: `
+      const Knex = require('knex');
+      Knex.QueryBuilder.extend('customSelect', function(value) {
+        return this.select(this.client.raw(\`\${value} as value\`));
+      });
+
+      const meaningOfLife = await knex('accounts')
+        .customSelect(42);
+    `
+  },
+  {
+    type: "text",
+    content: [
+      "If using TypeScript, you can extend the QueryBuilder interface with your custom method.",
+      "1. Create a `knex.d.ts` file inside a `@types` folder (or any other folder).",
+    ]
+  },
+  {
+    type: "code",
+    language: "ts",
+    content: `
+      // knex.d.ts
+
+      import { Knex } from 'knex';
+
+      declare module 'knex' {
+        interface QueryBuilder {
+        customSelect<TRecord, TResult>(value: number): Knex.QueryBuilder<TRecord, TResult>;
+      }
+    `
+  },
+  {
+    type: "text",
+    content: [
+      "2. Add the new `@types` folder to `typeRoots` in your `tsconfig.json`.",
+    ]
+  },
+  {
+    type: "code",
+    language: "ts",
+    content: `
+      // tsconfig.json
+
+      {
+        "compilerOptions": {
+          "typeRoots": [
+            "node_modules/@types",
+            "@types"
+          ],
+        }
+      }
+    `
+  },
 ]

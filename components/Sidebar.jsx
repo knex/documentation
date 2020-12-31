@@ -16,13 +16,6 @@ export default class Sidebar extends Component {
           <li>&raquo; <a href="#changelog">Change Log</a></li>
         </ul>
 
-        <a className="toc_title" href="#Upgrading">
-          Upgrading
-        </a>
-        <ul className="toc_section">
-          <li>– <a href="#Upgrading-from0.11">0.11.x -> 0.12</a></li>
-        </ul>
-
         <a className="toc_title" href="#Installation">
           Installation
         </a>
@@ -32,15 +25,26 @@ export default class Sidebar extends Component {
           <li><b><a href="#Installation-client">Config Options:</a></b></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-client">client</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-debug">debug</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Installation-asyncStackTraces">Async stacktraces</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-pooling">pooling</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Installation-pooling-afterCreate">afterCreate</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-acquireConnectionTimeout">acquireConnectionTimeout</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Installation-fetchAsString">fetchAsString</a></li>
           <li>&nbsp;&nbsp;– <a href="#Installation-migrations">migrations</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Installation-post-process-response">postProcessResponse</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Installation-wrap-identifier">wrapIdentifier</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Installation-log">log</a></li>
         </ul>
+
+        <a className="toc_title" href="#typescript-support">
+          TypeScript Support
+        </a>
 
         <a className="toc_title" href="#Builder">
           Query Builder
         </a>
         <ul className="toc_section">
+          <li>– <a href="#Builder-identifier-syntax"><b>Identifier Syntax</b></a></li>
           <li>– <a href="#Builder-knex"><b>constructor</b></a></li>
           <li>– <a href="#Builder-timeout">timeout</a></li>
           <li>– <a href="#Builder-select">select</a></li>
@@ -48,6 +52,7 @@ export default class Sidebar extends Component {
           <li>– <a href="#Builder-column">column</a></li>
           <li>– <a href="#Builder-from">from</a></li>
           <li>– <a href="#Builder-with">with</a></li>
+          <li>– <a href="#Builder-withRecursive">withRecursive</a></li>
           <li>– <a href="#Builder-withSchema">withSchema</a></li>
 
           <li><b><a href="#Builder-wheres">Where Methods:</a></b></li>
@@ -64,15 +69,25 @@ export default class Sidebar extends Component {
           <li>&nbsp;&nbsp;– <a href="#Builder-whereRaw">whereRaw</a></li>
 
           <li><b><a href="#Builder-join">Join Methods:</a></b></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-join">join</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-innerJoin">innerJoin</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-leftJoin">leftJoin</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-leftOuterJoin">leftOuterJoin</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-rightJoin">rightJoin</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-rightOuterJoin">rightOuterJoin</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Builder-outerJoin">outerJoin</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-fullOuterJoin">fullOuterJoin</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-crossJoin">crossJoin</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-joinRaw">joinRaw</a></li>
+
+          <li><b><a href="#Builder-on">On Methods:</a></b></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-onIn">onIn</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-onNotIn">onNotIn</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-onNull">onNull</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-onNotNull">onNotNull</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-onExists">onExists</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-onNotExists">onNotExists</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-onBetween">onBetween</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-onNotBetween">onNotBetween</a></li>
 
           <li><b><a href="#Builder-havings">Having Methods:</a></b></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-having">having</a></li>
@@ -86,17 +101,16 @@ export default class Sidebar extends Component {
           <li>&nbsp;&nbsp;– <a href="#Builder-havingNotBetween">havingNotBetween</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-havingRaw">havingRaw</a></li>
 
-          <li><b><a href="#Builder-on">On Methods:</a></b></li>
-          <li>&nbsp;&nbsp;– <a href="#Builder-onIn">onIn</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Builder-onNotIn">onNotIn</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Builder-onNull">onNull</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Builder-onNotNull">onNotNull</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Builder-onExists">onExists</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Builder-onNotExists">onNotExists</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Builder-onBetween">onBetween</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Builder-onNotBetween">onNotBetween</a></li>
+          <li><b><a href="#Builder-clear">Clear Methods:</a></b></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-clear">clear</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-clearSelect">clearSelect (deprecated)</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-clearWhere">clearWhere (deprecated)</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-clearOrder">clearOrder (deprecated)</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-clearHaving">clearHaving (deprecated)</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-clearCounters">clearCounters</a></li>
 
           <li>– <a href="#Builder-distinct">distinct</a></li>
+          <li>– <a href="#Builder-distinctOn">distinctOn</a></li>
           <li>– <a href="#Builder-groupBy">groupBy</a></li>
           <li>– <a href="#Builder-groupByRaw">groupByRaw</a></li>
           <li>– <a href="#Builder-orderBy">orderBy</a></li>
@@ -106,12 +120,17 @@ export default class Sidebar extends Component {
           <li>– <a href="#Builder-union">union</a></li>
           <li>– <a href="#Builder-unionAll">unionAll</a></li>
           <li>– <a href="#Builder-insert">insert</a></li>
-          <li>– <a href="#Builder-returning">returning</a></li>
+          <li>– <a href="#Builder-onConflict">onConflict</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-ignore">ignore</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Builder-merge">merge</a></li>
           <li>– <a href="#Builder-update">update</a></li>
           <li>– <a href="#Builder-del / delete">del / delete</a></li>
+          <li>– <a href="#Builder-returning">returning</a></li>
           <li>– <a href="#Builder-transacting">transacting</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-forUpdate">forUpdate</a></li>
           <li>&nbsp;&nbsp;– <a href="#Builder-forShare">forShare</a></li>
+          <li>– <a href="#Builder-skipLocked">skipLocked</a></li>
+          <li>– <a href="#Builder-noWait">noWait</a></li>
           <li>– <a href="#Builder-count">count</a></li>
           <li>– <a href="#Builder-min">min</a></li>
           <li>– <a href="#Builder-max">max</a></li>
@@ -123,14 +142,12 @@ export default class Sidebar extends Component {
           <li>– <a href="#Builder-pluck">pluck</a></li>
           <li>– <a href="#Builder-first">first</a></li>
           <li>– <a href="#Builder-clone">clone</a></li>
-          <li>– <a href="#Builder-denseRank">denseRank</a></li>
-          <li>– <a href="#Builder-rank">rank</a></li>
-          <li>– <a href="#Builder-rowNumber">rowNumber</a></li>
           <li>– <a href="#Builder-modify">modify</a></li>
           <li>– <a href="#Builder-columnInfo">columnInfo</a></li>
           <li>– <a href="#Builder-debug">debug</a></li>
           <li>– <a href="#Builder-connection">connection</a></li>
           <li>– <a href="#Builder-options">options</a></li>
+          <li>- <a href="#Builder-queryContext">queryContext</a></li>
         </ul>
 
         <a className="toc_title" href="#Transactions">
@@ -144,10 +161,8 @@ export default class Sidebar extends Component {
           Schema Builder
         </a>
         <ul className="toc_section">
-          <li>– <a href="#Schema-with">with</a></li>
           <li>– <a href="#Schema-withSchema">withSchema</a></li>
           <li>– <a href="#Schema-createTable">createTable</a></li>
-          <li>– <a href="#Schema-createTableIfNotExists">createTableIfNotExists</a></li>
           <li>– <a href="#Schema-renameTable">renameTable</a></li>
           <li>– <a href="#Schema-dropTable">dropTable</a></li>
           <li>– <a href="#Schema-hasColumn">hasColumn</a></li>
@@ -155,6 +170,7 @@ export default class Sidebar extends Component {
           <li>– <a href="#Schema-dropTableIfExists">dropTableIfExists</a></li>
           <li>– <a href="#Schema-table">table</a></li>
           <li>– <a href="#Schema-raw">raw</a></li>
+          <li>– <a href="#Schema-queryContext">queryContext</a></li>
           <li><b><a href="#Schema-Building">Schema Building:</a></b></li>
           <li>– <a href="#Schema-dropColumn">dropColumn</a></li>
           <li>– <a href="#Schema-dropColumns">dropColumns</a></li>
@@ -168,7 +184,7 @@ export default class Sidebar extends Component {
           <li>– <a href="#Schema-decimal">decimal</a></li>
           <li>– <a href="#Schema-boolean">boolean</a></li>
           <li>– <a href="#Schema-date">date</a></li>
-          <li>– <a href="#Schema-dateTime">dateTime</a></li>
+          <li>– <a href="#Schema-datetime">datetime</a></li>
           <li>– <a href="#Schema-time">time</a></li>
           <li>– <a href="#Schema-timestamp">timestamp</a></li>
           <li>– <a href="#Schema-timestamps">timestamps</a></li>
@@ -186,11 +202,14 @@ export default class Sidebar extends Component {
           <li>– <a href="#Schema-specificType">specificType</a></li>
           <li>– <a href="#Schema-index">index</a></li>
           <li>– <a href="#Schema-dropIndex">dropIndex</a></li>
+          <li>– <a href="#Schema-unique">unique</a></li>
           <li>– <a href="#Schema-foreign">foreign</a></li>
           <li>– <a href="#Schema-dropForeign">dropForeign</a></li>
           <li>– <a href="#Schema-dropUnique">dropUnique</a></li>
           <li>– <a href="#Schema-dropPrimary">dropPrimary</a></li>
+          <li>– <a href="#Schema-table-queryContext">queryContext</a></li>
           <li><a href="#Chainable"><b>Chainable:</b></a></li>
+          <li>– <a href="#Schema-alter">alter</a></li>
           <li>– <a href="#Schema-index">index</a></li>
           <li>– <a href="#Schema-primary">primary</a></li>
           <li>– <a href="#Schema-unique">unique</a></li>
@@ -204,8 +223,8 @@ export default class Sidebar extends Component {
           <li>– <a href="#Schema-nullable">nullable</a></li>
           <li>– <a href="#Schema-first">first</a></li>
           <li>– <a href="#Schema-after">after</a></li>
-          <li>– <a href="#Schema-comment">comment</a></li>
-          <li>– <a href="#Schema-collate">collate</a></li>
+          <li>– <a href="#Column-comment">comment</a></li>
+          <li>– <a href="#Column-collate">collate</a></li>
         </ul>
 
         <a className="toc_title" href="#Raw">
@@ -216,6 +235,15 @@ export default class Sidebar extends Component {
           <li>– <a href="#Raw-Expressions">Raw Expressions</a></li>
           <li>– <a href="#Raw-Queries">Raw Queries</a></li>
           <li>- <a href="#Raw-queries-wrapped">Wrapped Queries</a></li>
+        </ul>
+
+        <a className="toc_title" href="#Ref">
+         Ref
+        </a>
+        <ul className="toc_section">
+         <li>– <a href="#Ref-Usage">Usage</a></li>
+         <li>– <a href="#Ref-withSchema">withSchema</a></li>
+         <li>– <a href="#Ref-alias">alias</a></li>
         </ul>
 
 
@@ -231,25 +259,22 @@ export default class Sidebar extends Component {
         </a>
         <ul className="toc_section">
           <li><b><a href="#Interfaces-Promises">Promises</a></b></li>
-          <li>&nbsp;&nbsp;– <a href="#Promises-then">then</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Promises-catch">catch</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Promises-tap">tap</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Promises-map">map</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Promises-reduce">reduce</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Promises-bind">bind</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Promises-return">return</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-then">then</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-catch">catch</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-return">return</a></li>
           <li><b><a href="#Interfaces-Callbacks">Callbacks</a></b></li>
           <li>&nbsp;&nbsp;– <a href="#Interfaces-asCallback">asCallback</a></li>
           <li><b><a href="#Interfaces-Streams">Streams</a></b></li>
-          <li>&nbsp;&nbsp;– <a href="#Streams-stream">stream</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Streams-pipe">pipe</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-stream">stream</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-pipe">pipe</a></li>
           <li><b><a href="#Interfaces-Events">Events</a></b></li>
-          <li>&nbsp;&nbsp;– <a href="#Events-query">query</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Events-query-error">query-error</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Events-query-response">query-response</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-query">query</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-query-error">query-error</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-query-response">query-response</a></li>
           <li><b><a href="#Interfaces-Other">Other:</a></b></li>
-          <li>&nbsp;&nbsp;– <a href="#Other-toString">toString</a></li>
-          <li>&nbsp;&nbsp;– <a href="#Other-toSQL">toSQL</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-toString">toString</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-toSQL">toSQL</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Interfaces-toSQL">toSQL().toNative()</a></li>
         </ul>
 
         <a className="toc_title" href="#Migrations">
@@ -261,11 +286,17 @@ export default class Sidebar extends Component {
             <li>– <a href="#Migrations-CLI">Migrations</a></li>
             <li>– <a href="#Seeds-CLI">Seed files</a></li>
             <li>– <a href="#knexfile">knexfile.js</a></li>
+            <li>– <a href="#esm-interop">esm</a></li>
           <li><a href="#Migrations-API"><b>Migration API</b></a></li>
             <li>– <a href="#Migrations-make">make</a></li>
             <li>– <a href="#Migrations-latest">latest</a></li>
             <li>– <a href="#Migrations-rollback">rollback</a></li>
+            <ii>- <a href="#Migrations-up">up</a></ii>
+            <ii>- <a href="#Migrations-down">down</a></ii>
             <li>– <a href="#Migrations-currentVersion">currentVersion</a></li>
+            <li>– <a href="#Migrations-list">list</a></li>
+            <li>– <a href="#Migrations-unlock">unlock</a></li>
+          <li><a href="#Notes-about-locks"><b>Notes about locks</b></a></li>
           <li><a href="#Seeds-API"><b>Seed API</b></a></li>
             <li>– <a href="#Seeds-make">make</a></li>
             <li>– <a href="#Seeds-run">run</a></li>

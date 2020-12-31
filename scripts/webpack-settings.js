@@ -17,13 +17,15 @@ const webpackDevServerAddress = `http://${ip.address()}:${options.port}`
 const cssSourceMap = options.debug ? '?sourceMap' : ''
 
 const entryFile = path.join(__dirname, '../components/client.jsx')
+
 const devEntryBundle = [
   'webpack/hot/dev-server',
   `webpack-dev-server/client?${webpackDevServerAddress}`,
   entryFile,
 ]
 const plugins = [
-  new webpack.NoErrorsPlugin(),
+  new webpack.IgnorePlugin(/package\.json/, /mssql/),
+  new webpack.NoEmitOnErrorsPlugin(),
   new ExtractTextPlugin('[name].css'),
   new webpack.DefinePlugin({
     'process.env': {
@@ -35,7 +37,7 @@ const plugins = [
 export default {
 
   resolve: {
-    extensions: ['', '.js', '.jsx'],
+    extensions: ['.js', '.jsx'],
   },
 
   devtool: 'source-map',
@@ -49,12 +51,16 @@ export default {
     path: path.join(__dirname, '../build'),
     publicPath: options.debug ? `${webpackDevServerAddress}/build/` : '/build/',
   },
+  
+  node: {
+    fs: 'empty',
+  },
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.md$/i,
-        loader: 'raw'
+        loader: 'raw-loader'
       },
       {
         test: /\.jsx?$/,
@@ -66,11 +72,10 @@ export default {
       },
       {
         test: /\.css/,
-        loader: ExtractTextPlugin.extract('style', `css${cssSourceMap}`)
-      },
-      {
-        test: /\.json$/,
-        loader: 'json'
+        loader: ExtractTextPlugin.extract({ 
+          fallback: 'style-loader', 
+          use: `css-loader${cssSourceMap}` 
+        })
       },
       {
         test: /\.jpe?g$|\.gif$|\.png|\.ico$/,
@@ -80,6 +85,10 @@ export default {
         test: /\.eot$|\.ttf$|\.svg$|\.woff2?$/,
         loader: 'file?name=[name].[ext]'
       },
+      {
+        test: /ansi-styles|chalk|tarn/,
+        loader: 'babel-loader'
+      }
     ],
   },
 

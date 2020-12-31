@@ -46,7 +46,7 @@ export default [
   {
     type: "method",
     method: "then",
-    example: ".then(onFulfilled)",
+    example: ".then(onFulfilled, [onRejected])",
     description: "Coerces the current query builder chain into a promise state, accepting the resolve and reject handlers as specified by the Promises/A+ spec. As stated in the spec, more than one call to the then method for the current query chain will resolve with the same value, in the order they were called; the query will not be executed multiple times.",
     children: [
       {
@@ -91,108 +91,6 @@ export default [
             .catch(function(error) {
               console.error(error);
             });
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "tap",
-    example: ".tap(sideEffectHandler)",
-    description: "Executes side effects on the resolved response, ultimately returning a promise that fulfills with the original value. A thrown error or rejected promise will cause the promise to transition into a rejected state.",
-    children: [
-      {
-        type: "code",
-        language: "js",
-        content: `
-          // Using only .then()
-          query.then(function(x) {
-            doSideEffectsHere(x);
-            return x;
-          });
-
-          // Using .tap()
-          promise.tap(doSideEffectsHere);
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "map",
-    example: ".map(mapper)",
-    description: "A passthrough to Bluebird's map implementation with the result set.",
-    children: [
-      {
-        type: "code",
-        language: "js",
-        content: `
-          knex.select('name').from('users').limit(10).map(function(row) {
-            return row.name;
-          })
-          .then(function(names) { console.log(names); })
-          .catch(function(e) { console.error(e); });
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "reduce",
-    example: ".reduce(reducer, [initialValue])",
-    description: "A passthrough to Bluebird's reduce implementation with the result set.",
-    children: [
-      {
-        type: "code",
-        language: "js",
-        content: `
-          knex.select('name').from('users').limit(10).reduce(function(memo, row) {
-            memo.names.push(row.name);
-            memo.count++;
-            return memo;
-          }, {count: 0, names: []})
-          .then(function(obj) { console.log(obj); })
-          .catch(function(e) { console.error(e); });
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "bind",
-    example: ".bind(context)",
-    description: "A passthrough to Bluebird's bind method which sets the context value (this) for the returned promise.",
-    children: [
-      {
-        type: "code",
-        language: "js",
-        content: `
-          knex.select('name').from('users')
-            .limit(10)
-            .bind(console)
-            .then(console.log)
-            .catch(console.error)
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "return",
-    example: ".return(value)",
-    description: "Shorthand for calling .then(function() { return value }).",
-    children: [
-      {
-        type: "code",
-        language: "js",
-        content: `
-          // Without return:
-          knex.insert(values).into('users')
-            .then(function() {
-              return {inserted: true};
-            });
-
-          knex.insert(values).into('users').return({inserted: true});
         `
       }
     ]
@@ -252,15 +150,15 @@ export default [
         language: "js",
         content: `
           // Retrieve the stream:
-          var stream = knex.select('*').from('users').stream();
+          const stream = knex.select('*').from('users').stream();
           stream.pipe(writableStream);
 
           // With options:
-          var stream = knex.select('*').from('users').stream({highWaterMark: 5});
+          const stream = knex.select('*').from('users').stream({highWaterMark: 5});
           stream.pipe(writableStream);
 
           // Use as a promise:
-          var stream = knex.select('*').from('users')
+          const stream = knex.select('*').from('users')
             .where(knex.raw('id = ?', [1]))
             .stream(function(stream) {
               stream.pipe(writableStream);
@@ -280,7 +178,7 @@ export default [
       {
         type: "code",
         language: "js",
-        content: "var stream = knex.select('*').from('users').pipe(writableStream);"
+        content: "const stream = knex.select('*').from('users').pipe(writableStream);"
       }
     ]
   },
@@ -293,7 +191,7 @@ export default [
   {
     type: "method",
     method: "query",
-    description: "A query event is fired just before a query takes place, providing data about the query, including the connection's __cid property and any other information about the query as described in toSQL. Useful for logging all queries throughout your application.",
+    description: "A query event is fired just before a query takes place, providing data about the query, including the connection's `__knexUid` / `__knexTxId` properties and any other information about the query as described in toSQL. Useful for logging all queries throughout your application.",
     children: [
       {
         type: "code",
@@ -314,7 +212,7 @@ export default [
   {
     type: "method",
     method: "query-error",
-    description: "A query-error event is fired when an error occurs when running a query, providing the error object and data about the query, including the connection's __cid property and any other information about the query as described in toSQL. Useful for logging all query errors throughout your application.",
+    description: "A query-error event is fired when an error occurs when running a query, providing the error object and data about the query, including the connection's `__knexUid` / `__knexTxId` properties and any other information about the query as described in toSQL. Useful for logging all query errors throughout your application.",
     children: [
       {
         type: "code",
@@ -336,7 +234,7 @@ export default [
   {
     type: "method",
     method: "query-response",
-    description: "A query-response event is fired when a successful query has been run, providing the response of the query and data about the query, including the connection's __cid property and any other information about the query as described in toSQL, and finally the query builder used for the query.",
+    description: "A query-response event is fired when a successful query has been run, providing the response of the query and data about the query, including the connection's `__knexUid` / `__knexTxId` properties and any other information about the query as described in toSQL, and finally the query builder used for the query.",
     children: [
       {
         type: "code",
@@ -356,6 +254,29 @@ export default [
     ]
   },
   {
+    type: "method",
+    method: "start",
+    description: "A `start` event is fired right before a query-builder is compiled. Note: While this event can be used to alter a builders state prior to compilation it is not to be recommended. Future goals include ways of doing this in a different manner such as hooks.",
+    children: [
+      {
+        type: "code",
+        language: "js",
+        content: `
+          knex.select('*')
+            .from('users')
+            .on('start', function(builder) {
+              builder
+              .where('IsPrivate', 0)
+            })
+            .then(function(Rows) {
+              //Only contains Rows where IsPrivate = 0
+            })
+            .catch(function(error) { });
+        `
+      }
+    ]
+  },
+  {
     type: "heading",
     size: "md",
     content: "Other",
@@ -365,12 +286,20 @@ export default [
     type: "method",
     method: "toString",
     example: ".toString()",
-    description: "Returns an array of query strings filled out with the correct values based on bindings, etc. Useful for debugging.",
+    description: [
+      "Returns an array of query strings filled out with the correct values",
+      "based on bindings, etc. Useful for debugging, but should not be used to",
+      "create queries for running them against DB."
+    ].join(' '),
     children: [
       {
-        type: "runnable",
+        type: "code",
+        language: "js",
         content: `
-          knex.select('*').from('users').where(knex.raw('id = ?', [1])).toString()
+          const toStringQuery = knex.select('*').from('users').where('id', 1).toString();
+          
+          // Outputs: console.log(toStringQuery); 
+          // select * from "users" where "id" = 1
         `
       }
     ]
@@ -378,17 +307,39 @@ export default [
   {
     type: "method",
     method: "toSQL",
-    example: ".toSQL()",
-    description: "Returns an array of query strings filled out with the correct values based on bindings, etc. Useful for debugging.",
+    example: ".toSQL() and toSQL().toNative()",
+    description: [
+      "Returns an array of query strings filled out with the correct values based",
+      "on bindings, etc. Useful for debugging and building queries for running them",
+      "manually with DB driver. `.toSQL().toNative()` outputs object with sql string",
+      "and bindings in a dialects format in the same way that knex internally sends",
+      "them to underlying DB driver."
+    ].join(' '),
     children: [
       {
         type: "code",
         language: "js",
         content: `
-          knex.select('*').from('users').where(knex.raw('id = ?', [1])).toSQL()
+          knex.select('*').from('users')
+            .where(knex.raw('id = ?', [1]))
+            .toSQL()
+          // Outputs:
+          // {
+          //   bindings: [1],
+          //   method: 'select',
+          //   sql: 'select * from "users" where id = ?',
+          //   options: undefined,
+          //   toNative: function () {}
+          // }
 
-          // Ouputs: { bindings: [1], method: 'select', sql: 'select * from "users" where id = ?', options: undefined, }
-        `
+          knex.select('*').from('users')
+            .where(knex.raw('id = ?', [1]))
+            .toSQL().toNative()
+          // Outputs for postgresql dialect:
+          // {
+          //   bindings: [1],
+          //   sql: 'select * from "users" where id = $1',
+          // }        `
       }
     ]
   }

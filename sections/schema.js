@@ -7,7 +7,7 @@ export default [
   },
   {
     type: "text",
-    content: "The `knex.schema` is a **getter function**, which returns a stateful object containing the query. Therefore be sure to obtain a new instance of the `knex.schema` for every query. These methods return [promises](http://knexjs.org/#Interfaces-Promises)."
+    content: "The `knex.schema` is a **getter function**, which returns a stateful object containing the query. Therefore be sure to obtain a new instance of the `knex.schema` for every query. These methods return [promises](https://knexjs.org/#Interfaces-Promises)."
   },
   {
     type: "method",
@@ -35,24 +35,6 @@ export default [
         type: "runnable",
         content: `
           knex.schema.createTable('users', function (table) {
-            table.increments();
-            table.string('name');
-            table.timestamps();
-          })
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "createTableIfNotExists",
-    example: "knex.schema.createTableIfNotExists(tableName, callback)",
-    description: "Creates a new table on the database if it doesn't exists on database, with a callback function to modify the table's structure, using the schema-building commands.",
-    children: [
-      {
-        type: "runnable",
-        content: `
-          knex.schema.createTableIfNotExists('users', function (table) {
             table.increments();
             table.string('name');
             table.timestamps();
@@ -172,6 +154,41 @@ export default [
     ]
   },
   {
+    type: "method",
+    method: "queryContext",
+    example: "knex.schema.queryContext(context)",
+    href: "Schema-queryContext",
+    description: [
+      "Allows configuring a context to be passed to the [wrapIdentifier](#Installation-wrap-identifier) hook.",
+      "The context can be any kind of value and will be passed to `wrapIdentifier` without modification."
+    ].join(" "),
+    children: [
+      {
+        type: "code",
+        language: "js",
+        content: `
+          knex.schema.queryContext({ foo: 'bar' })
+            .table('users', function (table) {
+              table.string('first_name');
+              table.string('last_name');
+            })
+        `
+      },
+      {
+        type: "text",
+        content: [
+          "The context configured will be passed to `wrapIdentifier`",
+          "for each identifier that needs to be formatted, including the table and column names.",
+          "However, a different context can be set for the column names via [table.queryContext](#Schema-table-queryContext)."
+        ].join(" ")
+      },
+      {
+        type: "text",
+        content: "Calling `queryContext` with no arguments will return any context configured for the schema builder instance."
+      }
+    ]
+  },
+  {
     type: "heading",
     size: "md",
     content: "Schema Building:",
@@ -202,8 +219,29 @@ export default [
     type: "method",
     method: "increments",
     example: "table.increments(name)",
-    description: "Adds an auto incrementing column, in PostgreSQL this is a serial. This will be used as the primary key for the column. Also available is a bigIncrements if you wish to add a bigint incrementing number (in PostgreSQL bigserial).",
-    children: [    ]
+    description: "Adds an auto incrementing column. In PostgreSQL this is a serial; in Amazon Redshift an integer identity(1,1). This will be used as the primary key for the table. Also available is a bigIncrements if you wish to add a bigint incrementing number (in PostgreSQL bigserial).",
+    children: [
+      {
+        type: 'code',
+        language: 'js',
+        content: `
+          // create table 'users' with a primary key using 'increments()'
+          knex.schema.createTable('users', function (table) {
+            table.increments('userId');
+            table.string('name');
+          });
+
+          // reference the 'users' primary key in new table 'posts'
+          knex.schema.createTable('posts', function (table) {
+            table.integer('author').unsigned().notNullable();
+            table.string('title', 30);
+            table.string('content');
+
+            table.foreign('author').references('userId').inTable('users');
+          });
+        `
+      }
+    ]
   },
   {
     type: "method",
@@ -244,7 +282,7 @@ export default [
     type: "method",
     method: "decimal",
     example: "table.decimal(column, [precision], [scale])",
-    description: "Adds a decimal column, with optional precision (defaults to 8) and scale (defaults to 2).",
+    description: "Adds a decimal column, with optional precision (defaults to 8) and scale (defaults to 2). Specifying NULL as precision creates a decimal column that can store numbers of any precision and scale. (Only supported for Oracle, SQLite, Postgres)",
     children: [    ]
   },
   {
@@ -263,34 +301,62 @@ export default [
   },
   {
     type: "method",
-    method: "dateTime",
-    example: "table.dateTime(name)",
-    description: "Adds a dateTime column.",
-    children: [    ]
+    method: "datetime",
+    example: "table.datetime(name, options={[useTz: boolean], [precision: number]})",
+    description: "Adds a datetime column. By default PostgreSQL creates column with timezone (timestamptz type). This behaviour can be overriden by passing the useTz option (which is by default true for PostgreSQL). MySQL and MSSQL do not have useTz option.",
+    children: [{
+      type: 'text',
+      content: "A precision option may be passed:"
+    }, {
+      type: 'code',
+      language: 'js',
+      content: `table.datetime('some_time', { precision: 6 }).defaultTo(knex.fn.now(6))`
+    }]
   },
   {
     type: "method",
     method: "time",
-    example: "table.time(name)",
-    description: "Adds a time column.",
-    children: [    ]
+    example: "table.time(name, [precision])",
+    description: "Adds a time column, with optional precision for MySQL. Not supported on Amazon Redshift.",
+    children: [{
+      type: 'text',
+      content: "In MySQL a precision option may be passed:"
+    }, {
+      type: 'code',
+      language: 'js',
+      content: `table.time('some_time', { precision: 6 })`
+    }]
   },
   {
     type: "method",
     method: "timestamp",
-    example: "table.timestamp(name, [standard])",
-    description: "Adds a timestamp column, defaults to timestamptz in PostgreSQL, unless true is passed as the second argument. For Example:",
+    example: "table.timestamp(name, options={[useTz: boolean], [precision: number]})",
+    description: "Adds a timestamp column. By default PostgreSQL creates column with timezone (timestamptz type) and MSSQL does not (datetime2). This behaviour can be overriden by passing the useTz option (which is by default false for MSSQL and true for PostgreSQL). MySQL does not have useTz option.",
     children: [{
       type: 'code',
       language: 'js',
       content: `table.timestamp('created_at').defaultTo(knex.fn.now());`
+    }, {
+      type: 'text',
+      content: "In PostgreSQL and MySQL a precision option may be passed:"
+    }, {
+      type: 'code',
+      language: 'js',
+      content: `table.timestamp('created_at', { precision: 6 }).defaultTo(knex.fn.now(6));`
+    }, {
+      type: 'text',
+      content: "In PostgreSQL and MSSQL a timezone option may be passed:"
+    }, {
+      type: 'code',
+      language: 'js',
+      content: `table.timestamp('created_at', { useTz: true });`
     }]
   },
   {
     type: "method",
     method: "timestamps",
-    example: "table.timestamps()",
-    description: "Adds a created_at and updated_at column on the database, setting these each to dateTime types. When true is passed as the first argument a timestamp type is used. Both colums default to being not null and the current timestamp when true is passed as the second argument.",
+    example: "table.timestamps([useTimestamps], [defaultToNow])",
+    description: "Adds created_at and updated_at columns on the database, setting each to datetime types. When true is passed as the first argument a timestamp type is used instead. Both columns default to being not null and using the current timestamp when true is passed as the second argument. Note that on MySQL the .timestamps() only have seconds precision, to get better precision use the .datetime or .timestamp methods directly with precision.",
     children: [    ]
   },
   {
@@ -309,14 +375,47 @@ export default [
   },
   {
     type: "method",
+    href: "Schema-enum",
     method: "enum / enu",
-    example: "table.enu(col, values)",
-    description: "Adds a enum column, (aliased to enu, as enum is a reserved word in javascript). Note that the second argument is an array of values. Example:",
+    example: "table.enu(col, values, [options])",
+    description: "Adds a enum column, (aliased to enu, as enum is a reserved word in JavaScript). Implemented as unchecked varchar(255) on Amazon Redshift. Note that the second argument is an array of values. Example:",
     children: [{
       type: 'code',
       language: 'js',
       content: `table.enu('column', ['value1', 'value2'])`
-    }]
+    }, {
+      type: 'text',
+      content: "For Postgres, an additional options argument can be provided to specify whether or not to use Postgres's native TYPE:"
+    }, {
+      type: 'code',
+      language: 'js',
+      content: `table.enu('column', ['value1', 'value2'], { useNative: true, enumName: 'foo_type' })`
+    }, {
+      type: 'text',
+      content: "It will use the values provided to generate the appropriate TYPE. Example:"
+    }, {
+      type: 'code',
+      language: 'sql',
+      content: `CREATE TYPE "foo_type" AS ENUM ('value1', 'value2');`
+    }, {
+      type: 'text',
+      content: "To use an existing native type across columns, specify 'existingType' in the options (this assumes the type has already been created):",
+    }, {
+      type: 'info',
+      content: "Note: Since the enum values aren't utilized for a native && existing type, the type being passed in for values is immaterial."
+    }, {
+      type: 'code',
+      language: 'js',
+      content: `table.enu('column', null, { useNative: true, existingType: true, enumName: 'foo_type' })`
+    }, {
+      type: 'text',
+      content: "If you want to use existing enums from a schema, different from the schema of your current table, specify 'schemaName' in the options:"
+    }, {
+      type: 'code',
+      language: 'js',
+      content: `table.enu('column', null, { useNative: true, existingType: true, enumName: 'foo_type', schemaName: 'public' })`
+    }
+    ]
   },
   {
     type: "method",
@@ -324,7 +423,10 @@ export default [
     example: "table.json(name)",
     children: [{
       type: 'text',
-      content: `Adds a json column, using the built-in json type in postgresql, defaulting to a text column in older versions of postgresql or in unsupported databases. Note that when setting an array (or a value that could be an array) as the value of a json or jsonb column, you should use JSON.stringify() to convert your value to a string prior to passing it to the query builder, e.g.`
+      content: `Adds a json column, using the built-in json type in PostgreSQL, MySQL and SQLite, defaulting to a text column in older versions or in unsupported databases.`
+    }, {
+      type: 'text',
+      content: `For PostgreSQL, due to incompatibility between native array and json types, when setting an array (or a value that could be an array) as the value of a json or jsonb column, you should use JSON.stringify() to convert your value to a string prior to passing it to the query builder, e.g.`
     }, {
       type: 'code',
       language: 'js',
@@ -333,10 +435,8 @@ export default [
           .where({id: 1})
           .update({json_data: JSON.stringify(mightBeAnArray)});
       `
-    }, {
-      type: 'text',
-      content: 'This is because postgresql has a native array type which uses a syntax incompatible with json; knex has no way of knowing which syntax to use, and calling JSON.stringify() forces json-style syntax.'
-    }]
+    }
+    ]
   },
   {
     type: "method",
@@ -349,7 +449,7 @@ export default [
     type: "method",
     method: "uuid",
     example: "table.uuid(name)",
-    description: "Adds a uuid column - this uses the built-in uuid type in postgresql, and falling back to a char(36) in other databases.",
+    description: "Adds a uuid column - this uses the built-in uuid type in PostgreSQL, and falling back to a char(36) in other databases.",
     children: [    ]
   },
   {
@@ -390,7 +490,7 @@ export default [
   {
     type: "method",
     method: "specificType",
-    example: "table.specificType(column, value)",
+    example: "table.specificType(name, type)",
     description: "Sets a specific type for the column creation, if you'd like to add a column type that isn't supported here.",
     children: [    ]
   },
@@ -398,21 +498,39 @@ export default [
     type: "method",
     method: "index",
     example: "table.index(columns, [indexName], [indexType])",
-    description: "Adds an index to a table over the given columns. A default index name using the columns is used unless indexName is specified. The indexType can be optionally specified for PostgreSQL.",
+    description: "Adds an index to a table over the given columns. A default index name using the columns is used unless indexName is specified. The indexType can be optionally specified for PostgreSQL and MySQL. Amazon Redshift does not allow creating an index.",
     children: [    ]
   },
   {
     type: "method",
     method: "dropIndex",
     example: "table.dropIndex(columns, [indexName])",
-    description: "Drops an index from a table. A default index name using the columns is used unless indexName is specified (in which case columns is ignored).",
+    description: "Drops an index from a table. A default index name using the columns is used unless indexName is specified (in which case columns is ignored). Amazon Redshift does not allow creating an index.",
     children: [    ]
   },
   {
     type: "method",
+    method: "unique",
+    example: "table.unique(columns, [indexName])",
+    description: "Adds an unique index to a table over the given `columns`. A default index name using the columns is used unless indexName is specified.",
+    children: [{
+      type: 'code',
+      language: 'js',
+      content: `
+        knex.schema.alterTable('users', function(t) {
+          t.unique('email')
+        })
+        knex.schema.alterTable('job', function(t) {
+          t.unique(['account_id', 'program_id'])
+        })
+      `
+    }]
+  },
+  {
+    type: "method",
     method: "foreign",
-    example: "table.foreign(columns)",
-    description: "Adds a foreign key constraint to a table for an existing column using `table.foreign(column).references(column)` or multiple columns using `table.foreign(columns).references(columns)`. You can also chain onDelete and/or onUpdate to set the reference option (RESTRICT, CASCADE, SET NULL, NO ACTION) for the operation. Note, this is the same as column.references(column) but works for existing columns.",
+    example: "table.foreign(columns, [foreignKeyName])[.onDelete(statement).onUpdate(statement).withKeyName(foreignKeyName)]",
+    description: "Adds a foreign key constraint to a table for an existing column using `table.foreign(column).references(column)` or multiple columns using `table.foreign(columns).references(columns).inTable(table)`. A default key name using the columns is used unless foreignKeyName is specified. You can also chain onDelete() and/or onUpdate() to set the reference option (RESTRICT, CASCADE, SET NULL, NO ACTION) for the operation. You can also chain withKeyName() to override default key name that is generated from table and column names (result is identical to specifying second parameter to function foreign()). Note that using foreign() is the same as column.references(column) but it works for existing columns.",
     children: [{
       type: 'code',
       language: 'js',
@@ -446,6 +564,65 @@ export default [
     children: [    ]
   },
   {
+    type: "method",
+    method: "queryContext",
+    example: "table.queryContext(context)",
+    href: "Schema-table-queryContext",
+    description: [
+      "Allows configuring a context to be passed to the [wrapIdentifier](#Installation-wrap-identifier) hook for formatting table builder identifiers.",
+      "The context can be any kind of value and will be passed to `wrapIdentifier` without modification."
+    ].join(" "),
+    children: [
+      {
+        type: "code",
+        language: "js",
+        content: `
+          knex.schema.table('users', function (table) {
+            table.queryContext({ foo: 'bar' });
+            table.string('first_name');
+            table.string('last_name');
+          })
+        `
+      },
+      {
+        type: "text",
+        content: "This method also enables overwriting the context configured for a schema builder instance via [schema.queryContext](#Schema-queryContext):"
+      },
+      {
+        type: "code",
+        language: "js",
+        content: `
+          knex.schema.queryContext('schema context')
+            .table('users', function (table) {
+              table.queryContext('table context');
+              table.string('first_name');
+              table.string('last_name');
+          })
+        `
+      },
+      {
+        type: "text",
+        content: "Note that it's also possible to overwrite the table builder context for any column in the table definition:"
+      },
+      {
+        type: "code",
+        language: "js",
+        content: `
+          knex.schema.queryContext('schema context')
+            .table('users', function (table) {
+              table.queryContext('table context');
+              table.string('first_name').queryContext('first_name context');
+              table.string('last_name').queryContext('last_name context');
+          })
+        `
+      },
+      {
+        type: "text",
+        content: "Calling `queryContext` with no arguments will return any context configured for the table builder instance."
+      }
+    ]
+  },
+  {
     type: "heading",
     size: "md",
     content: "Chainable Methods:",
@@ -457,28 +634,42 @@ export default [
   },
   {
     type: "method",
+    method: "alter",
+    example: "column.alter()",
+    description: 'Marks the column as an alter / modify, instead of the default add. Note: This only works in .alterTable() and is not supported by SQlite or Amazon Redshift. Alter is *not* done incrementally over older column type so if you like to add `notNullable` and keep the old default value, the alter statement must contain both `.notNullable().defaultTo(1).alter()`. If one just tries to add `.notNullable().alter()` the old default value will be dropped.',
+    children: [    ]
+  },
+  {
+    type: "code",
+    content: `
+      knex.schema.alterTable('user', function(t) {
+        t.increments().primary(); // add
+        // drops previous default value from column, change type to string and add not nullable constraint
+        t.string('username', 35).notNullable().alter();
+        // drops both not null constraint and the default value
+        t.integer('age').alter();
+      });
+    `
+  },
+  {
+    type: "method",
     method: "index",
     example: "column.index([indexName], [indexType])",
-    description: "Specifies a field as an index. If an indexName is specified, it is used in place of the standard index naming convention of tableName_columnName. The indexType can be optionally specified for PostgreSQL. No-op if this is chained off of a field that cannot be indexed.",
+    description: "Specifies a field as an index. If an indexName is specified, it is used in place of the standard index naming convention of tableName_columnName. The indexType can be optionally specified for PostgreSQL and MySQL. No-op if this is chained off of a field that cannot be indexed.",
     children: [    ]
   },
   {
     type: "method",
     method: "primary",
-    example: "column.primary([constraintName])",
-    description: `
-      When called on a single column it will set that column as the primary key for a table.
-      To create a compound primary key, pass an array of column names:
-      \`table.primary(['column1', 'column2'])\`.
-      Constraint name defaults to \`tablename_pkey\` unless \`constraintName\` is specified.
-    `,
+    example: "column.primary([constraintName]); table.primary(columns, [constraintName])",
+    description: "When called on a single column it will set that column as the primary key for a table. If you need to create a composite primary key, call it on a table with an array of column names instead. Constraint name defaults to `tablename_pkey` unless `constraintName` is specified. On Amazon Redshift, all columns included in a primary key must be not nullable.",
     children: [    ]
   },
   {
     type: "method",
     method: "unique",
     example: "column.unique()",
-    description: "Sets the column as unique.",
+    description: "Sets the column as unique. On Amazon Redshift, this constraint is not enforced, but it is used by the query planner.",
     children: [    ]
   },
   {
@@ -556,6 +747,7 @@ export default [
     method: "comment",
     example: "column.comment(value)",
     description: "Sets the comment for a column.",
+    href: "Column-comment",
     children: [    ]
   },
   {
@@ -572,6 +764,7 @@ export default [
     method: "collate",
     example: "column.collate(collation)",
     description: "Sets the collation for a column (only works in MySQL). Here is a list of all available collations: https://dev.mysql.com/doc/refman/5.5/en/charset-charsets.html",
+    href: "Column-collate",
     children: [    ]
   },
   {

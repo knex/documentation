@@ -76,15 +76,14 @@ export default [
   },
   {
     type: "text",
-    content: "Note that due to ambiguity, arrays must be passed as arguments within a containing array."
+    content: "Since there is no unified syntax for array bindings, instead you need to treat them as multiple values by adding `?` directly in your query."
   },
   {
     type: "runnable",
     content: `
-      knex.raw('select * from users where id in (?)', [1, 2, 3]);
-      // Error: Expected 3 bindings, saw 1
-
-      knex.raw('select * from users where id in (?)', [[1, 2, 3]])
+      const myArray = [1,2,3]
+      knex.raw('select * from users where id in (' + myArray.map(_ => '?').join(',') + ')', [...myArray]);
+      // query will become: select * from users where id in (?, ?, ?) with bindings [1,2,3]
     `
   },
   {
@@ -161,7 +160,7 @@ export default [
   },
   {
     type: "runnable",
-    content: "var subcolumn = knex.raw('select avg(salary) from employee where dept_no = e.dept_no')\n  .wrap('(', ') avg_sal_dept');\n\nknex.select('e.lastname', 'e.salary', subcolumn)\n  .from('employee as e')\n  .whereRaw('dept_no = e.dept_no')\n"
+    content: "const subcolumn = knex.raw('select avg(salary) from employee where dept_no = e.dept_no')\n  .wrap('(', ') avg_sal_dept');\n\nknex.select('e.lastname', 'e.salary', subcolumn)\n  .from('employee as e')\n  .whereRaw('dept_no = e.dept_no')\n"
   },
   {
     type: "text",
@@ -169,6 +168,6 @@ export default [
   },
   {
     type: "runnable",
-    content: "var subcolumn = knex.avg('salary')\n  .from('employee')\n  .whereRaw('dept_no = e.dept_no')\n  .as('avg_sal_dept');\n\nknex.select('e.lastname', 'e.salary', subcolumn)\n  .from('employee as e')\n  .whereRaw('dept_no = e.dept_no')\n"
+    content: "const subcolumn = knex.avg('salary')\n  .from('employee')\n  .whereRaw('dept_no = e.dept_no')\n  .as('avg_sal_dept');\n\nknex.select('e.lastname', 'e.salary', subcolumn)\n  .from('employee as e')\n  .whereRaw('dept_no = e.dept_no')\n"
   }
 ]
