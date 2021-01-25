@@ -2441,14 +2441,14 @@ export default [
   },
   {
     type: "method",
-    method: "optimizerHint",
-    example: ".optimizerHint(hint)",
+    method: "hintComment",
+    example: ".hintComment(hint)",
     description: "Add hints to the query using comment-like syntax `/*+ ... */`. MySQL and Oracle use this syntax for optimizer hints. Also various DB proxies and routers use this syntax to pass hints to alter their behavior. In other dialects the hints are ignored as simple comments.",
     children: [
       {
         type: "runnable",
         content: `
-          knex('accounts').where('userid', '=', 1).optimizerHint('hint()')
+          knex('accounts').where('userid', '=', 1).hintComment('hint()')
         `
       }
     ]
