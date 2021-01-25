@@ -2448,7 +2448,7 @@ export default [
       {
         type: "runnable",
         content: `
-          knex('accounts').where('userid', '=', 1).hintComment('hint()')
+          knex('accounts').where('userid', '=', 1).hintComment('NO_ICP(accounts)')
         `
       }
     ]
