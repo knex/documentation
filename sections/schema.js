@@ -219,7 +219,7 @@ export default [
     type: "method",
     method: "increments",
     example: "table.increments(name, options={[primaryKey: boolean = true])",
-    description: "Adds an auto incrementing column. In PostgreSQL this is a serial; in Amazon Redshift an integer identity(1,1). This will be used as the primary key for the table. Also available is a bigIncrements if you wish to add a bigint incrementing number (in PostgreSQL bigserial). Note a primary key is created per default, but you can override this by passing the primaryKey option.",
+    description: "Adds an auto incrementing column. In PostgreSQL this is a serial; in Amazon Redshift an integer identity(1,1). This will be used as the primary key for the table. Also available is a bigIncrements if you wish to add a bigint incrementing number (in PostgreSQL bigserial). Note that a primary key is created by default, but you can override this behaviour by passing the `primaryKey` option.",
     children: [
       {
         type: 'code',
