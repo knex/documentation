@@ -1645,7 +1645,7 @@ export default [
         type: "code",
         language: "js",
         content: `
-          // Adding the option includeTriggerModifications allows you to 
+          // Adding the option includeTriggerModifications allows you to
           // run statements on tables that contain triggers. Only affects MSSQL.
           knex('books')
             .insert({title: 'Alice in Wonderland'}, ['id'], { includeTriggerModifications: true })
@@ -1856,7 +1856,7 @@ export default [
         type: "code",
         language: "js",
         content: `
-          // Adding the option includeTriggerModifications allows you 
+          // Adding the option includeTriggerModifications allows you
           // to run statements on tables that contain triggers. Only affects MSSQL.
           knex('books')
             .update({title: 'Alice in Wonderland'}, ['id', 'title'], { includeTriggerModifications: true })
@@ -1886,7 +1886,7 @@ export default [
         type: "code",
         language: "js",
         content: `
-          // Adding the option includeTriggerModifications allows you 
+          // Adding the option includeTriggerModifications allows you
           // to run statements on tables that contain triggers. Only affects MSSQL.
           knex('books')
             .where('title', 'Alice in Wonderland')
@@ -1936,7 +1936,7 @@ export default [
         type: "code",
         language: "js",
         content: `
-          // Adding the option includeTriggerModifications allows you 
+          // Adding the option includeTriggerModifications allows you
           // to run statements on tables that contain triggers. Only affects MSSQL.
           knex('books')
             .returning(['id','title'], { includeTriggerModifications: true })
@@ -2814,8 +2814,11 @@ export default [
       import { Knex } from 'knex';
 
       declare module 'knex' {
-        interface QueryBuilder {
-        customSelect<TRecord, TResult>(value: number): Knex.QueryBuilder<TRecord, TResult>;
+        namespace Knex {
+          interface QueryBuilder {
+            customSelect<TRecord, TResult>(value: number): Knex.QueryBuilder<TRecord, TResult>;
+          }
+        }
       }
     `
   },
