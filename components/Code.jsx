@@ -25,7 +25,7 @@ export default class Code extends Component {
     }
 
     return (
-      <pre><code dangerouslySetInnerHTML={{__html: dedent(content)}} /></pre>
+      <pre><code>{dedent(content)}</code></pre>
     )
   }
 }
