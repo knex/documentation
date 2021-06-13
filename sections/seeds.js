@@ -20,6 +20,7 @@ export default [
       "`recursive`: if true, will find seed files recursively in the directory / directories specified",
       "`specific`: a specific seed file or an array of seed files to run from the seeds directory, if its value is `undefined` it will run all the seeds (default `undefined`). If an array is specified, seed files will be run in the same order as the array",
       "`sortDirsSeparately`: if true and multiple directories are specified, all seeds from a single directory will be executed before executing seeds in the next folder (default `false`)",
+      "`timestampFilenamePrefix`: a boolean option to define if seed files will be generated with a timestamp as name prefix (in the same way the migration files). This option can be useful in situations that you need to run seeds in a specific order, i.e when a seeder depends of data created by another seeder. (default: false)",
     ]
   },
   {
