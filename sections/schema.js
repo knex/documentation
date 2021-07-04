@@ -27,6 +27,62 @@ export default [
   },
   {
     type: "method",
+    method: "createSchema",
+    example: "knex.schema.createSchema(schemaName)",
+    description: "Creates a new schema on the database, only applicable to PostgreSQL.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex.schema.createSchema('private')
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "createSchemaIfNotExists",
+    example: "knex.schema.createSchemaIfNotExists(schemaName)",
+    description: "Creates a new schema on the database if it doesn't exists on the database, only applicable to PostgreSQL.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex.schema.createSchemaIfNotExists('private')
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "dropSchema",
+    example: "knex.schema.dropSchema(schemaName)",
+    description: "Drops a schema, specified by schemaName, only applicable to PostgreSQL.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex.schema.dropSchema('private')
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "dropSchemaIfExists",
+    example: "knex.schema.dropSchemaIfExists(schemaName)",
+    description: "Drops a schema conditionally if the schema exists, specified by schemaName, only applicable to PostgreSQL.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex.schema.dropSchemaIfExists('private')
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
     method: "createTable",
     example: "knex.schema.createTable(tableName, callback)",
     description: "Creates a new table on the database, with a callback function to modify the table's structure, using the schema-building commands.",
