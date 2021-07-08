@@ -70,7 +70,7 @@ export default [
           knex.raw('accesslevel = ?', 1)
         )
         .orWhere(
-          knex.raw('updtime = ?', new Date.UTC('01-01-2016'))
+          knex.raw('updtime = ?', Date.UTC('01-01-2016'))
         )
     `
   },
@@ -82,7 +82,7 @@ export default [
     type: "runnable",
     content: `
       const myArray = [1,2,3]
-      knex.raw('select * from users where id in (' + myArray.map(_ => '?').join(',') + ')', [...myArray]);
+      ;knex.raw('select * from users where id in (' + myArray.map(_ => '?').join(',') + ')', [...myArray]);
       // query will become: select * from users where id in (?, ?, ?) with bindings [1,2,3]
     `
   },
