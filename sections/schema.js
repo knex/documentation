@@ -549,7 +549,7 @@ export default [
   {
     type: "method",
     method: "unique",
-    example: "table.unique(columns, [indexName]|options={[indexName:string],[deferrable:'not deferrable'|'immediate'|'deferred']})",
+    example: "table.unique(columns, options={[indexName:string],[deferrable:'not deferrable'|'immediate'|'deferred']})",
     description: "Adds an unique index to a table over the given `columns`. A default index name using the columns is used unless indexName is specified. Deferrable unique constraint are supported on Postgres and Oracle and can be set by passing deferrable option to options object.",
     children: [{
       type: 'code',
@@ -559,7 +559,7 @@ export default [
           t.unique('email')
         })
         knex.schema.alterTable('job', function(t) {
-          t.unique(['account_id', 'program_id'])
+          t.unique(['account_id', 'program_id'],{indexName:'users_composite_index',deferrable:'deferred'})
         })
       `
     }]
@@ -709,16 +709,35 @@ export default [
   {
     type: "method",
     method: "primary",
-    example: "column.primary([constraintName]|options=({[constraintName:string],[deferrable:'not deferrable'|'deferred'|'immediate']})); table.primary(columns, [constraintName]|options=({[constraintName:string],[deferrable:'not deferrable'|'deferred'|'immediate']})",
+    example: "column.primary(options=({[constraintName:string],[deferrable:'not deferrable'|'deferred'|'immediate']})); table.primary(columns, options=({[constraintName:string],[deferrable:'not deferrable'|'deferred'|'immediate']})",
     description: "When called on a single column it will set that column as the primary key for a table. If you need to create a composite primary key, call it on a table with an array of column names instead. Constraint name defaults to `tablename_pkey` unless `constraintName` is specified. On Amazon Redshift, all columns included in a primary key must be not nullable. Deferrable primary constraint are supported on Postgres and Oracle and can be set by passing deferrable option to options object.",
-    children: [    ]
+    children: [{
+      type: 'code',
+      language: 'js',
+      content: `
+        knex.schema.alterTable('users', function(t) {
+          t.unique('email')
+        })
+        knex.schema.alterTable('job', function(t) {
+          t.primary('email',{constraintName:'users_primary_key',deferrable:'deferred'})
+        })
+      `
+    }]
   },
   {
     type: "method",
     method: "unique",
-    example: "column.unique([indexName]|options={[indexName:string],[deferrable:'not deferrable'|'immediate'|'deferred']})",
+    example: "column.unique(options={[indexName:string],[deferrable:'not deferrable'|'immediate'|'deferred']})",
     description: "Sets the column as unique. On Amazon Redshift, this constraint is not enforced, but it is used by the query planner. Deferrable unqiue constraint are supported on Postgres and Oracle and can be set by passing deferrable option to options object.",
-    children: [    ]
+    children: [{
+      type: 'code',
+      language: 'js',
+      content: `
+      knex.schema.table('users', function (table) {
+        table.integer('user_id').unique({indexName:'user_unqiue_id', deferrable:'immediate'})
+      })
+      `
+    }]
   },
   {
     type: "method",
