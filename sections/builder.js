@@ -283,13 +283,19 @@ export default [
   {
     type: "method",
     method: "with",
-    example: ".with(alias, function|raw)",
-    description: "Add a \"with\" clause to the query. \"With\" clauses are supported by PostgreSQL, Oracle, SQLite3 and MSSQL.",
+    example: ".with(alias, [columns], callback|builder|raw)",
+    description: "Add a \"with\" clause to the query. \"With\" clauses are supported by PostgreSQL, Oracle, SQLite3 and MSSQL. An optional column list can be provided after the alias; if provided, it must include at least one column name.",
     children: [
       {
         type: "runnable",
         content: `
           knex.with('with_alias', knex.raw('select * from "books" where "author" = ?', 'Test')).select('*').from('with_alias')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex.with('with_alias', ["title"], knex.raw('select "title" from "books" where "author" = ?', 'Test')).select('*').from('with_alias')
         `
       },
       {
@@ -305,8 +311,8 @@ export default [
   {
     type: "method",
     method: "withRecursive",
-    example: ".withRecursive(alias, function|raw)",
-    description: "Indentical to the `with` method except \"recursive\" is appended to \"with\" to make self-referential CTEs possible.",
+    example: ".withRecursive(alias, [columns], callback|builder|raw)",
+    description: "Identical to the `with` method except \"recursive\" is appended to \"with\" (or not, as required by the target database) to make self-referential CTEs possible. Note that some databases, such as Oracle, require a column list be provided when using an rCTE.",
     children: [
       {
         type: "runnable",
@@ -316,6 +322,28 @@ export default [
               qb.select('*').from('people').join('ancestors', 'ancestors.parentId', 'people.id')
             })
           }).select('*').from('ancestors')
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex.withRecursive('family', ['name', 'parentName'], (qb) => {
+            qb.select('name', 'parentName')
+              .from('folks')
+              .where({ name: 'grandchild' })
+              .unionAll((qb) =>
+                qb
+                  .select('folks.name', 'folks.parentName')
+                  .from('folks')
+                  .join(
+                    'family',
+                    knex.ref('family.parentName'),
+                    knex.ref('folks.name')
+                  )
+              )
+          })
+          .select('name')
+          .from('family')
         `
       }
     ]
@@ -1645,7 +1673,7 @@ export default [
         type: "code",
         language: "js",
         content: `
-          // Adding the option includeTriggerModifications allows you to 
+          // Adding the option includeTriggerModifications allows you to
           // run statements on tables that contain triggers. Only affects MSSQL.
           knex('books')
             .insert({title: 'Alice in Wonderland'}, ['id'], { includeTriggerModifications: true })
@@ -1857,7 +1885,7 @@ export default [
         type: "code",
         language: "js",
         content: `
-          // Adding the option includeTriggerModifications allows you 
+          // Adding the option includeTriggerModifications allows you
           // to run statements on tables that contain triggers. Only affects MSSQL.
           knex('books')
             .update({title: 'Alice in Wonderland'}, ['id', 'title'], { includeTriggerModifications: true })
@@ -1887,7 +1915,7 @@ export default [
         type: "code",
         language: "js",
         content: `
-          // Adding the option includeTriggerModifications allows you 
+          // Adding the option includeTriggerModifications allows you
           // to run statements on tables that contain triggers. Only affects MSSQL.
           knex('books')
             .where('title', 'Alice in Wonderland')
@@ -1937,7 +1965,7 @@ export default [
         type: "code",
         language: "js",
         content: `
-          // Adding the option includeTriggerModifications allows you 
+          // Adding the option includeTriggerModifications allows you
           // to run statements on tables that contain triggers. Only affects MSSQL.
           knex('books')
             .returning(['id','title'], { includeTriggerModifications: true })
