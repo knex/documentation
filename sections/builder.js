@@ -114,7 +114,7 @@ export default [
 
         if (someCondition) {
           // This select will not change the type of usersQueryBuilder
-          // We can not change the type of a pre-declared variabe in TypeScript
+          // We can not change the type of a pre-declared variable in TypeScript
           usersQueryBuilder.select('age');
         }
         usersQueryBuilder.then((users) => {
@@ -1135,7 +1135,7 @@ export default [
     type: "method",
     method: "clear",
     example: ".clear(statement)",
-    description: "Clears the specified operator from the query. Avalilables: 'select' alias 'columns', 'with', 'select', 'columns', 'where', 'union', 'join', 'group', 'order', 'having', 'limit', 'offset', 'counter', 'counters'. Counter(s) alias for method .clearCounter()",
+    description: "Clears the specified operator from the query. Available operators: 'select' alias 'columns', 'with', 'select', 'columns', 'where', 'union', 'join', 'group', 'order', 'having', 'limit', 'offset', 'counter', 'counters'. Counter(s) alias for method .clearCounter()",
     children: [
       {
         type: "runnable",
@@ -1252,7 +1252,7 @@ export default [
       {
         type: "runnable",
         content: `
-            // select which eleminates duplicate rows
+            // select which eliminates duplicate rows
            knex('customers')
             .distinct()
         `
@@ -1713,7 +1713,7 @@ export default [
     children: [
       {
         type: "text",
-        content: "Note: For PostgreSQL and SQLite, the column(s) specified by this method must either be the table's PRIMARY KEY or have a UNIQUE index on them, or the query will fail to execute. When specifying multiple columns, they must be a composite PRIMARY KEY or have composite UNIQUE index. MySQL will ignore the specified columns and always use the table's PRIMARY KEY. For cross-platform support across PostgreSQL, MySQL, and SQLite you must both explicitly specifiy the columns in .onConflict() and those column(s) must be the table's PRIMARY KEY."
+        content: "Note: For PostgreSQL and SQLite, the column(s) specified by this method must either be the table's PRIMARY KEY or have a UNIQUE index on them, or the query will fail to execute. When specifying multiple columns, they must be a composite PRIMARY KEY or have composite UNIQUE index. MySQL will ignore the specified columns and always use the table's PRIMARY KEY. For cross-platform support across PostgreSQL, MySQL, and SQLite you must both explicitly specify the columns in .onConflict() and those column(s) must be the table's PRIMARY KEY."
       },
       {
         type: "text",
@@ -1798,7 +1798,7 @@ export default [
       },
       {
         type: "text",
-        content: "It is also possible to specify data to update seperately from the data to insert. This is useful if you want to update with different data to the insert. For example, you may want to change a value if the row already exists:"
+        content: "It is also possible to specify data to update separately from the data to insert. This is useful if you want to update with different data to the insert. For example, you may want to change a value if the row already exists:"
       },
       {
         type: "code",
