@@ -239,9 +239,9 @@ export default [
         language: 'js',
         content: `
           //drop schema if exists 'public'
-          knex.schema.dropSchema('public')
+          knex.schema.dropSchemaIfExists('public')
           //drop schema if exists 'public' cascade
-          knex.schema.dropSchema('public', true)
+          knex.schema.dropSchemaIfExists('public', true)
         `
       }
     ]
