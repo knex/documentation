@@ -608,7 +608,7 @@ export default [
                 down(knex) { /* ... */ }
               }
           }
-        },
+        }
       }
 
       // pass an instance of your migration source as knex config
