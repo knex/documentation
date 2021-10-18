@@ -604,8 +604,8 @@ export default [
           switch(migration) {
             case 'migration1':
               return {
-                up(knex)   { /* ... * / }
-                down(knex) { /* ... * / }
+                up(knex)   { /* ... */ }
+                down(knex) { /* ... */ }
               }
           }
         },
