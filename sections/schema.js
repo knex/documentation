@@ -132,6 +132,24 @@ export default [
   },
   {
     type: "method",
+    method: "table",
+    example: "knex.schema.table(tableName, callback)",
+    description: "Chooses a database table, and then modifies the table, using the Schema Building functions inside of the callback.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex.schema.table('users', function (table) {
+            table.dropColumn('name');
+            table.string('first_name');
+            table.string('last_name');
+          })
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
     method: "createView",
     example: "knex.schema.createView(tableName, callback)",
     description: "Creates a new view on the database, with a callback function to modify the view's structure, using the schema-building commands.",
