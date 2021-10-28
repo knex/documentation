@@ -481,7 +481,7 @@ export default [
   {
     type: "heading",
     size: "md",
-    content: "Table Methods:",
+    content: "Table Building Methods:",
     href: "Schema-build-table"
   },
   {
@@ -768,8 +768,8 @@ export default [
   {
     type: "method",
     method: "geometry",
-    example: "table.geometry(val)",
-    description: "Adds a geometry column. Supported by SQLite, MsSQL and PostgreSQL.",
+    example: "table.geometry(name)",
+    description: "Adds a geometry column. Supported by SQLite, MSSQL and PostgreSQL.",
     children: [
       {
         type: 'code',
@@ -785,8 +785,8 @@ export default [
   {
     type: "method",
     method: "geography",
-    example: "table.geography(val)",
-    description: "Adds a geography column. Supported by SQLite and MsSQL.",
+    example: "table.geography(name)",
+    description: "Adds a geography column. Supported by SQLite, MSSQL and PostgreSQL (in PostGIS extension).",
     children: [
       {
         type: 'code',
@@ -802,8 +802,8 @@ export default [
   {
     type: "method",
     method: "point",
-    example: "table.point(val)",
-    description: "Add a point column. Not supported by CockroachDB and MsSQL.",
+    example: "table.point(name)",
+    description: "Add a point column. Not supported by CockroachDB and MSSQL.",
     children: [
       {
         type: 'code',
@@ -1060,7 +1060,7 @@ export default [
   {
     type: "heading",
     size: "md",
-    content: "View Methods:",
+    content: "View Building Methods:",
     href: "Schema-build-view"
   },
   {
