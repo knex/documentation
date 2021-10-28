@@ -170,31 +170,43 @@ export default class Sidebar extends Component {
           Schema Builder
         </a>
         <ul className="toc_section">
-          <li>– <a href="#Schema-withSchema">withSchema</a></li>
-          <li>– <a href="#Schema-createTable">createTable</a></li>
-          <li>– <a href="#Schema-createTableLike">createTableLike</a></li>
-          <li>– <a href="#Schema-renameTable">renameTable</a></li>
-          <li>– <a href="#Schema-dropTable">dropTable</a></li>
-          <li>– <a href="#Schema-hasColumn">hasColumn</a></li>
-          <li>– <a href="#Schema-hasTable">hasTable</a></li>
-          <li>– <a href="#Schema-dropTableIfExists">dropTableIfExists</a></li>
-          <li>– <a href="#Schema-table">table</a></li>
-          <li>– <a href="#Schema-createView">createView</a></li>
-          <li>– <a href="#Schema-createViewOrReplace">createViewOrReplace</a></li>
-          <li>– <a href="#Schema-createMaterializedView">createMaterializedView</a></li>
-          <li>– <a href="#Schema-refreshMaterializedView">refreshMaterializedView</a></li>
-          <li>– <a href="#Schema-drowView">drowView</a></li>
-          <li>– <a href="#Schema-dropViewIfExists">dropViewIfExists</a></li>
-          <li>– <a href="#Schema-dropMaterializedView">dropMaterializedView</a></li>
-          <li>– <a href="#Schema-dropMaterializedViewIfExists">dropMaterializedViewIfExists</a></li>
-          <li>– <a href="#Schema-renameView">renameView</a></li>
-          <li>– <a href="#Schema-alterView">alterView</a></li>
+          <li><b><a href="#Schema-schema-methods">Schema Methods:</a></b></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-withSchema">withSchema</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-dropSchema">dropSchema</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-dropSchemaIfExists">dropSchemaIfExists</a></li>
+
+          <li><b><a href="#Schema-table-methods">Table Methods:</a></b></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-createTable">createTable</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-createTableLike">createTableLike</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-alterTable">alterTable</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-table">table</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-dropTable">dropTable</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-dropTableIfExists">dropTableIfExists</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-renameTable">renameTable</a></li>
+
+          <li>&nbsp;&nbsp;– <a href="#Schema-hasTable">hasTable</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-hasColumn">hasColumn</a></li>
+
+          <li><b><a href="#Schema-view-methods">Views Methods:</a></b></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-createView">createView</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-createViewOrReplace">createViewOrReplace</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-createMaterializedView">createMaterializedView</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-alterView">alterView</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-view">view</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-dropView">dropView</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-dropViewIfExists">dropViewIfExists</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-dropMaterializedView">dropMaterializedView</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-dropMaterializedViewIfExists">dropMaterializedViewIfExists</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-refreshMaterializedView">refreshMaterializedView</a></li>
+          <li>&nbsp;&nbsp;– <a href="#Schema-renameView">renameView</a></li>
+
           <li>– <a href="#Schema-generateDdlCommands">generateDdlCommands</a></li>
           <li>– <a href="#Schema-raw">raw</a></li>
           <li>– <a href="#Schema-queryContext">queryContext</a></li>
-          <li>– <a href="#Schema-dropSchema">dropSchema</a></li>
-          <li>– <a href="#Schema-dropSchemaIfExists">dropSchemaIfExists</a></li>
+
           <li><b><a href="#Schema-Building">Schema Building:</a></b></li>
+
+          <li><b><a href="#Schema-build-table">Table Methods:</a></b></li>
           <li>– <a href="#Schema-dropColumn">dropColumn</a></li>
           <li>– <a href="#Schema-dropColumns">dropColumns</a></li>
           <li>– <a href="#Schema-renameColumn">renameColumn</a></li>
@@ -218,6 +230,11 @@ export default class Sidebar extends Component {
           <li>– <a href="#Schema-json">json</a></li>
           <li>– <a href="#Schema-jsonb">jsonb</a></li>
           <li>– <a href="#Schema-uuid">uuid</a></li>
+
+          <li>– <a href="#Schema-geometry">geometry</a></li>
+          <li>– <a href="#Schema-geography">geography</a></li>
+          <li>– <a href="#Schema-point">point</a></li>
+
           <li>– <a href="#Schema-comment">comment</a></li>
           <li>– <a href="#Schema-engine">engine</a></li>
           <li>– <a href="#Schema-charset">charset</a></li>
@@ -235,6 +252,7 @@ export default class Sidebar extends Component {
           <li>– <a href="#Schema-dropUnique">dropUnique</a></li>
           <li>– <a href="#Schema-dropPrimary">dropPrimary</a></li>
           <li>– <a href="#Schema-table-queryContext">queryContext</a></li>
+
           <li><a href="#Chainable"><b>Chainable:</b></a></li>
           <li>– <a href="#Schema-alter">alter</a></li>
           <li>– <a href="#Schema-index">index</a></li>
@@ -252,13 +270,16 @@ export default class Sidebar extends Component {
           <li>– <a href="#Schema-after">after</a></li>
           <li>– <a href="#Column-comment">comment</a></li>
           <li>– <a href="#Column-collate">collate</a></li>
-          <li><a href="#View"><b>View:</b></a></li>
+
+          <li><b><a href="#Schema-build-view">View Methods:</a></b></li>
           <li>– <a href="#Schema-columns">columns</a></li>
-          <li>– <a href="#Column-as">as</a></li>
-          <li>– <a href="#Column-checkOption">checkOption</a></li>
-          <li>– <a href="#Column-localCheckOption">localCheckOption</a></li>
-          <li>– <a href="#Column-cascadedCheckOption">cascadedCheckOption</a></li>
+          <li>– <a href="#Schema-as">as</a></li>
+          <li>– <a href="#Schema-checkOption">checkOption</a></li>
+          <li>– <a href="#Schema-localCheckOption">localCheckOption</a></li>
+          <li>– <a href="#Schema-cascadedCheckOption">cascadedCheckOption</a></li>
+
         </ul>
+
 
         <a className="toc_title" href="#Raw">
           Raw

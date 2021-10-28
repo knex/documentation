@@ -6,6 +6,12 @@ export default [
     href: "Schema"
   },
   {
+    type: "heading",
+    size: "md",
+    content: "Schema Methods:",
+    href: "Schema-schema-methods"
+  },
+  {
     type: "text",
     content: "The `knex.schema` is a **getter function**, which returns a stateful object containing the query. Therefore be sure to obtain a new instance of the `knex.schema` for every query. These methods return [promises](https://knexjs.org/#Interfaces-Promises)."
   },
@@ -24,6 +30,48 @@ export default [
         `
       }
     ]
+  },
+  {
+    type: "method",
+    method: "dropSchema",
+    example: "knex.schema.dropSchema(schemaName, [cascade])",
+    description: "Drop a schema, specified by the schema's name, with optional cascade option (default to false). Only supported by PostgreSQL.",
+    children: [
+      {
+        type: 'code',
+        language: 'js',
+        content: `
+          //drop schema 'public'
+          knex.schema.dropSchema('public')
+          //drop schema 'public' cascade
+          knex.schema.dropSchema('public', true)
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "dropSchemaIfExists",
+    example: "knex.schema.dropSchemaIfExists(schemaName, [cascade])",
+    description: "Drop a schema conditionally if the schema exists, specified by the schema's name, with optional cascade option (default to false). Only supported by PostgreSQL.",
+    children: [
+      {
+        type: 'code',
+        language: 'js',
+        content: `
+          //drop schema if exists 'public'
+          knex.schema.dropSchemaIfExists('public')
+          //drop schema if exists 'public' cascade
+          knex.schema.dropSchemaIfExists('public', true)
+        `
+      }
+    ]
+  },
+  {
+    type: "heading",
+    size: "md",
+    content: "Table Methods:",
+    href: "Schema-table-methods"
   },
   {
     type: "method",
@@ -53,6 +101,42 @@ export default [
         type: "runnable",
         content: `
           knex.schema.createTableLike('new_users', 'users')
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "alterTable",
+    example: "knex.schema.alterTable(tableName, callback)",
+    description: "Chooses a database table, and then modifies the table, using the Schema Building functions inside of the callback.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex.schema.alterTable('users', function (table) {
+            table.dropColumn('name');
+            table.string('first_name');
+            table.string('last_name');
+          })
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "table",
+    example: "knex.schema.table(tableName, callback)",
+    description: "Chooses a database table, and then modifies the table, using the Schema Building functions inside of the callback. It's an alias for 'alterTable' function.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex.schema.table('users', function (table) {
+            table.dropColumn('name');
+            table.string('first_name');
+            table.string('last_name');
+          })
         `
       }
     ]
@@ -131,22 +215,10 @@ export default [
     children: [    ]
   },
   {
-    type: "method",
-    method: "table",
-    example: "knex.schema.table(tableName, callback)",
-    description: "Chooses a database table, and then modifies the table, using the Schema Building functions inside of the callback.",
-    children: [
-      {
-        type: "runnable",
-        content: `
-          knex.schema.table('users', function (table) {
-            table.dropColumn('name');
-            table.string('first_name');
-            table.string('last_name');
-          })
-        `
-      }
-    ]
+    type: "heading",
+    size: "md",
+    content: "View Methods:",
+    href: "Schema-view-methods"
   },
   {
     type: "method",
@@ -201,28 +273,48 @@ export default [
   },
   {
     type: "method",
-    method: "refreshMaterializedView",
-    example: "knex.schema.refreshMaterializedView(viewName)",
-    description: "Refresh materialized view on the database. Only on PostgreSQL, CockroachDb, Redshift and Oracle.",
+    method: "alterView",
+    example: "knex.schema.alterView(viewName)",
+    description: "Alter view to rename columns or change default values. Only available on PostgreSQL, MSSQL and Redshift.",
     children: [
       {
         type: "runnable",
         content: `
-          knex.schema.refreshMaterializedView('users_view');
+          knex.schema.alterView('view_test', function (view) {
+            view.column('first_name').rename('name_user');
+            view.column('bio').defaultTo('empty');
+          })
         `
       }
     ]
   },
   {
     type: "method",
-    method: "drowView",
+    method: "view",
+    example: "knex.schema.view(viewName)",
+    description: "Alter view to rename columns or change default values. Only available on PostgreSQL, MSSQL and Redshift. It's an alias of 'alterView'.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex.schema.view('view_test', function (view) {
+            view.column('first_name').rename('name_user');
+            view.column('bio').defaultTo('empty');
+          })
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "dropView",
     example: "knex.schema.dropView(viewName)",
     description: "Drop view on the database.",
     children: [
       {
         type: "runnable",
         content: `
-          knex.schema.dropView('users_view');
+          knex.schema.dropView('users_view')
         `
       }
     ]
@@ -236,7 +328,7 @@ export default [
       {
         type: "runnable",
         content: `
-          knex.schema.dropViewIfExists('users_view');
+          knex.schema.dropViewIfExists('users_view')
         `
       }
     ]
@@ -250,7 +342,7 @@ export default [
       {
         type: "runnable",
         content: `
-          knex.schema.dropMaterializedView('users_view');
+          knex.schema.dropMaterializedView('users_view')
         `
       }
     ]
@@ -264,7 +356,21 @@ export default [
       {
         type: "runnable",
         content: `
-          knex.schema.dropMaterializedViewIfExists('users_view');
+          knex.schema.dropMaterializedViewIfExists('users_view')
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "refreshMaterializedView",
+    example: "knex.schema.refreshMaterializedView(viewName)",
+    description: "Refresh materialized view on the database. Only on PostgreSQL, CockroachDb, Redshift and Oracle.",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex.schema.refreshMaterializedView('users_view')
         `
       }
     ]
@@ -272,33 +378,22 @@ export default [
   {
     type: "method",
     method: "renameView",
-    example: "knex.schema.renameView(viewName)",
+    example: "knex.schema.renameView(from, to)",
     description: "Rename a existing view in the database. Not supported by Oracle and SQLite.",
     children: [
       {
         type: "runnable",
         content: `
-          knex.schema.renameView('users_view');
+          knex.schema.renameView('users_view', 'new_users_view')
         `
       }
     ]
   },
   {
-    type: "method",
-    method: "alterView",
-    example: "knex.schema.alterView(viewName)",
-    description: "Alter view to rename columns or change default values. Only available on PostgreSQL, MSSQL and Redshift.",
-    children: [
-      {
-        type: "runnable",
-        content: `
-          knex.schema.alterView('view_test', function (view) {
-            view.column('first_name').rename('name_user');
-            view.column('bio').defaultTo('empty');
-          }
-        `
-      }
-    ]
+    type: "heading",
+    size: "md",
+    content: "Others",
+    href: "Schema-others"
   },
   {
     type: "method",
@@ -307,7 +402,8 @@ export default [
     description: "Generates complete SQL commands for applying described schema changes, without executing anything. Useful when knex is being used purely as a query builder. Generally produces same result as .toSQL(), with a notable exception with SQLite, which relies on asynchronous calls to the database for building part of its schema modification statements",
     children: [
       {
-        type: "runnable",
+        type: "code",
+        language: "js",
         content: `
             const ddlCommands = knex.schema.alterTable(
               'users',
@@ -377,46 +473,16 @@ export default [
     ]
   },
   {
-    type: "method",
-    method: "dropSchema",
-    example: "knex.schema.dropSchema(schemaName, [cascade])",
-    description: "Drop a schema, specified by the schema's name, with optional cascade option (default to false). Only supported by PostgreSQL.",
-    children: [
-      {
-        type: 'code',
-        language: 'js',
-        content: `
-          //drop schema 'public'
-          knex.schema.dropSchema('public')
-          //drop schema 'public' cascade
-          knex.schema.dropSchema('public', true)
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "dropSchemaIfExists",
-    example: "knex.schema.dropSchemaIfExists(schemaName, [cascade])",
-    description: "Drop a schema conditionally if the schema exists, specified by the schema's name, with optional cascade option (default to false). Only supported by PostgreSQL.",
-    children: [
-      {
-        type: 'code',
-        language: 'js',
-        content: `
-          //drop schema if exists 'public'
-          knex.schema.dropSchemaIfExists('public')
-          //drop schema if exists 'public' cascade
-          knex.schema.dropSchemaIfExists('public', true)
-        `
-      }
-    ]
-  },
-  {
     type: "heading",
     size: "md",
     content: "Schema Building:",
     href: "Schema-Building"
+  },
+  {
+    type: "heading",
+    size: "md",
+    content: "Table Methods:",
+    href: "Schema-build-table"
   },
   {
     type: "method",
@@ -701,6 +767,57 @@ export default [
   },
   {
     type: "method",
+    method: "geometry",
+    example: "table.geometry(val)",
+    description: "Adds a geometry column. Supported by SQLite, MsSQL and PostgreSQL.",
+    children: [
+      {
+        type: 'code',
+        language: 'js',
+        content: `
+          knex.schema.createTable(tblName, (table) => {
+            table.geometry('geometryColumn');
+          });
+          `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "geography",
+    example: "table.geography(val)",
+    description: "Adds a geography column. Supported by SQLite and MsSQL.",
+    children: [
+      {
+        type: 'code',
+        language: 'js',
+        content: `
+          knex.schema.createTable(tblName, (table) => {
+            table.geography('geographyColumn');
+          });
+          `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "point",
+    example: "table.point(val)",
+    description: "Add a point column. Not supported by CockroachDB and MsSQL.",
+    children: [
+      {
+        type: 'code',
+        language: 'js',
+        content: `
+          knex.schema.createTable(tblName, (table) => {
+            table.point('pointColumn');
+          });
+          `
+      }
+    ]
+  },
+  {
+    type: "method",
     method: "comment",
     example: "table.comment(value)",
     description: "Sets the comment for a table.",
@@ -939,6 +1056,59 @@ export default [
       }
     ]
   },
+
+  {
+    type: "heading",
+    size: "md",
+    content: "View Methods:",
+    href: "Schema-build-view"
+  },
+  {
+    type: "method",
+    method: "columns",
+    example: "view.columns([columnNames])",
+    description: "Specify the columns of the view.",
+    children: [
+      {
+        type: "code",
+        language: "js",
+        content: `
+          knex.schema.createView('users_view', function (view) {
+            view.columns(['first_name', 'last_name']);
+            view.as(knex('users').select('first_name').where('age','>', '18'));
+          });
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "as",
+    example: "view.as(selectQuery)",
+    description: "Specify the select query of the view.",
+    children: [ ]
+  },
+  {
+    type: "method",
+    method: "checkOption",
+    example: "view.checkOption()",
+    description: "Add check option on the view definition. On OracleDb, MySQL, PostgreSQL and Redshift.",
+    children: [ ]
+  },
+  {
+    type: "method",
+    method: "localCheckOption",
+    example: "view.localCheckOption()",
+    description: "Add local check option on the view definition. On MySQL, PostgreSQL and Redshift.",
+    children: [ ]
+  },
+  {
+    type: "method",
+    method: "cascadedCheckOption",
+    example: "view.cascadedCheckOption()",
+    description: "Add cascaded check option on the view definition. On MySQL, PostgreSQL and Redshift.",
+    children: [ ]
+  },
   {
     type: "heading",
     size: "md",
@@ -1129,57 +1299,5 @@ export default [
         t.string('email').unique().collate('utf8_unicode_ci');
       });
     `
-  },
-  {
-    type: "heading",
-    size: "md",
-    content: "View:",
-    href: "View"
-  },
-  {
-    type: "method",
-    method: "columns",
-    example: "view.columns([columnNames])",
-    description: "Specify the columns of the view.",
-    children: [
-      {
-        type: "code",
-        language: "js",
-        content: `
-          knex.schema.createView('users_view', function (view) {
-            view.columns(['first_name', 'last_name']);
-            view.as(knex('users').select('first_name').where('age','>', '18'));
-          });
-        `
-      }
-    ]
-  },
-  {
-    type: "method",
-    method: "as",
-    example: "view.as(selectQuery)",
-    description: "Specify the select query of the view.",
-    children: [ ]
-  },
-  {
-    type: "method",
-    method: "checkOption",
-    example: "view.checkOption()",
-    description: "Add check option on the view definition. On OracleDb, MySQL, PostgreSQL and Redshift.",
-    children: [ ]
-  },
-  {
-    type: "method",
-    method: "localCheckOption",
-    example: "view.localCheckOption()",
-    description: "Add local check option on the view definition. On MySQL, PostgreSQL and Redshift.",
-    children: [ ]
-  },
-  {
-    type: "method",
-    method: "cascadedCheckOption",
-    example: "view.cascadedCheckOption()",
-    description: "Add cascaded check option on the view definition. On MySQL, PostgreSQL and Redshift.",
-    children: [ ]
   }
 ]
