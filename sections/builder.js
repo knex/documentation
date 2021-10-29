@@ -387,7 +387,7 @@ export default [
   {
     type: "method",
     method: "where",
-    example: ".where(~mixed~)",
+    example: ".where(~mixed~) / .orWhere",
     children: []
   },
   {
@@ -482,7 +482,7 @@ export default [
   {
     type: "method",
     method: "whereNot",
-    example: ".whereNot(~mixed~)",
+    example: ".whereNot(~mixed~) / .orWhereNot",
     children: []
   },
   {
