@@ -722,6 +722,32 @@ export default [
     ]
   },
   {
+    type: "method",
+    method: "whereLike",
+    example: ".whereLike(column, string|builder|raw)",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex('users').whereLike('email', '%mail%')
+        `
+      }
+    ]
+  },
+  {
+    type: "method",
+    method: "whereILike",
+    example: ".whereILike(column, string|builder|raw)",
+    children: [
+      {
+        type: "runnable",
+        content: `
+          knex('users').whereILike('email', '%mail%')
+        `
+      }
+    ]
+  },
+  {
     type: "heading",
     size: "md",
     content: "Join Methods"
