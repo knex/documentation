@@ -1526,13 +1526,19 @@ export default [
   {
     type: "method",
     method: "offset",
-    example: ".offset(value)",
-    description: "Adds an offset clause to the query.",
+    example: ".offset(value, options={skipBinding: boolean})",
+    description: "Adds an offset clause to the query. An optional skipBinding parameter may be specified to insert the raw value in the query.",
     children: [
       {
         type: "runnable",
         content: `
           knex.select('*').from('users').offset(10)
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').offset(10, {skipBinding: true})
         `
       }
     ]
@@ -1540,13 +1546,19 @@ export default [
   {
     type: "method",
     method: "limit",
-    example: ".limit(value)",
-    description: "Adds a limit clause to the query.",
+    example: ".limit(value, options={skipBinding: boolean})",
+    description: "Adds a limit clause to the query. An optional skipBinding parameter may be specified to insert the raw value in the query.",
     children: [
       {
         type: "runnable",
         content: `
           knex.select('*').from('users').limit(10).offset(30)
+        `
+      },
+      {
+        type: "runnable",
+        content: `
+          knex.select('*').from('users').limit(10, {skipBinding: true}).offset(30)
         `
       }
     ]
