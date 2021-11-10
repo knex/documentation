@@ -46,7 +46,7 @@ export default [
   {
     type: "method",
     method: "createTableLike",
-    example: "knex.schema.createTableLike(tableName, tableNameToCopy, callback)",
+    example: "knex.schema.createTableLike(tableName, tableNameToCopy, [callback])",
     description: "Creates a new table on the database based on another table. Copy only the structure : columns, keys and indexes (expected on SQL Server which only copy columns) and not the data. Callback function can be specified to add columns in the duplicated table.",
     children: [
       {
@@ -59,7 +59,7 @@ export default [
         type: "runnable",
         content: `
           // "new_users" table contains columns of users and two new columns 'age' and 'last_name'.
-          knex.schema.createTableLike('new_users', 'users', function(table){
+          knex.schema.createTableLike('new_users', 'users', (table) => {
             table.integer('age');
             table.string('last_name');
           })
