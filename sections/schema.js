@@ -510,7 +510,7 @@ export default [
   {
     type: "method",
     method: "tinyint",
-    example: "table.smallint(name, length)",
+    example: "table.tinyint(name, length)",
     description: "Adds an tinyint column",
     children: [    ]
   },
@@ -523,7 +523,7 @@ export default [
   },
   {
     type: "method",
-    method: "smallint",
+    method: "mediumint",
     example: "table.mediumint(name, length)",
     description: "Adds an mediumint column",
     children: [    ]
