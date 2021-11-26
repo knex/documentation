@@ -6,3 +6,4 @@ npm-debug.log
 build/CHANGELOG.md
 build/version.js
 package-lock.json
+yarn.lock
