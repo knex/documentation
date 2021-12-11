@@ -530,7 +530,7 @@ export default [
   },
   {
     type: "method",
-    method: "mediumint",
+    method: "bigint",
     example: "table.bigint(name)",
     description: "Adds a bigint column",
     children: [    ]
