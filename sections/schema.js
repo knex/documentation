@@ -1297,7 +1297,7 @@ export default [
   {
     type: "method",
     method: "checkPositive",
-    example: "column.checkPositive()",
+    example: "column.checkPositive([constraintName])",
     description: "Specify a check on column that test if the value of column is positive.",
     children: [
       {
@@ -1314,7 +1314,7 @@ export default [
   {
     type: "method",
     method: "checkNegative",
-    example: "column.checkNegative()",
+    example: "column.checkNegative([constraintName])",
     description: "Specify a check on column that test if the value of column is negative.",
     children: [
       {
@@ -1331,8 +1331,8 @@ export default [
   {
     type: "method",
     method: "checkIn",
-    example: "column.checkIn(values)",
-    description: "Specify a check on column that test if the value of column is contains in a set of specified values.",
+    example: "column.checkIn(values, [constraintName])",
+    description: "Specify a check on column that test if the value of column is contained in a set of specified values.",
     children: [
       {
         type: "code",
@@ -1348,7 +1348,7 @@ export default [
   {
     type: "method",
     method: "checkNotIn",
-    example: "column.checkNotIn(values)",
+    example: "column.checkNotIn(values, [constraintName])",
     description: "Specify a check on column that test if the value of column is not contains in a set of specified values.",
     children: [
       {
@@ -1365,8 +1365,8 @@ export default [
   {
     type: "method",
     method: "checkBetween",
-    example: "column.checkBetween(values)",
-    description: "Specify a check on column that test if the value of column is between a range of values.",
+    example: "column.checkBetween(values, [constraintName])",
+    description: "Specify a check on column that test if the value of column is within a range of values.",
     children: [
       {
         type: "code",
@@ -1431,7 +1431,9 @@ export default [
         language: "js",
         content: `
           knex.schema.createTable('product', function (table) {
-            table.dropChecks(['check1', 'check2']);
+            table.integer('price').checkPositive('price_check'):
+            table.integer('price_proportion').checkBetween([0, 100],'price_proportion_check'):
+            table.dropChecks(['price_check', 'price_proportion_check']);
           })
         `
       }
