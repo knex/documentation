@@ -1095,7 +1095,7 @@ export default [
         t.string('username', 35).notNullable().alter();
         // drops both not null constraint and the default value
         t.integer('age').alter();
-        // if alterNullable is false, drops both only the default value
+        // if alterNullable is false, drops only the default value
         t.integer('age').alter({alterNullable : false});
       });
     `
