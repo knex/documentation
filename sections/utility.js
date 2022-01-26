@@ -61,8 +61,8 @@ export default [
   {
     type: "method",
     method: "binToUuid",
-    example: "knex.fn.binToUuid(binaryUuid)",
-    description: "Convert a binary uuid (binary(16)) to a string uuid (char(36))",
+    example: "knex.fn.binToUuid(binaryUuid, ordered)",
+    description: "Convert a binary uuid (binary(16)) to a string uuid (char(36)).Ordered is boolean defaults to true.It should be the same in binToUuid and uuidToBin",
     children: [
       {
         type: "code",
@@ -81,8 +81,8 @@ export default [
   {
     type: "method",
     method: "uuidToBin",
-    example: "knex.fn.uuidToBin(uuid)",
-    description: "Convert a uuid (char(16)) to a binary uuid (binary(36))",
+    example: "knex.fn.uuidToBin(uuid, ordered)",
+    description: "Convert a uuid (char(16)) to a binary uuid (binary(36)).Ordered is boolean defaults to true,that let binary is ordered.",
     children: [
       {
         type: "code",
