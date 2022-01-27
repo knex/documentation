@@ -62,7 +62,7 @@ export default [
     type: "method",
     method: "binToUuid",
     example: "knex.fn.binToUuid(binaryUuid, ordered)",
-    description: "Convert a binary uuid (binary(16)) to a string uuid (char(36)).Ordered is boolean defaults to true.It should be the same in binToUuid and uuidToBin",
+    description: "Convert a binary uuid (binary(16)) to a string uuid (char(36)). knex.fn.binToUuid(binaryUuid, true) is same with bin_to_uuid(binaryUuid, true) of Mysql, knex.fn.binToUuid(binaryUuid, false) is same with bin_to_uuid(binaryUuid, false) of Mysql. But it doesn't depend Mysql. Noteworthy ordered is boolean defaults to true, it's not same with bin_to_uuid, it means knex.fn.binToUuid(uuid) = knex.fn.binToUuid(uuid, true). Most of the time you should use knex.fn.binToUuid(uuid)",
     children: [
       {
         type: "code",
@@ -82,7 +82,7 @@ export default [
     type: "method",
     method: "uuidToBin",
     example: "knex.fn.uuidToBin(uuid, ordered)",
-    description: "Convert a uuid (char(16)) to a binary uuid (binary(36)).Ordered is boolean defaults to true,that let binary is ordered.",
+    description: "Convert a uuid (char(16)) to a binary uuid (binary(36)). knex.fn.uuidToBin(uuid, true) is same with uuid_to_bin(uuid, true) of Mysql, knex.fn.uuidToBin(uuid, false) is same with uuid_to_bin(uuid, false) of Mysql. But it doesn't depend Mysql. Noteworthy ordered is boolean defaults to true, it's not same with uuid_to_bin, it means knex.fn.uuidToBin(uuid) = knex.fn.uuidToBin(uuid, true). Most of the time you should use knex.fn.uuidToBin(uuid)",
     children: [
       {
         type: "code",
