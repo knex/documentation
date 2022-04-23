@@ -1,11 +1,6 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-<<<<<<< Updated upstream
-=======
-  vite: {
-  },
->>>>>>> Stashed changes
   title: 'Knex.js',
   description: 'Beta knex.js documentation.',
   base: '/',
@@ -13,10 +8,6 @@ export default defineConfig({
   head: [
     ["link", { rel: "icon", type: "image/png", href: "/knex-logo.png" }],
   ],
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
   themeConfig: {
     logo: '/knex-logo.png',
     repo: 'knex/knex',  
