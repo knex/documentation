@@ -13,6 +13,13 @@ knex(knex.ref('Users').withSchema('TenantId'))
   .orWhere(knex.ref('Name'), 'Admin')
   .select(['Id', knex.ref('Name').as('Username')])
 ```
+<<<<<<< Updated upstream
+=======
+<CompiledSql code="knex(knex.ref('Users').withSchema('TenantId'))
+  .where(knex.ref('Id'), 1)
+  .orWhere(knex.ref('Name'), 'Admin')
+  .select(['Id', knex.ref('Name').as('Username')])"/>
+>>>>>>> Stashed changes
 
 ### withSchema
 

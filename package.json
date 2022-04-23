@@ -16,5 +16,16 @@
     "name": "Tim Griesser",
     "web": "https://github.com/tgriesser"
   },
+<<<<<<< Updated upstream
   "license": "MIT"
+<<<<<<< Updated upstream
 }
+=======
+=======
+  "license": "MIT",
+  "dependencies": {
+    "knex": "^2.0.0"
+  }
+>>>>>>> Stashed changes
+}
+>>>>>>> Stashed changes
