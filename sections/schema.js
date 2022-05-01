@@ -579,7 +579,7 @@ export default [
     type: "method",
     method: "string",
     example: "table.string(name, [length])",
-    description: "Adds a string column, with optional length defaulting to 255.",
+    description: "Adds a string column, with optional length.",
     children: [    ]
   },
   {
