@@ -14,11 +14,11 @@ knex(knex.ref('Users').withSchema('TenantId'))
   .select(['Id', knex.ref('Name').as('Username')])
 ```
 
-<CompiledSql code="knex(knex.ref('Users').withSchema('TenantId'))
+$dialect: `{{ $dialect }}`
+<SqlOutput code="knex(knex.ref('Users').withSchema('TenantId'))
   .where(knex.ref('Id'), 1)
   .orWhere(knex.ref('Name'), 'Admin')
   .select(['Id', knex.ref('Name').as('Username')])"/>
-
 
 ### withSchema
 

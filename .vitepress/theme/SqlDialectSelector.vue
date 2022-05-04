@@ -1,16 +1,11 @@
 <script setup>
-import { setDialect, dialect } from "./SqlDialect.js";
-
-const changeSqlDialect = ({ target: { value: dialect } }) => {
-  localStorage.setItem("sql-dialect", dialect);
-  setDialect(dialect);
-};
+import { useDialect } from "./dialect";
+const { dialect } = useDialect()
 </script>
 
 <template>
   <select
-    :value="dialect"
-    @change="changeSqlDialect"
+    v-model="dialect"
     class="sql-dropdown item nav-link"
   >
     <option value="mysql">MySQL / MariaDB</option>

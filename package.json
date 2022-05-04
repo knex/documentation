@@ -10,10 +10,15 @@
   },
   "devDependencies": {
     "typescript": "4.6.3",
+    "vite": "^2.9.8",
     "vitepress": "^0.22.2"
   },
   "dependencies": {
-    "knex": "^2.0.0"
+    "browserify-fs": "^1.0.0",
+    "knex": "^2.0.0",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "util": "^0.12.4"
   },
   "author": {
     "name": "Tim Griesser",
