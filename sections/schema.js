@@ -230,8 +230,8 @@ export default [
   {
     type: "method",
     method: "refreshMaterializedView",
-    example: "knex.schema.refreshMaterializedView(viewName)",
-    description: "Refresh materialized view on the database. Only on PostgreSQL, CockroachDb, Redshift and Oracle.",
+    example: "knex.schema.refreshMaterializedView(viewName, concurrently = false)",
+    description: "Refresh materialized view on the database. Only on PostgreSQL, CockroachDb, Redshift and Oracle. For PostgreSQL you can also specify `true` as the second argument to refresh the view Concurrently (default is `false`)",
     children: [
       {
         type: "runnable",
