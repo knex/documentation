@@ -153,12 +153,19 @@ function initialize(userOptions: any) {
 }
 .DocSearch {
   --docsearch-primary-color: var(--c-brand);
+  --docsearch-modal-background: var(--c-white);
+  --docsearch-hit-background: var(--c-white-dark);
   --docsearch-searchbox-focus-background: var(--c-white-dark);
   --docsearch-highlight-color: var(--docsearch-primary-color);
   --docsearch-searchbox-shadow: inset 0 0 0 2px var(--c-text-lighter);
-  --docsearch-text-color: var(--c-text-light);
+  --docsearch-hit-shadow: 0 1px 3px 0 var(--c-white);
+  --docsearch-text-color: var(--c-text);
   --docsearch-muted-color: var(--c-text-lighter);
   --docsearch-searchbox-background: var(--c-white);
+  --docsearch-footer-background: var(--c-white);
+  --docsearch-modal-shadow: 0 3px 8px 0 var(--c-white-dark);
+  --docsearch-hit-color: var(--c-text);
+  --docsearch-footer-shadow: 0 -1px 0 0 var(--c-white-dark);
 }
 
 
