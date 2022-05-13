@@ -1,16 +1,22 @@
 <script setup>
 import { onMounted, ref, computed, watch } from 'vue'
 
-const prefersDark = ref(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
-const setting = ref(localStorage.getItem('color-scheme') || 'auto')
+const prefersDark = ref(false)
+const setting = ref('auto')
 const isDark = computed(() => setting.value === 'dark' || (prefersDark.value && setting.value !== 'light'))
 const toggleDark = () => {
   setting.value = setting.value === 'dark' ? 'light' : 'dark'
   localStorage.setItem('color-scheme', setting.value)
 }
 watch(isDark, () => {
-    document.documentElement.classList.toggle('dark', isDark.value)
-}, { immediate: true })
+  document.documentElement.classList.toggle('dark', isDark.value)
+})
+
+onMounted(() => {
+  prefersDark.value = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+  setting.value = localStorage.getItem('color-scheme') || 'auto'
+  document.documentElement.classList.toggle('dark', isDark.value)
+})
 
 </script>
 
@@ -31,7 +37,7 @@ watch(isDark, () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 1rem;
+  margin-left: 0.5rem;
   cursor: pointer;
   color: var(--c-text);
   transition: color .2s ease-in-out, background-color .2s ease-in-out;
