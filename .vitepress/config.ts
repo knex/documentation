@@ -37,6 +37,7 @@ export default defineConfig({
       appId: 'V7E3EHUPD6',
       apiKey: '44b5077836c1c8fba0f364383dde7fb4',
       indexName: 'knex',
+      initialQuery: 'Installation',
     }
   },
 })

@@ -37,7 +37,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 1rem;
+  margin-left: 0.5rem;
   cursor: pointer;
   color: var(--c-text);
   transition: color .2s ease-in-out, background-color .2s ease-in-out;
