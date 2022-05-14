@@ -41,8 +41,8 @@ onMounted(switchExamples)
 <style>
 .sql-dropdown {
   border-radius: 8px;
-  height: 1.8rem;
   margin-left: 1rem;
+  padding: 0.5rem 0.4rem;;
   cursor: pointer;
   color: var(--c-text);
   outline: none;

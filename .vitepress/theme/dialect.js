@@ -1,7 +1,6 @@
 import { watch, ref, nextTick, inject } from "vue";
 
 export function createDialect(app) {
-  console.log('createDialect??', app)
   const dialect = ref('mysql')
 
   if (!import.meta.url) {
