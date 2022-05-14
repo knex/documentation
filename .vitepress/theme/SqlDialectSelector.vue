@@ -1,17 +1,22 @@
 <script setup>
-import { watch, onMounted } from 'vue'
+import { watch, onMounted, nextTick } from 'vue'
+import { useRoute } from "vitepress";
 import { useDialect } from "./dialect";
 const { dialect } = useDialect()
+const route = useRoute()
 
 const switchExamples = () => {
-  document.querySelectorAll('[data-dialect]').forEach(el => {
-    el.style.display = 'none'
-  })
-  document.querySelectorAll(`[data-dialect="${dialect.value}"]`).forEach(el => {
-    el.style.display = 'block'
+  nextTick(() => {
+    document.querySelectorAll('[data-dialect]').forEach(el => {
+      el.style.display = 'none'
+    })
+    document.querySelectorAll(`[data-dialect="${dialect.value}"]`).forEach(el => {
+      el.style.display = 'block'
+    })
   })
 }
 
+watch(route, switchExamples)
 watch(dialect, switchExamples)
 onMounted(switchExamples)
 </script>

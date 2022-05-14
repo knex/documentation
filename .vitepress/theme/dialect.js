@@ -1,17 +1,21 @@
-import { watch, ref, onMounted, inject } from "vue";
+import { watch, ref, nextTick, inject } from "vue";
 
 export function createDialect(app) {
+  console.log('createDialect??', app)
   const dialect = ref('mysql')
 
-  watch(dialect, (value) => {
-    localStorage.setItem("sql-dialect", value);
-  })
-  onMounted(() => {
-    const value = localStorage.getItem("sql-dialect");
-    if (value) {
-      dialect.value = value;
-    }
-  })
+  if (!import.meta.url) {
+    watch(dialect, (value) => {
+      localStorage.setItem("sql-dialect", value);
+    })
+    nextTick(() => {
+      const value = localStorage.getItem("sql-dialect");
+      console.log('onMounted??', value)
+      if (value) {
+        dialect.value = value;
+      }
+    })
+  }
 
   // provide for later inject
   app.provide('dialect', dialect)

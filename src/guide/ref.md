@@ -14,7 +14,6 @@ knex(knex.ref('Users').withSchema('TenantId'))
   .select(['Id', knex.ref('Name').as('Username')])
 ```
 
-$dialect: `{{ $dialect }}`
 <SqlOutput code="knex(knex.ref('Users').withSchema('TenantId'))
   .where(knex.ref('Id'), 1)
   .orWhere(knex.ref('Name'), 'Admin')
@@ -36,5 +35,6 @@ Alias is supported using `.alias(string)`
 knex('users')
   .select(knex.ref('Id').as('UserId'))
 ```
+
 <SqlOutput code="knex('users')
   .select(knex.ref('Id').as('UserId'))"/>
