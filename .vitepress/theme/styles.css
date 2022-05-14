@@ -111,3 +111,11 @@ a.header-anchor {
     transform: rotate(360deg);
   }
 }
+
+[data-dialect]::before {
+  content: attr(data-dialect);
+}
+
+.language-sql code {
+  color: #ccc;
+}

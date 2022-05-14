@@ -1,12 +1,13 @@
 import { defineConfig } from 'vitepress'
+import KnexDialectsPlugins from './knexDialects'
 
 export default defineConfig({
   title: 'Knex.js',
   description: 'Beta knex.js documentation.',
-  base: '/',
+  base: '/knex',
   srcDir: 'src',
   head: [
-    ["link", { rel: "icon", type: "image/png", href: "/knex-logo.png" }],
+    ["link", { rel: "icon", type: "image/png", href: "/knex/knex-logo.png" }],
   ],
   themeConfig: {
     logo: '/knex-logo.png',
@@ -39,6 +40,11 @@ export default defineConfig({
       initialQuery: 'Installation',
     }
   },
+   vite: {
+     plugins: [
+       KnexDialectsPlugins()
+     ]
+   }
 })
 
 function getGuideSidebar() {

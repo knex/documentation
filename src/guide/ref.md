@@ -36,3 +36,5 @@ Alias is supported using `.alias(string)`
 knex('users')
   .select(knex.ref('Id').as('UserId'))
 ```
+<SqlOutput code="knex('users')
+  .select(knex.ref('Id').as('UserId'))"/>

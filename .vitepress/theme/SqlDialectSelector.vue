@@ -1,6 +1,18 @@
 <script setup>
+import { watch, nextTick } from 'vue'
 import { useDialect } from "./dialect";
 const { dialect } = useDialect()
+
+watch(dialect, () => {
+  nextTick(() => {
+    document.querySelectorAll('[data-dialect]').forEach(el => {
+      el.style.display = 'none'
+    })
+    document.querySelectorAll(`[data-dialect="${dialect.value}"]`).forEach(el => {
+      el.style.display = 'block'
+    })
+  })
+}, { immediate: true })
 </script>
 
 <template>
@@ -9,16 +21,18 @@ const { dialect } = useDialect()
     class="sql-dropdown item nav-link"
   >
     <option value="mysql">MySQL / MariaDB</option>
-    <option value="pg">PostgreSQL</option>
+    <option value="mysql2">MySQL2</option>
+    <option value="postgres">PostgreSQL</option>
+    <option value="pgnative">PG Native</option>
     <option value="cockroachdb">CockroachDB</option>
     <option value="redshift">Amazon Redshift</option>
     <option value="sqlite3">SQLite3</option>
-    <option value="oracle">Oracle</option>
+    <option value="oracledb">OracleDB</option>
     <option value="mssql">MSSQL</option>
   </select>
 </template>
 
-<style scoped>
+<style>
 .sql-dropdown {
   border-radius: 8px;
   height: 1.8rem;
