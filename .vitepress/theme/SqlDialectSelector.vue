@@ -1,18 +1,19 @@
 <script setup>
-import { watch, nextTick } from 'vue'
+import { watch, onMounted } from 'vue'
 import { useDialect } from "./dialect";
 const { dialect } = useDialect()
 
-watch(dialect, () => {
-  nextTick(() => {
-    document.querySelectorAll('[data-dialect]').forEach(el => {
-      el.style.display = 'none'
-    })
-    document.querySelectorAll(`[data-dialect="${dialect.value}"]`).forEach(el => {
-      el.style.display = 'block'
-    })
+const switchExamples = () => {
+  document.querySelectorAll('[data-dialect]').forEach(el => {
+    el.style.display = 'none'
   })
-}, { immediate: true })
+  document.querySelectorAll(`[data-dialect="${dialect.value}"]`).forEach(el => {
+    el.style.display = 'block'
+  })
+}
+
+watch(dialect, switchExamples)
+onMounted(switchExamples)
 </script>
 
 <template>

@@ -39,19 +39,9 @@ export default function knexDialects (): PluginOption {
             snippets += `<div class="language-sql" data-dialect="${dialect}"><pre><code>${output}</code></pre></div>`
           }
 
-          console.log(snippets)
-
-          // console.log('match found', match[1], results, `:results="${JSON.stringify(results).replace(/"/g, "'")}"`)
           src = src.replace(match[0], `<SqlOutput code="${match[1]}">${snippets}</SqlOutput>`)
         }
-        // console.log('transform-file', id, matches)
       }
-      // if (fileRegex.test(id)) {
-      //   return {
-      //     code: compileFileToJS(src),
-      //     map: null // provide source map if available
-      //   }
-      // }
 
       return src
     }

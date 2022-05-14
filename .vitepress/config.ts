@@ -4,10 +4,10 @@ import KnexDialectsPlugins from './knexDialects'
 export default defineConfig({
   title: 'Knex.js',
   description: 'Beta knex.js documentation.',
-  base: '/knex',
+  base: '/',
   srcDir: 'src',
   head: [
-    ["link", { rel: "icon", type: "image/png", href: "/knex/knex-logo.png" }],
+    ["link", { rel: "icon", type: "image/png", href: "/knex-logo.png" }],
   ],
   themeConfig: {
     logo: '/knex-logo.png',
