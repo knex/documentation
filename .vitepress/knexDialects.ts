@@ -26,20 +26,18 @@ export default function knexDialects (): PluginOption {
       if (id.endsWith('.md')) {
         const matches = src.matchAll(regex)
         for (const match of matches) {
-          let snippets = ''
-          const results = {}
+          let markdown = ''
           const getCode = Function("knex", `return knex.raw(${match[1]});`);
 
           for (const dialect in dialects) {
             const knex = dialects[dialect]
             const { sql } = getCode(knex)
             const output = sql.toString()
-            results[dialect] = output
 
-            snippets += `<div class="language-sql" data-dialect="${dialect}"><pre><code>${output}</code></pre></div>`
+            markdown += `<div data-dialect="${dialect}">\n\n\`\`\`sql\n${output}\n\`\`\`\n\n</div>\n`
           }
 
-          src = src.replace(match[0], `<SqlOutput code="${match[1]}">${snippets}</SqlOutput>`)
+          src = src.replace(match[0], markdown)
         }
       }
 

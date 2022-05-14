@@ -9,7 +9,6 @@ export function createDialect(app) {
     })
     nextTick(() => {
       const value = localStorage.getItem("sql-dialect");
-      console.log('onMounted??', value)
       if (value) {
         dialect.value = value;
       }
