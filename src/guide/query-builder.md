@@ -1684,8 +1684,8 @@ It allows to add custom function to the Query Builder.
 Example:
 
 ```ts
-const Knex = require('knex');
-Knex.QueryBuilder.extend('customSelect', function(value) {
+const { knex } = require('knex');
+knex.QueryBuilder.extend('customSelect', function(value) {
   return this.select(this.client.raw(`${value} as value`));
 });
 
@@ -1704,7 +1704,7 @@ import { Knex as KnexOriginal } from 'knex';
 
 declare module 'knex' {
   namespace Knex {
-    interface QueryBuilder {
+    interface QueryInterface {
       customSelect<TRecord, TResult>(value: number): KnexOriginal.QueryBuilder<TRecord, TResult>;
     }
   }
