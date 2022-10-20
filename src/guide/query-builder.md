@@ -436,7 +436,7 @@ knex.withSchema('public')
 
 **.jsonExtract(column|builder|raw|array[], path, [alias], [singleValue])**
 
-Extract a value from a json column given a JsonPath. An alias can be specified. The singleValue booleancan be used to specify, with Oracle or MSSQL, if the value returned by the function is a single value or an array/object value.An array of arrays can be used to specify multiple extractions with one call to this function.
+Extract a value from a json column given a JsonPath. An alias can be specified. The singleValue boolean can be used to specify, with Oracle or MSSQL, if the value returned by the function is a single value or an array/object value.An array of arrays can be used to specify multiple extractions with one call to this function.
 
 ```js
 knex('accounts')
