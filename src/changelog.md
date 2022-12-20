@@ -1618,7 +1618,7 @@ Note: there are many breaking changes in this version, particularly in TypeScrip
 - Fix broken behavior on WebSQL build, #1638
 - Oracle id sequence now handles manual inserts, #906
 - Cleanup PG escaping, fix #1602, #1548
-- Added [`with`](#Builder-with) to builder for [common table expressions](https://www.postgresql.org/docs/9.4/static/queries-with.html), #1599
+- Added [`with`](/guide/query-builder#with) to builder for [common table expressions](https://www.postgresql.org/docs/9.4/static/queries-with.html), #1599
 - Fix #1619, pluck with explicit column names
 - Switching back to [generic-pool](https://github.com/coopernurse/node-pool) for pooling resource management
 - Removed index.html, please direct all PR's for docs against the files in [knex/documentation](https://github.com/knex/documentation)
@@ -1730,8 +1730,8 @@ Note: there are many breaking changes in this version, particularly in TypeScrip
 
 **Other Changes**
 
-- Add [`countDistinct`](#Builder-countDistinct), [`avgDistinct`](#Builder-avgDistinct) and [`sumDistinct`](#Builder-sumDistinct). #1046
-- Add [`schema.jsonb`](#Schema-jsonb). Deprecated `schema.json(column, true)`. #991
+- Add [`countDistinct`](/guide/query-builder#countdistinct), [`avgDistinct`](/guide/query-builder#avgdistinct) and [`sumDistinct`](/guide/query-builder#sumdistinct). #1046
+- Add [`schema.jsonb`](/guide/schema-builder#jsonb). Deprecated `schema.json(column, true)`. #991
 - Support binding identifiers with `??`. #1103
 - Restore `query` event when triggered by transactions. #855
 - Correct question mark escaping in rendered queries. #519, #1058
@@ -1740,7 +1740,7 @@ Note: there are many breaking changes in this version, particularly in TypeScrip
 - Add migration locking. #1094
 - Allow column aliases to contain `.`. #1181
 - Add `batchInsert`. #1182
-- Support non-array arguments to [`knex.raw`](#Raw-Bindings).
+- Support non-array arguments to [`knex.raw`](/guide/raw#raw-parameter-binding).
 - Global `query-error` event. #1163
 - Add `batchInsert`. #1182
 - Better support for Mysql2 dialect options. #980
@@ -1756,9 +1756,9 @@ Note: there are many breaking changes in this version, particularly in TypeScrip
 - Correctly parse SSL query parameter for PostgreSQL. #852
 - Pass `compress` option to MySQL2. #843
 - Schema: Use `timestamp with timezone` by default for `time`, `datetime` and `timestamp` for Oracle. #876
-- Add [`QueryBuilder#modify`](#Builder-modify) #881
+- Add [`QueryBuilder#modify`](/guide/query-builder#modify) #881
 - Add LiveScript and Early Gray support for seeds and migrations.
-- Add [`QueryBuilder#withSchema`](#Builder-withSchema) #518
+- Add [`QueryBuilder#withSchema`](/guide/query-builder#withSchema) #518
 - Allow escaping of `?` in `knex.raw` queries. #946
 - Allow `0` in join clause. #953
 - Add migration config to allow disabling/enabling transactions per migration. #834
@@ -1963,7 +1963,7 @@ Note: there are many breaking changes in this version, particularly in TypeScrip
 
 - Fix regression in raw query output, (#297).
 - Fix regression in "pluck" method (#296).
-- Document [first](#Builder-first) method
+- Document [first](/guide/query-builder#first) method
 
 ### 0.6.1 - June 4, 2014
 
@@ -1978,8 +1978,8 @@ Note: there are many breaking changes in this version, particularly in TypeScrip
 - Support for the [mariasql](https://github.com/mscdex/node-mariasql) driver.
 - More consistent use of raw query bindings throughout the library.
 - Queries are more composable, may be injected in various points throughout the builder.
-- Added [streaming](#Interfaces-Streams) interface
-- Deprecated 5 argument [join](#Builder-join) in favor of additional join methods.
+- Added [streaming](/guide/interfaces#streams) interface
+- Deprecated 5 argument [join](/guide/query-builder#join) in favor of additional join methods.
 - The wrapValue function to allow for array column operations in PostgreSQL (#287).
 - An explicit connection can be passed for any query (#56).
 - Drop column support for sqlite3
@@ -2053,14 +2053,14 @@ Note: there are many breaking changes in this version, particularly in TypeScrip
 
 ### 0.5.1 - Dec 12, 2013
 
-- The [returning](#Builder-returning) in PostgreSQL may now accept \* or an array of columns to return. If either of these are passed, the response will be an array of objects rather than an array of values. Updates may also now use a `returning` value. (#132)
+- The [returning](/guide/query-builder#returning) in PostgreSQL may now accept \* or an array of columns to return. If either of these are passed, the response will be an array of objects rather than an array of values. Updates may also now use a `returning` value. (#132)
 - Added `bigint` and `bigserial` type to PostgreSQL. (#111)
-- Fix for the [specificType](#Schema-specificType) schema call (#118)
+- Fix for the [specificType](/guide/schema-builder#specifictype) schema call (#118)
 - Several fixes for migrations, including migration file path fixes, passing a Promise constructor to the migration `up` and `down` methods, allowing the "knex" module to be used globally, file ordering on migrations, and other small improvements. (#112-115, #125, #135)
 
 ### 0.5.0 - Nov 25, 2013
 
-- Initial pass at a [migration](#Migrations) api.
+- Initial pass at a [migration](/guide/migrations) api.
 - Aggregate methods are no longer aliased as "aggregate", but may now be aliased and have more than one aggregate in a query (#108, #110).
 - Adding bigint and bigserial to PostgreSQL (#111).
 - Bugfix on increment/decrement values (#100).
@@ -2082,15 +2082,15 @@ Note: there are many breaking changes in this version, particularly in TypeScrip
 
 ### 0.4.10 - Oct 14, 2013
 
-- Added [forUpdate](#Builder-forUpdate) and [forShare](#Builder-forShare) for select modes in transactions. (#84)
-- Fix bug where current query chain type is not copied on [clone](#Builder-clone). (#90)
+- Added [forUpdate](/guide/query-builder#forupdate) and [forShare](/guide/query-builder#forshare) for select modes in transactions. (#84)
+- Fix bug where current query chain type is not copied on [clone](/guide/query-builder#clone). (#90)
 - Charset and collate are now added as methods on the schema builder. (#89)
-- Added `into` as an alias of [from](#Builder-from), for builder syntax of: `insert(value).into(tableName)`
+- Added `into` as an alias of [from](/guide/query-builder#from), for builder syntax of: `insert(value).into(tableName)`
 - Internal pool fixes. (#90)
 
 ### 0.4.9 - Oct 7, 2013
 
-- Fix for documentation of [hasColumn](#Schema-hasColumn), ensure that `hasColumn` works with MySQL (#87).
+- Fix for documentation of [hasColumn](/guide/schema-builder#hascolumn), ensure that `hasColumn` works with MySQL (#87).
 - More cleanup of error messages, showing the original error message concatenated with the sql and bindings
 
 ### 0.4.8 - Oct 2, 2013
@@ -2163,9 +2163,9 @@ Note: there are many breaking changes in this version, particularly in TypeScrip
 
 **Breaking changes**
 
-- [hasTable](#Schema-hasTable) now returns a boolean rather than a failed promise.
-- Changed syntax for insert in postgresql, where the `id` is not assumed on inserts (#18). The second parameter of [insert](#Builder-insert) is now required to return an array of insert id's for the last insert.
-- The [timestamp](#Schema-timestamp) method on the schema builder now uses a `dateTime` rather than a `timestamp`
+- [hasTable](/guide/schema-builder#hastable) now returns a boolean rather than a failed promise.
+- Changed syntax for insert in postgresql, where the `id` is not assumed on inserts (#18). The second parameter of [insert](/guide/query-builder#insert) is now required to return an array of insert id's for the last insert.
+- The [timestamp](/guide/schema-builder#timestamp) method on the schema builder now uses a `dateTime` rather than a `timestamp`
 
 ### 0.1.8 - July 7, 2013
 
