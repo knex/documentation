@@ -214,7 +214,7 @@ const knex = require('knex')({
 });
 ```
 
-You can also connect via an unix domain socket, which will ignore host and port.
+You can also connect via a unix domain socket, which will ignore host and port.
 
 ```js
 const knex = require('knex')({
