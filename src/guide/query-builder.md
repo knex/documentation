@@ -635,6 +635,14 @@ knex.select('*')
   )
 ```
 
+If you want to apply `orderBy`, `groupBy`, `limit`, `offset` or `having` to inputs of the union you need to use `knex.union` as a base statement. If you don't do this, those clauses will get appended to the end of the union.
+
+```js
+const users = knex('users').select('id', 'name').groupBy('id')
+const invitations = knex('invitations').select('id', 'name').orderBy('expires_at')
+knex.union([users, invitations])
+```
+
 ### unionAll
 
 **.unionAll([\*queries], [wrap])**
