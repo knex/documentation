@@ -436,7 +436,7 @@ knex.withSchema('public')
 
 **.jsonExtract(column|builder|raw|array[], path, [alias], [singleValue])**
 
-Extract a value from a json column given a JsonPath. An alias can be specified. The singleValue booleancan be used to specify, with Oracle or MSSQL, if the value returned by the function is a single value or an array/object value.An array of arrays can be used to specify multiple extractions with one call to this function.
+Extract a value from a json column given a JsonPath. An alias can be specified. The singleValue boolean can be used to specify, with Oracle or MSSQL, if the value returned by the function is a single value or an array/object value. An array of arrays can be used to specify multiple extractions with one call to this function.
 
 ```js
 knex('accounts')
@@ -482,7 +482,7 @@ knex('cities')
 
 **.jsonSet(column|builder|raw, path, value, [alias])**
 
-Return a json value/object/array where a given value is set at the given JsonPath. Value can be single value or json object. If a value already exists at the given place, the value is replaced.Not supported by Redshift and versions before Oracle 21c.
+Return a json value/object/array where a given value is set at the given JsonPath. Value can be single value or json object. If a value already exists at the given place, the value is replaced. Not supported by Redshift and versions before Oracle 21c.
 
 ```js
 knex('accounts')
@@ -501,7 +501,7 @@ knex('accounts')
 
 **.jsonInsert(column|builder|raw, path, value, [alias])**
 
-Return a json value/object/array where a given value is inserted at the given JsonPath. Value can be single value or json object. If a value exists at the given path, the value is not replaced.Not supported by Redshift and versions before Oracle 21c.
+Return a json value/object/array where a given value is inserted at the given JsonPath. Value can be single value or json object. If a value exists at the given path, the value is not replaced. Not supported by Redshift and versions before Oracle 21c.
 
 ```js
 knex('accounts')
@@ -528,7 +528,7 @@ knex('accounts')
 
 **.jsonRemove(column|builder|raw, path, [alias])**
 
-Return a json value/object/array where a given value is removed at the given JsonPath.Not supported by Redshift and versions before Oracle 21c.
+Return a json value/object/array where a given value is removed at the given JsonPath. Not supported by Redshift and versions before Oracle 21c.
 
 ```js
 knex('accounts')
@@ -634,6 +634,26 @@ knex.select('*')
     )
   )
 ```
+
+If you want to apply `orderBy`, `groupBy`, `limit`, `offset` or `having` to inputs of the union you need to use `knex.union` as a base statement. If you don't do this, those clauses will get appended to the end of the union.
+
+```js
+// example showing how clauses get appended to the end of the query
+knex('users')
+  .select('id', 'name')
+  .groupBy('id')
+  .union(
+    knex('invitations')
+      .select('id', 'name')
+      .orderBy('expires_at')
+  )
+
+knex.union([
+  knex('users').select('id', 'name').groupBy('id'),
+  knex('invitations').select('id', 'name').orderBy('expires_at')
+])
+```
+[before](https://michaelavila.com/knex-querylab/?query=NYOwpgHgFA5ArgZzAJwTAlAOiQGzAYwBdYBLAExgBoACGEAQwFswNMBzZAezgAcAhAJ6kKWOCBKcQUUJFIgAbiUL1CEkGiy4CxGOSq0GzVp2RkUg2JB4lkYBAH0VGdEA) and [after](https://michaelavila.com/knex-querylab/?query=NYOwpgHgdAriCWB7EAKA2qSKDkMDOYATntgJRQEA2YAxgC47wAm2ANAATYgCGAtmGSgBzQohgAHAEIBPRi1IdMERiABu8OtzpIQJclVoNszNpx79BiQkyIyckcfEJg8AfS1kAuqSA)
 
 ### unionAll
 
@@ -1014,7 +1034,7 @@ knex('accounts')
 **.returning(column, [options])** 
 **.returning([column1, column2, ...], [options])**
 
-Utilized by PostgreSQL, MSSQL, and Oracle databases, the returning method specifies which column should be returned by the insert, update and delete methods. Passed column parameter may be a string or an array of strings. The SQL result be reported as an array of objects, each containing a single property for each of the specified columns. The returning method is not supported on Amazon Redshift.
+Utilized by PostgreSQL, MSSQL, SQLite, and Oracle databases, the returning method specifies which column should be returned by the insert, update and delete methods. Passed column parameter may be a string or an array of strings. The SQL result be reported as an array of objects, each containing a single property for each of the specified columns. The returning method is not supported on Amazon Redshift.
 
 ```js
 // Returns [ { id: 1 } ]
@@ -1392,6 +1412,18 @@ knex('accounts')
   .hintComment('NO_ICP(accounts)')
 ```
 
+### comment
+
+**.comment(comment)**
+
+Prepend comment to the sql query using the syntax `/* ... */`. Some characters are forbidden such as `/*`, `*/` and `?`.
+
+```js
+knex('users')
+  .where('id', '=', 1)
+  .comment('Get user by id')
+```
+
 ### clone
 
 **.clone()**
@@ -1684,8 +1716,8 @@ It allows to add custom function to the Query Builder.
 Example:
 
 ```ts
-const Knex = require('knex');
-Knex.QueryBuilder.extend('customSelect', function(value) {
+const { knex } = require('knex');
+knex.QueryBuilder.extend('customSelect', function(value) {
   return this.select(this.client.raw(`${value} as value`));
 });
 
@@ -1704,7 +1736,7 @@ import { Knex as KnexOriginal } from 'knex';
 
 declare module 'knex' {
   namespace Knex {
-    interface QueryBuilder {
+    interface QueryInterface {
       customSelect<TRecord, TResult>(value: number): KnexOriginal.QueryBuilder<TRecord, TResult>;
     }
   }

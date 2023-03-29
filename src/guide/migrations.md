@@ -20,7 +20,7 @@ The migration CLI accepts the following general command-line options. You can vi
 - `--connection [address]`: Set the DB connection
 - `--migrations-table-name`: Set the migration table name
 - `--migrations-directory`: Set the migrations directory
-- `--env`: environment, default: `process.env.NODE\_ENV || development`
+- `--env`: environment, default: `process.env.NODE_ENV || development`
 - `--esm`: [Enables ESM module interoperability](#esm-interop)
 - `--help`: Display help text for a particular command and exit.
 
@@ -176,23 +176,21 @@ module.exports = {
 };
 ```
 
-you can also export an async function from the knexfile. This is useful when you need to fetch credentials from a secure location like vault
+You can also use an async function to get connection details for your configuration. This is useful when you need to fetch credentials from a secure location like vault.
 
 ```js
-async function fetchConfiguration() {
+const getPassword = async () => {
   // TODO: implement me
-  return {
-    client: 'pg',
-    connection: { user: 'me', password: 'my_pass' }
-  }
+  return 'my_pass'
 }
 
-module.exports = async () => {
-  const configuration = await fetchConfiguration();
-  return {
-    ...configuration,
-    migrations: {}
-  }
+module.exports = {
+  client: 'pg',
+  connection: async () => {
+    const password = await getPassword()
+    return { user: 'me', password }
+  },
+  migrations: {}
 };
 ```
 

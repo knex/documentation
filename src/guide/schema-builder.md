@@ -75,7 +75,7 @@ knex.schema.dropTableIfExists('users')
 Renames a table from a current tableName to another.
 
 ```js
-knex.schema.renameTable('users', 'old_users')
+knex.schema.renameTable('old_users', 'users')
 ```
 
 ### hasTable
@@ -330,7 +330,7 @@ Drops a column, specified by the column's name
 
 ### dropColumns
 
-**table.dropColumns(*columns)**
+**table.dropColumns(columns)**
 
 Drops multiple columns, taking a variable number of column names.
 
@@ -723,19 +723,22 @@ If you want to chain primary() while creating new column you can use [primary](#
 
 ### unique
 
-**table.unique(columns, options={[indexName: string], [deferrable:'not deferrable'|'immediate'|'deferred'], [storageEngineIndexType:'btree'|'hash'], [useConstraint:true|false]})**
+**table.unique(columns, options={[indexName: string], [deferrable:'not deferrable'|'immediate'|'deferred'], [storageEngineIndexType:'btree'|'hash'], [useConstraint:true|false], [predicate: QueryBuilder]})**
 
-Adds an unique index to a table over the given `columns`. In MySQL, the storage engine index type may be 'btree' or 'hash' index types, more info in Index Options section : [https://dev.mysql.com/doc/refman/8.0/en/create-index.html](https://dev.mysql.com/doc/refman/8.0/en/create-index.html). A default index name using the columns is used unless indexName is specified. If you need to create a composite index, pass an array of column to `columns`. Deferrable unique constraint are supported on Postgres and Oracle and can be set by passing deferrable option to options object. In MSSQL you can set the `useConstraint` option to true to create a unique constraint instead of a unique index.
+Adds an unique index to a table over the given `columns`. In MySQL, the storage engine index type may be 'btree' or 'hash' index types, more info in Index Options section : [https://dev.mysql.com/doc/refman/8.0/en/create-index.html](https://dev.mysql.com/doc/refman/8.0/en/create-index.html). A default index name using the columns is used unless indexName is specified. If you need to create a composite index, pass an array of column to `columns`. Deferrable unique constraint are supported on Postgres and Oracle and can be set by passing deferrable option to options object. In MSSQL and Postgres, you can set the `useConstraint` option to true to create a unique constraint instead of a unique index (defaults to false for MSSQL, true for Postgres without `predicate`, false for Postgres with `predicate`). In PostgreSQL, SQLite and MSSQL a partial unique index can be specified by setting a 'where' predicate.
 
 ```js
 knex.schema.alterTable('users', function(t) {
   t.unique('email')
 })
 knex.schema.alterTable('job', function(t) {
-  t.unique(['account_id', 'program_id'], {indexName: 'users_composite_index', deferrable:'deferred', storageEngineIndexType: 'hash'})
+  t.unique(['account_id', 'program_id'], {indexName: 'job_composite_index', deferrable: 'deferred', storageEngineIndexType: 'hash'})
 })
 knex.schema.alterTable('job', function(t) {
-  t.unique(['account_id', 'program_id'], {indexName: 'users_composite_index', useConstraint:true})
+  t.unique(['account_id', 'program_id'], {indexName: 'job_composite_index', useConstraint: true})
+})
+knex.schema.alterTable('job', function(t) {
+  t.unique(['account_id', 'program_id'], {indexName: 'job_composite_index', predicate: knex.whereNotNull('account_id')})
 })
 ```
 
@@ -875,7 +878,7 @@ If you want to create primary constraint on existing column use [primary](#Schem
 
 **column.unique(options={[indexName:string],[deferrable:'not deferrable'|'immediate'|'deferred']})**
 
-Sets the `column` as unique. On Amazon Redshift, this constraint is not enforced, but it is used by the query planner. Deferrable unqiue constraint are supported on Postgres and Oracle and can be set by passing deferrable option to options object.
+Sets the `column` as unique. On Amazon Redshift, this constraint is not enforced, but it is used by the query planner. Deferrable unique constraint are supported on Postgres and Oracle and can be set by passing deferrable option to options object.
 
 ```js
 knex.schema.table('users', function (table) {
@@ -1120,8 +1123,8 @@ Specify a check on column that test if the value match the specified regular exp
 ```js
 knex.schema.createTable('product', function (table) {
   table.string('phone').checkRegex('[0-9]{8}');
-  // In MSSQL, {8} syntax don't work, y
-  // ou need to duplicate [0-9].
+  // In MSSQL, {8} syntax don't work,
+  // you need to duplicate [0-9].
   table.string('phone').checkRegex('[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]');
 })
 ```
