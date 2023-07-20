@@ -75,7 +75,7 @@ knex.schema.dropTableIfExists('users')
 Renames a table from a current tableName to another.
 
 ```js
-knex.schema.renameTable('users', 'old_users')
+knex.schema.renameTable('old_users', 'users')
 ```
 
 ### hasTable
@@ -280,7 +280,7 @@ knex.schema.raw("SET sql_mode='TRADITIONAL'")
 
 **knex.schema.queryContext(context)**
 
-Allows configuring a context to be passed to the [wrapIdentifier](#Installation-wrap-identifier) hook. The context can be any kind of value and will be passed to `wrapIdentifier` without modification.
+Allows configuring a context to be passed to the [wrapIdentifier](/guide/#wrapidentifier) hook. The context can be any kind of value and will be passed to `wrapIdentifier` without modification.
 
 ```js
 knex.schema.queryContext({ foo: 'bar' })
@@ -290,7 +290,7 @@ knex.schema.queryContext({ foo: 'bar' })
   })
 ```
 
-The context configured will be passed to `wrapIdentifier` for each identifier that needs to be formatted, including the table and column names. However, a different context can be set for the column names via [table.queryContext](#Schema-table-queryContext).
+The context configured will be passed to `wrapIdentifier` for each identifier that needs to be formatted, including the table and column names. However, a different context can be set for the column names via [table.queryContext](/guide/query-builder#querycontext).
 
 Calling `queryContext` with no arguments will return any context configured for the schema builder instance.
 
@@ -330,7 +330,7 @@ Drops a column, specified by the column's name
 
 ### dropColumns
 
-**table.dropColumns(*columns)**
+**table.dropColumns(columns)**
 
 Drops multiple columns, taking a variable number of column names.
 
@@ -516,6 +516,10 @@ table.timestamp('created_at', { useTz: true });
 
 Adds created\_at and updated\_at columns on the database, setting each to datetime types. When true is passed as the first argument a timestamp type is used instead. Both columns default to being not null and using the current timestamp when true is passed as the second argument. Note that on MySQL the .timestamps() only have seconds precision, to get better precision use the .datetime or .timestamp methods directly with precision. If useCamelCase is true, the name of columns are createdAt and updatedAt.
 
+::: info
+PostgreSQL `updated_at` field will not automatically be updated. Please see this [issue](https://github.com/knex/knex/issues/1928 "issue") for details
+:::
+
 ### dropTimestamps
 
 **table.dropTimestamps([useCamelCase])**
@@ -595,6 +599,14 @@ Adds a jsonb column. Works similar to table.json(), but uses native jsonb type i
 Adds a uuid column - this uses the built-in uuid type in PostgreSQL, and falling back to a char(36) in other databases by default.
 If useBinaryUuid is true, binary(16) is used. See uuidToBin function to convert uuid in binary before inserting and binToUuid to convert binary uuid to uuid.
 If primaryKey is true, then for PostgreSQL the field will be configured as `uuid primary key`, for CockroackDB an additional `default gen_random_uuid()` is set on the type.
+
+You may set the default value to the uuid helper function. Not supported by Redshift.
+
+```js
+knex.schema.createTable(tblName, (table) => {
+  table.uuid('uuidColumn').defaultTo(knex.fn.uuid());
+});
+```
 
 ### geometry
 
@@ -718,29 +730,32 @@ knex.schema.alterTable('job', function(t) {
 ```
 
 ::: info
-If you want to chain primary() while creating new column you can use [primary](#Schema-column-primary)
+If you want to chain primary() while creating new column you can use [primary](#primary-1)
 :::
 
 ### unique
 
-**table.unique(columns, options={[indexName: string], [deferrable:'not deferrable'|'immediate'|'deferred'], [storageEngineIndexType:'btree'|'hash'], [useConstraint:true|false]})**
+**table.unique(columns, options={[indexName: string], [deferrable:'not deferrable'|'immediate'|'deferred'], [storageEngineIndexType:'btree'|'hash'], [useConstraint:true|false], [predicate: QueryBuilder]})**
 
-Adds an unique index to a table over the given `columns`. In MySQL, the storage engine index type may be 'btree' or 'hash' index types, more info in Index Options section : [https://dev.mysql.com/doc/refman/8.0/en/create-index.html](https://dev.mysql.com/doc/refman/8.0/en/create-index.html). A default index name using the columns is used unless indexName is specified. If you need to create a composite index, pass an array of column to `columns`. Deferrable unique constraint are supported on Postgres and Oracle and can be set by passing deferrable option to options object. In MSSQL you can set the `useConstraint` option to true to create a unique constraint instead of a unique index.
+Adds an unique index to a table over the given `columns`. In MySQL, the storage engine index type may be 'btree' or 'hash' index types, more info in Index Options section : [https://dev.mysql.com/doc/refman/8.0/en/create-index.html](https://dev.mysql.com/doc/refman/8.0/en/create-index.html). A default index name using the columns is used unless indexName is specified. If you need to create a composite index, pass an array of column to `columns`. Deferrable unique constraint are supported on Postgres and Oracle and can be set by passing deferrable option to options object. In MSSQL and Postgres, you can set the `useConstraint` option to true to create a unique constraint instead of a unique index (defaults to false for MSSQL, true for Postgres without `predicate`, false for Postgres with `predicate`). In PostgreSQL, SQLite and MSSQL a partial unique index can be specified by setting a 'where' predicate.
 
 ```js
 knex.schema.alterTable('users', function(t) {
   t.unique('email')
 })
 knex.schema.alterTable('job', function(t) {
-  t.unique(['account_id', 'program_id'], {indexName: 'users_composite_index', deferrable:'deferred', storageEngineIndexType: 'hash'})
+  t.unique(['account_id', 'program_id'], {indexName: 'job_composite_index', deferrable: 'deferred', storageEngineIndexType: 'hash'})
 })
 knex.schema.alterTable('job', function(t) {
-  t.unique(['account_id', 'program_id'], {indexName: 'users_composite_index', useConstraint:true})
+  t.unique(['account_id', 'program_id'], {indexName: 'job_composite_index', useConstraint: true})
+})
+knex.schema.alterTable('job', function(t) {
+  t.unique(['account_id', 'program_id'], {indexName: 'job_composite_index', predicate: knex.whereNotNull('account_id')})
 })
 ```
 
 ::: info
-If you want to chain unique() while creating new column you can use [unique](#Schema-column-unique)
+If you want to chain unique() while creating new column you can use [unique](#unique-1)
 :::
 
 ### foreign
@@ -786,7 +801,7 @@ Drops the primary key constraint on a table. Defaults to tablename\_pkey unless 
 
 **table.queryContext(context)**
 
-Allows configuring a context to be passed to the [wrapIdentifier](#Installation-wrap-identifier) hook for formatting table builder identifiers. The context can be any kind of value and will be passed to `wrapIdentifier` without modification.
+Allows configuring a context to be passed to the [wrapIdentifier](/guide/#wrapidentifier) hook for formatting table builder identifiers. The context can be any kind of value and will be passed to `wrapIdentifier` without modification.
 
 ```js
 knex.schema.table('users', function (table) {
@@ -796,7 +811,7 @@ knex.schema.table('users', function (table) {
 })
 ```
 
-This method also enables overwriting the context configured for a schema builder instance via [schema.queryContext](#Schema-queryContext):
+This method also enables overwriting the context configured for a schema builder instance via [schema.queryContext](/guide/schema-builder#querycontext):
 
 ```js
 knex.schema.queryContext('schema context')
@@ -868,14 +883,14 @@ knex.schema.table('users', function (table) {
 ```
 
 ::: info
-If you want to create primary constraint on existing column use [primary](#Schema-table-primary)
+If you want to create primary constraint on existing column use [primary](#primary)
 :::
 
 ### unique
 
 **column.unique(options={[indexName:string],[deferrable:'not deferrable'|'immediate'|'deferred']})**
 
-Sets the `column` as unique. On Amazon Redshift, this constraint is not enforced, but it is used by the query planner. Deferrable unqiue constraint are supported on Postgres and Oracle and can be set by passing deferrable option to options object.
+Sets the `column` as unique. On Amazon Redshift, this constraint is not enforced, but it is used by the query planner. Deferrable unique constraint are supported on Postgres and Oracle and can be set by passing deferrable option to options object.
 
 ```js
 knex.schema.table('users', function (table) {
@@ -884,7 +899,7 @@ knex.schema.table('users', function (table) {
 ```
 
 ::: info
-If you want to create unique constraint on existing column use [unique](#Schema-table-unique)
+If you want to create unique constraint on existing column use [unique](#unique)
 :::
 
 ### references
@@ -927,7 +942,7 @@ column.defaultTo('value', { constraintName: 'df_table_value' });
 
 **column.unsigned()**
 
-Specifies an integer as unsigned. No-op if this is chained off of a non-integer field.
+Specifies a number as unsigned. Only for numeric values.
 
 ### notNullable
 

@@ -436,7 +436,7 @@ knex.withSchema('public')
 
 **.jsonExtract(column|builder|raw|array[], path, [alias], [singleValue])**
 
-Extract a value from a json column given a JsonPath. An alias can be specified. The singleValue booleancan be used to specify, with Oracle or MSSQL, if the value returned by the function is a single value or an array/object value.An array of arrays can be used to specify multiple extractions with one call to this function.
+Extract a value from a json column given a JsonPath. An alias can be specified. The singleValue boolean can be used to specify, with Oracle or MSSQL, if the value returned by the function is a single value or an array/object value. An array of arrays can be used to specify multiple extractions with one call to this function.
 
 ```js
 knex('accounts')
@@ -482,7 +482,7 @@ knex('cities')
 
 **.jsonSet(column|builder|raw, path, value, [alias])**
 
-Return a json value/object/array where a given value is set at the given JsonPath. Value can be single value or json object. If a value already exists at the given place, the value is replaced.Not supported by Redshift and versions before Oracle 21c.
+Return a json value/object/array where a given value is set at the given JsonPath. Value can be single value or json object. If a value already exists at the given place, the value is replaced. Not supported by Redshift and versions before Oracle 21c.
 
 ```js
 knex('accounts')
@@ -501,7 +501,7 @@ knex('accounts')
 
 **.jsonInsert(column|builder|raw, path, value, [alias])**
 
-Return a json value/object/array where a given value is inserted at the given JsonPath. Value can be single value or json object. If a value exists at the given path, the value is not replaced.Not supported by Redshift and versions before Oracle 21c.
+Return a json value/object/array where a given value is inserted at the given JsonPath. Value can be single value or json object. If a value exists at the given path, the value is not replaced. Not supported by Redshift and versions before Oracle 21c.
 
 ```js
 knex('accounts')
@@ -528,7 +528,7 @@ knex('accounts')
 
 **.jsonRemove(column|builder|raw, path, [alias])**
 
-Return a json value/object/array where a given value is removed at the given JsonPath.Not supported by Redshift and versions before Oracle 21c.
+Return a json value/object/array where a given value is removed at the given JsonPath. Not supported by Redshift and versions before Oracle 21c.
 
 ```js
 knex('accounts')
@@ -635,6 +635,26 @@ knex.select('*')
   )
 ```
 
+If you want to apply `orderBy`, `groupBy`, `limit`, `offset` or `having` to inputs of the union you need to use `knex.union` as a base statement. If you don't do this, those clauses will get appended to the end of the union.
+
+```js
+// example showing how clauses get appended to the end of the query
+knex('users')
+  .select('id', 'name')
+  .groupBy('id')
+  .union(
+    knex('invitations')
+      .select('id', 'name')
+      .orderBy('expires_at')
+  )
+
+knex.union([
+  knex('users').select('id', 'name').groupBy('id'),
+  knex('invitations').select('id', 'name').orderBy('expires_at')
+])
+```
+[before](https://michaelavila.com/knex-querylab/?query=NYOwpgHgFA5ArgZzAJwTAlAOiQGzAYwBdYBLAExgBoACGEAQwFswNMBzZAezgAcAhAJ6kKWOCBKcQUUJFIgAbiUL1CEkGiy4CxGOSq0GzVp2RkUg2JB4lkYBAH0VGdEA) and [after](https://michaelavila.com/knex-querylab/?query=NYOwpgHgdAriCWB7EAKA2qSKDkMDOYATntgJRQEA2YAxgC47wAm2ANAATYgCGAtmGSgBzQohgAHAEIBPRi1IdMERiABu8OtzpIQJclVoNszNpx79BiQkyIyckcfEJg8AfS1kAuqSA)
+
 ### unionAll
 
 **.unionAll([\*queries], [wrap])**
@@ -703,11 +723,45 @@ knex.select('*')
   )
 ```
 
+### except
+
+**.except([\*queries], [wrap])**
+
+Creates an except query, taking an array or a list of callbacks, builders, or raw statements to build the except statement, with optional boolean wrap. If the `wrap` parameter is `true`, the queries will be individually wrapped in parentheses. The except method is unsupported on MySQL.
+
+```js
+knex.select('*')
+  .from('users')
+  .whereNull('last_name')
+  .except(function() {
+    this.select('*').from('users').whereNull('first_name')
+  })
+
+knex.select('*')
+  .from('users')
+  .whereNull('last_name')
+  .except([
+    knex.select('*').from('users').whereNull('first_name')
+  ])
+
+knex.select('*')
+  .from('users')
+  .whereNull('last_name')
+  .except(
+    knex.raw(
+      'select * from users where first_name is null'
+    ),
+    knex.raw(
+      'select * from users where email is null'
+    )
+  )
+```
+
 ### insert
 
 **.insert(data, [returning], [options])**
 
-Creates an insert query, taking either a hash of properties to be inserted into the row, or an array of inserts, to be executed as a single insert command. If returning array is passed e.g. \['id', 'title'\], it resolves the promise / fulfills the callback with an array of all the added rows with specified columns. It's a shortcut for [returning method](#Builder-returning)
+Creates an insert query, taking either a hash of properties to be inserted into the row, or an array of inserts, to be executed as a single insert command. If returning array is passed e.g. \['id', 'title'\], it resolves the promise / fulfills the callback with an array of all the added rows with specified columns. It's a shortcut for [returning method](#returning)
 
 ```js
 // Returns [1] in "mysql", "sqlite", "oracle"; 
@@ -872,7 +926,7 @@ knex('tableName')
   })
 ```
 
-**For PostgreSQL/SQLite databases only**, it is also possible to add [a WHERE clause](#Builder-wheres) to conditionally update only the matching rows:
+**For PostgreSQL/SQLite databases only**, it is also possible to add [a WHERE clause](#where) to conditionally update only the matching rows:
 
 ```js
 const timestamp = Date.now();
@@ -895,7 +949,7 @@ knex('tableName')
 
 **.upsert(data, [returning], [options])**
 
-Implemented for the CockroachDB. Creates an upsert query, taking either a hash of properties to be inserted into the row, or an array of upserts, to be executed as a single upsert command. If returning array is passed e.g. \['id', 'title'\], it resolves the promise / fulfills the callback with an array of all the added rows with specified columns. It's a shortcut for [returning method](#Builder-returning)
+Implemented for the CockroachDB. Creates an upsert query, taking either a hash of properties to be inserted into the row, or an array of upserts, to be executed as a single upsert command. If returning array is passed e.g. \['id', 'title'\], it resolves the promise / fulfills the callback with an array of all the added rows with specified columns. It's a shortcut for [returning method](#returning)
 
 ```js
 // insert new row with unique index on title column
@@ -919,7 +973,7 @@ knex('coords').upsert([{x: 20}, {y: 30}, {x: 10, y: 20}])
 **.update(data, [returning], [options])**
 **.update(key, value, [returning], [options])**
 
-Creates an update query, taking a hash of properties or a key/value pair to be updated based on the other query constraints. If returning array is passed e.g. \['id', 'title'\], it resolves the promise / fulfills the callback with an array of all the updated rows with specified columns. It's a shortcut for [returning method](#Builder-returning)
+Creates an update query, taking a hash of properties or a key/value pair to be updated based on the other query constraints. If returning array is passed e.g. \['id', 'title'\], it resolves the promise / fulfills the callback with an array of all the updated rows with specified columns. It's a shortcut for [returning method](#returning)
 
 ```js
 knex('books')
@@ -958,6 +1012,20 @@ knex('books')
     ['id', 'title'], 
     { includeTriggerModifications: true }
   )
+```
+
+### updateFrom
+
+**.updateFrom(tableName)**
+
+Can be used to define in PostgreSQL an update statement with explicit 'from' syntax which can be referenced in 'where' conditions.
+
+```js
+knex('accounts')
+  .update({ enabled: false })
+  .updateFrom('clients')
+  .where('accounts.id', '=', 'clients.id')
+  .where('clients.active', '=', false)
 ```
 
 ### del / delete
@@ -1392,6 +1460,18 @@ knex('accounts')
   .hintComment('NO_ICP(accounts)')
 ```
 
+### comment
+
+**.comment(comment)**
+
+Prepend comment to the sql query using the syntax `/* ... */`. Some characters are forbidden such as `/*`, `*/` and `?`.
+
+```js
+knex('users')
+  .where('id', '=', 1)
+  .comment('Get user by id')
+```
+
 ### clone
 
 **.clone()**
@@ -1663,7 +1743,7 @@ Allows for mixing in additional options as defined by database client specific l
 
 **.queryContext(context)**
 
-Allows for configuring a context to be passed to the [wrapIdentifier](#Installation-wrap-identifier) and [postProcessResponse](#Installation-post-process-response) hooks:
+Allows for configuring a context to be passed to the [wrapIdentifier](/guide/#wrapidentifier) and [postProcessResponse](/guide/#postprocessresponse) hooks:
 
 ```js
     knex('accounts as a1')
@@ -1671,7 +1751,7 @@ Allows for configuring a context to be passed to the [wrapIdentifier](#Installat
       .select(['a1.email', 'a2.email'])
 ```
 
-The context can be any kind of value and will be passed to the hooks without modification. However, note that **objects will be shallow-cloned** when a query builder instance is [cloned](#Builder-clone), which means that they will contain all the properties of the original object but will not be the same object reference. This allows modifying the context for the cloned query builder instance.
+The context can be any kind of value and will be passed to the hooks without modification. However, note that **objects will be shallow-cloned** when a query builder instance is [cloned](#clone), which means that they will contain all the properties of the original object but will not be the same object reference. This allows modifying the context for the cloned query builder instance.
 
 Calling `queryContext` with no arguments will return any context configured for the query builder instance.
 
@@ -1684,8 +1764,8 @@ It allows to add custom function to the Query Builder.
 Example:
 
 ```ts
-const Knex = require('knex');
-Knex.QueryBuilder.extend('customSelect', function(value) {
+const { knex } = require('knex');
+knex.QueryBuilder.extend('customSelect', function(value) {
   return this.select(this.client.raw(`${value} as value`));
 });
 
@@ -1704,7 +1784,7 @@ import { Knex as KnexOriginal } from 'knex';
 
 declare module 'knex' {
   namespace Knex {
-    interface QueryBuilder {
+    interface QueryInterface {
       customSelect<TRecord, TResult>(value: number): KnexOriginal.QueryBuilder<TRecord, TResult>;
     }
   }

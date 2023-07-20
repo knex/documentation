@@ -60,6 +60,29 @@ const pg = require('knex')({
 ```
 :::
 
+When using the PostgreSQL driver, another usage pattern for instantiating the Knex configuration object could be to use a `connection: {}` object details to specify various flags such as enabling SSL, a connection string, and individual connection configuration fields all in the same object. Consider the following example:
+
+::: info PostgreSQL
+If `connectionString` is highest priority to use. If left unspecified then connection details will be determined using the individual connection fields (`host`, `port`, etc), and finally an SSL configuration will be enabled based on a truthy value of `config["DB_SSL"]` which will also accept self-signed certificates.
+
+```js
+const pg = require('knex')({
+  client: 'pg',
+  connection: {
+    connectionString: config.DATABASE_URL,
+    host: config["DB_HOST"],
+    port: config["DB_PORT"],
+    user: config["DB_USER"],
+    database: config["DB_NAME"],
+    password: config["DB_PASSWORD"],
+    ssl: config["DB_SSL"] ? { rejectUnauthorized: false } : false,
+  }
+});
+```
+:::
+
+The following are SQLite usage patterns for instantiating the Knex configuration object:
+
 ::: info SQLite3 or Better-SQLite3
 When you use the SQLite3 or Better-SQLite3 adapter, there is a filename required, not a network connection. For example:
 
@@ -98,6 +121,77 @@ const knex = require('knex')({
 ```
 ::: 
 
+
+::: info Better-SQLite3
+With the Better-SQLite3 adapter, you can use `options.nativeBinding` to specify the location of the adapter's compiled C++ addon. This can be useful when your build system does a lot of transformation/relocation of files.
+
+Example use:
+
+```js
+const knex = require('knex')({
+  client: 'better-sqlite3',
+  connection: {
+    filename: ":memory:",
+    options: {
+      nativeBinding: "/path/to/better_sqlite3.node",
+    },
+  },
+});
+```
+
+Additionally, you can open the database in read-only mode using `options.readonly`:
+
+```js
+const knex = require('knex')({
+  client: 'better-sqlite3',
+  connection: {
+    filename: "/path/to/db.sqlite3",
+    options: {
+      readonly: true,
+    },
+  },
+});
+```
+
+For more information, see the [Better-SQLite3 documentation](https://github.com/WiseLibs/better-sqlite3/blob/master/docs/api.md#new-databasepath-options) on database connection options.
+
+:::
+
+::: info MSSQL
+When you use the MSSQL client, you can define a `mapBinding` function to define your own logic for mapping from knex query parameters to `tedious` types. 
+Returning undefined from the function will fallback to the default mapping.
+```js
+import { TYPES } from 'tedious';
+
+const knex = require('knex')({
+  client: 'mssql',
+  connection: {
+    options: {
+      mapBinding: value => {
+        // bind all strings to varchar instead of nvarchar
+        if (typeof value === 'string') {
+          return {
+            type: TYPES.VarChar,
+            value
+          };
+        }
+
+        // allow devs to pass tedious type at query time
+        if (value != null && value.type) {
+          return {
+            type: value.type,
+            value: value.value
+          };
+        }
+
+        // undefined is returned; falling back to default mapping function
+      }
+    }
+  }
+});
+```
+::: 
+
 ::: info 
 The database version can be added in knex configuration, when you use the PostgreSQL adapter to connect a non-standard database.
 
@@ -107,7 +201,7 @@ const knex = require('knex')({
   version: '7.2',
   connection: {
     host : '127.0.0.1',
-    port : 3306,
+    port : 5432,
     user : 'your_database_user',
     password : 'your_database_password',
     database : 'myapp_test'
@@ -129,6 +223,19 @@ const knex = require('knex')({
 });
 ```
 ::: 
+
+::: info
+When using a custom PostgreSQL client like `knex-aurora-data-api-client`, you can explicitly state if it supports jsonb column types
+
+```js
+const knex = require('knex')({
+    client: require('knex-aurora-data-api-client').postgres,
+    connection: { resourceArn, secretArn, database: `mydb` },
+    version: 'data-api',
+    jsonbSupport: true
+})
+```
+:::
 
 A function can be used to determine the connection configuration dynamically. This function receives no parameters, and returns either a configuration object or a promise for a configuration object.
 
@@ -154,7 +261,7 @@ const knex = require('knex')({
 
     return {
       host : 'your_host',
-      port : 3306,
+      port : 5432,
       user : 'your_database_user',
       password : token,
       database : 'myapp_test',
@@ -166,7 +273,7 @@ const knex = require('knex')({
 });
 ```
 
-You can also connect via an unix domain socket, which will ignore host and port.
+You can also connect via a unix domain socket, which will ignore host and port.
 
 ```js
 const knex = require('knex')({
@@ -237,7 +344,7 @@ const customUserParam = knexWithParams
 
 ### debug
 
-Passing a `debug: true` flag on your initialization object will turn on [debugging](builder#debug) for all queries.
+Passing a `debug: true` flag on your initialization object will turn on [debugging](/guide/query-builder.html#debug) for all queries.
 
 ### asyncStackTraces
 
@@ -328,7 +435,7 @@ const knex = require('knex')({
 
 ### migrations
 
-For convenience, the any migration configuration may be specified when initializing the library. Read the [Migrations](migrations) section for more information and a full list of configuration options.
+For convenience, any migration configuration may be specified when initializing the library. Read the [Migrations](/guide/migrations.html) section for more information and a full list of configuration options.
 
 ```js
 const knex = require('knex')({
@@ -348,7 +455,7 @@ const knex = require('knex')({
 
 ### postProcessResponse
 
-Hook for modifying returned rows, before passing them forward to user. One can do for example snake\_case -> camelCase conversion for returned columns with this hook. The `queryContext` is only available if configured for a query builder instance via [queryContext](builder#querycontext).
+Hook for modifying returned rows, before passing them forward to user. One can do for example snake\_case -> camelCase conversion for returned columns with this hook. The `queryContext` is only available if configured for a query builder instance via [queryContext](/guide/schema-builder.html#querycontext).
 
 ```js
 const knex = require('knex')({
@@ -372,7 +479,7 @@ Knex supports transforming identifier names automatically to quoted versions for
 
 With `wrapIdentifier` one may override the way how identifiers are transformed. It can be used to override default functionality and for example to help doing `camelCase` -> `snake_case` conversion.
 
-Conversion function `wrapIdentifier(value, dialectImpl, context): string` gets each part of the identifier as a single `value`, the original conversion function from the dialect implementation and the `queryContext`, which is only available if configured for a query builder instance via [builder.queryContext](builder-querycontext), and for schema builder instances via [schema.queryContext](schema-builder#querycontext) or [table.queryContext](schema-builder#querycontext-1). For example, with the query builder, `knex('table').withSchema('foo').select('table.field as otherName').where('id', 1)` will call `wrapIdentifier` converter for following values `'table'`, `'foo'`, `'table'`, `'field'`, `'otherName'` and `'id'`.
+Conversion function `wrapIdentifier(value, dialectImpl, context): string` gets each part of the identifier as a single `value`, the original conversion function from the dialect implementation and the `queryContext`, which is only available if configured for a query builder instance via [builder.queryContext](/guide/query-builder.html#querycontext), and for schema builder instances via [schema.queryContext](/guide/schema-builder.html#querycontext) or [table.queryContext](/guide/schema-builder.html#querycontext-1). For example, with the query builder, `knex('table').withSchema('foo').select('table.field as otherName').where('id', 1)` will call `wrapIdentifier` converter for following values `'table'`, `'foo'`, `'table'`, `'field'`, `'otherName'` and `'id'`.
 
 ```js
 const knex = require('knex')({
@@ -407,11 +514,11 @@ const knex = require('knex')({
 
 ### compileSqlOnError
 
-Knex builds an error message in case of query error. To avoid leaking sensitive values, the parameterized SQL (`SELECT * FROM users WHERE password = ?`) will be added to the message by default, this can be changed to compiled SQL (`SELECT * FROM users WHERE password =  'myPassword'`) by setting `compileSqlOnError` to true.
+Knex builds an error message in case of query error. By default Knex adds compiled SQL (`SELECT * FROM users WHERE password = 'myPassword'`) to the error message. This can be changed to parameterized SQL (`SELECT * FROM users WHERE password = ?`) by setting `compileSqlOnError` to `false`.
 
 ```js
 const knex = require('knex')({
-  compileSqlOnError: true
+  compileSqlOnError: false
 });
 ```
 
@@ -479,6 +586,17 @@ declare module 'knex/types/tables' {
       // Defaults to Partial "insert" type
       Partial<Omit<User, 'id'>>
     >;
+  }
+}
+```
+
+When TypeScript is configured to use a modern module resolution setting (`node16`, `nodenext`, etc.), the compiler expects that the declared module name ends with a `.js` file type. You will need to declare your inferred types as follows instead:
+
+```ts
+// The trailing `.js` is required by the TypeScript compiler in certain configs:
+declare module 'knex/types/tables.js' { // <----- Different module path!!!
+  interface Tables {
+    // ...
   }
 }
 ```

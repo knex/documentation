@@ -5,7 +5,7 @@ Sometimes you may need to use a raw expression in a query. Raw query object may 
 
 ## Raw Parameter Binding
 
-One can paramterize sql given to `knex.raw(sql, bindings)`. Parameters can be positional named. One can also choose if parameter should be treated as value or as sql identifier e.g. in case of `'TableName.ColumnName'` reference.
+One can parameterize sql given to `knex.raw(sql, bindings)`. Parameters can be positional named. One can also choose if parameter should be treated as value or as sql identifier e.g. in case of `'TableName.ColumnName'` reference.
 
 ```js
 knex('users')
@@ -121,7 +121,7 @@ knex.select('e.lastname', 'e.salary', subcolumn)
   .whereRaw('dept_no = e.dept_no')
 ```
 
-Note that the example above be achieved more easily using the [as](#Builder-as) method.
+Note that the example above be achieved more easily using the [as](/guide/query-builder#as) method.
 
 ```js
 const subcolumn = knex.avg('salary')

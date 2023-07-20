@@ -21,7 +21,7 @@ The migration CLI accepts the following general command-line options. You can vi
 - `--migrations-table-name`: Set the migration table name
 - `--migrations-directory`: Set the migrations directory
 - `--env`: environment, default: `process.env.NODE_ENV || development`
-- `--esm`: [Enables ESM module interoperability](#esm-interop)
+- `--esm`: [Enables ESM module interoperability](#ecmascript-modules-esm-interoperability)
 - `--help`: Display help text for a particular command and exit.
 
 Migrations use a **knexfile**, which specify various configuration settings for the module. To create a new knexfile, run the following:
@@ -176,23 +176,21 @@ module.exports = {
 };
 ```
 
-you can also export an async function from the knexfile. This is useful when you need to fetch credentials from a secure location like vault
+You can also use an async function to get connection details for your configuration. This is useful when you need to fetch credentials from a secure location like vault.
 
 ```js
-async function fetchConfiguration() {
+const getPassword = async () => {
   // TODO: implement me
-  return {
-    client: 'pg',
-    connection: { user: 'me', password: 'my_pass' }
-  }
+  return 'my_pass'
 }
 
-module.exports = async () => {
-  const configuration = await fetchConfiguration();
-  return {
-    ...configuration,
-    migrations: {}
-  }
+module.exports = {
+  client: 'pg',
+  connection: async () => {
+    const password = await getPassword()
+    return { user: 'me', password }
+  },
+  migrations: {}
 };
 ```
 
@@ -220,6 +218,21 @@ module.exports = {
   client: 'pg',
   migrations: {
     stub: 'migration.stub'
+  }
+};
+```
+
+### Custom migration name
+
+You may provide a custom migration name to be used in place of the default option.
+
+```js
+module.exports = {
+  client: 'pg',
+  migrations: {
+    getNewMigrationName: (name) => {
+      return `${+new Date()}-${name}.js`;
+    }
   }
 };
 ```
@@ -552,7 +565,7 @@ Seed and migration files need to follow Knex conventions
  * Same as with the CommonJS modules
  * You will need to export a "seed" named function.
  * */
-export function seed(next) {
+export function seed(knex) {
   // ... seed logic here
 }
 
