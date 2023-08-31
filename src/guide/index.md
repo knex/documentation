@@ -312,12 +312,6 @@ Specify the client for the particular flavour of SQL you are interested in.
 ```js
 const pg = require('knex')({client: 'pg'});
 
-knex('table')
-  .insert({a: 'b'})
-  .returning('*')
-  .toString();
-// "insert into "table" ("a") values ('b')"
-
 pg('table')
   .insert({a: 'b'})
   .returning('*')
