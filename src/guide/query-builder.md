@@ -2705,7 +2705,7 @@ knex('users').orderBy([
 
 ### orderByRaw
 
-**.orderByRaw(sql)**
+**.orderByRaw(sql, [bindings])**
 
 Adds an order by raw clause to the query.
 
@@ -2713,6 +2713,10 @@ Adds an order by raw clause to the query.
 knex.select('*')
   .from('table')
   .orderByRaw('col DESC NULLS LAST')
+
+knex.select('*')
+  .from('table')
+  .orderByRaw('json_col->>? DESC NULLS LAST', 'myField')
 ```
 
 ## Having Clauses
