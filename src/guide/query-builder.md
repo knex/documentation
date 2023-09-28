@@ -1090,7 +1090,7 @@ knex('books')
   .returning('id')
   .insert({title: 'Slaughterhouse Five'})
 
-// Returns [{ id: 2 } ] in "mysql", "sqlite"; 
+// Returns [{ id: 2 } ] in "mssql", "sqlite"; 
 // [ { id: 2 }, { id: 3 } ] in "postgresql"
 knex('books')
   .returning('id')
