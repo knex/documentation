@@ -390,8 +390,8 @@ class MyMigrationSource {
     return Promise.resolve(['migration1'])
   }
 
-  getMigrationName(migration) {
-    return migration;
+  getMigrationName(name) {
+    return name;
   }
 
   getMigration(migration) {
