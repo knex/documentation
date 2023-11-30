@@ -31,7 +31,7 @@ knex.transaction(function(trx) {
   console.log(inserts.length + ' new books saved.');
 })
 .catch(function(error) {
-  // If we get here, that means that 
+  // If we get here, that means that
   // neither the 'Old Books' catalogues insert,
   // nor any of the books inserts will have taken place.
   console.error(error);
@@ -64,7 +64,7 @@ knex.transaction(function(trx) {
   console.log(inserts.length + ' new books saved.');
 })
 .catch(function(error) {
-  // If we get here, that means that 
+  // If we get here, that means that
   // neither the 'Old Books' catalogues insert,
   // nor any of the books inserts will have taken place.
   console.error(error);
@@ -82,7 +82,7 @@ try {
       {title: 'Moby Dick'},
       {title: 'Hamlet'}
     ];
-    
+
     const ids = await trx('catalogues')
       .insert({
         name: 'Old Books'
@@ -90,7 +90,7 @@ try {
 
     books.forEach((book) => book.catalogue_id = ids[0])
     const inserts = await trx('books').insert(books)
-    
+
     console.log(inserts.length + ' new books saved.')
   })
 } catch (error) {
@@ -220,6 +220,30 @@ trx2.isCompleted(); // true
 ```
 
 You can check the property `knex.isTransaction` to see if the current knex instance you are working with is a transaction.
+
+Nested transactions can access their parent transaction with the `parentTransaction` property:
+
+```ts
+await knex.transaction(async trx => {
+  await trx.transaction(async trx2 => {
+    // trx2.parentTransaction === trx
+  });
+});
+```
+
+The `parentTransaction` chain can, for example, be used to reach the the root transaction's `executionPromise`:
+
+```ts
+await knex.transaction(async trx => {
+  await trx.transaction(async trx2 => {
+    await trx2.insert({ title: 'Goodnight Moon' }).into('books');
+
+    trx2.parentTransaction.executionPromise.then(() => {
+      console.log(`Goodnight Moon has been persisted.`);
+    });
+  });
+});
+```
 
 ## Transaction Modes
 
