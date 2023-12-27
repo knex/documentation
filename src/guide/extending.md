@@ -19,6 +19,10 @@ knex.ColumnBuilder.extend("functionName", function() {
     console.log('Custom Column Builder Function');
     return this;
 });
+knex.QueryBuilder.extend("functionName", function() {
+    console.log('Custom Query Builder Function');
+    return this;
+});
 ```
 
 
@@ -38,6 +42,9 @@ declare module "knex" {
         }
         interface ColumnBuilder {
             functionName (): Knex.ColumnBuilder;
+        }
+        interface QueryBuilder {
+            functionName (): Knex.QueryBuilder;
         }
     }
 }
