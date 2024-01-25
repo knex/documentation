@@ -100,6 +100,34 @@ and "age" > 21
 limit 100
 ```
 
+You can also use `ANY`, which in many cases is equivalent to `WHERE IN`.
+```js
+const names = ['Sally', 'Jay', 'Foobar'];
+const bindings = {
+  names,
+  age: 21,
+  limit: 100,
+};
+knex.raw(
+  `
+  select * from people
+  where "name" = any(:names)
+  and "age" > :age
+  limit :limit
+`,
+  bindings
+);
+```
+
+This evaluates to: 
+
+```sql
+select * from people
+where "name" = any('{"Sally", "Jay", "Foobar"}')
+and "age" > 21
+limit 100
+```
+
 To prevent replacement of `?` one can use the escape sequence `\\?`.
 
 ```js
