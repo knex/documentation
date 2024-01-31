@@ -1,7 +1,6 @@
 # knex.js documentation
 
-The vitepress documentation for [http://knexjs.org](http://knexjs.org)
-
+The vitepress documentation for [http://knexjs.org](http://knexjs.
 #### Development:
 
 ```bash
