@@ -1,5 +1,8 @@
 # knex.js documentation
 
+> [!IMPORTANT]
+> The documentation has been moved to the [knex](https://github.com/knex/knex) repo under the [`docs`](https://github.com/knex/knex/tree/master/docs) folder
+
 The vitepress documentation for [http://knexjs.org](http://knexjs.org)
 
 #### Development:
