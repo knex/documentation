@@ -533,6 +533,7 @@ Many of the APIs accept `TRecord` and `TResult` type parameters, using which we 
 To reduce boilerplate and add inferred types, you can augment `Tables` interface in `'knex/types/tables'` module.
 
 ```ts
+import "knex/types/tables";
 import { Knex } from 'knex';
 
 declare module 'knex/types/tables' {
