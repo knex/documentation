@@ -2688,6 +2688,8 @@ knex('users').orderBy('name', 'desc', 'first')
 Multiple Columns:
 
 ```js
+knex('users').orderBy('email').orderBy('age', 'desc')
+
 knex('users').orderBy([
   'email', { column: 'age', order: 'desc' }
 ])
