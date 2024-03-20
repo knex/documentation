@@ -119,7 +119,7 @@ try {
       .transacting(trx)
 
     books.forEach(book => book.catalogue_id = ids[0])
-    await knex('books')
+    const inserts = await knex('books')
       .insert(books)
       .transacting(trx)
 
